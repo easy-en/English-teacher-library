@@ -1,7 +1,15 @@
 
 const materials = [
 
-  // ADD YOUR MATERIALS HERE
+  
+{
+    title: "Daily Calendar",
+    category: "vocabulary",
+    level: "Pre-A1–A1",
+    type: "Interactive Game",
+    description: "Practise days, months, dates, weather, seasons and feelings. Create your own daily calendar and build simple English sentences!",
+    link: "Daily%20Calendar.html"
+}
 
 ];
 
