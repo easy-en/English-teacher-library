@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Daily Calendar</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f2ea;--panel:#fff;--panel2:#f3efe6;--ink:#23314a;--muted:#61728a;--line:#e2dacb;--acc:#4f9d3a;--acc-ink:#fff;--tint:#e9f6e0;--ok:#2b8a3e;--warn:#c2410c;--shadow:0 10px 30px rgba(35,49,74,.14);--r:22px;
+ box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body[data-season=spring]{--tint:#e6f6dc;--acc:#3f8f2f}
+body[data-season=summer]{--tint:#dff0ff;--acc:#1971c2}
+body[data-season=autumn]{--tint:#fbe6d0;--acc:#d9480f}
+body[data-season=winter]{--tint:#e6eef9;--acc:#3b5bdb}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121a2b;--panel:#1d2840;--panel2:#16203a;--ink:#eef2fa;--muted:#9fb0c9;--line:#2f3e5e;--shadow:0 10px 30px rgba(0,0,0,.4)}
+ body[data-season=spring]{--tint:#1c3322;--acc:#7bd45f}body[data-season=summer]{--tint:#16304f;--acc:#5aaeff}body[data-season=autumn]{--tint:#3b2616;--acc:#ff9a52}body[data-season=winter]{--tint:#1c2a4a;--acc:#8ea6ff}}
+:root[data-theme="dark"]{--bg:#121a2b;--panel:#1d2840;--panel2:#16203a;--ink:#eef2fa;--muted:#9fb0c9;--line:#2f3e5e;--shadow:0 10px 30px rgba(0,0,0,.4)}
+*,*:before,*:after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+body{margin:0;min-height:100%;font-family:Nunito,'Trebuchet MS','Segoe UI',Arial,sans-serif;font-size:18px;color:var(--ink);background:#f6f2ea;background:linear-gradient(180deg,var(--tint),var(--bg) 520px) fixed;transition:background .4s}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+h1,h2,h3{font-family:'Baloo 2',Nunito,'Trebuchet MS',Arial,sans-serif;margin:0;line-height:1.1}
+h1{font-size:44px}h2{font-size:30px}h3{font-size:21px}
+p{margin:6px 0}
+#app{display:flex;flex-direction:column;min-height:100vh}
+.top{display:flex;align-items:center;gap:14px;padding:12px 22px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;font-family:'Baloo 2',Nunito,sans-serif;font-weight:800;font-size:26px;white-space:nowrap}
+.logo svg{flex:none}
+.steps{display:flex;gap:6px;flex:1;justify-content:center;flex-wrap:wrap}
+.stp{border:0;background:var(--panel);border-radius:999px;padding:8px 16px 8px 8px;display:flex;align-items:center;gap:8px;font-weight:700;font-size:16px;box-shadow:0 2px 0 var(--line);color:var(--muted)}
+.stp b{display:inline-flex;width:28px;height:28px;border-radius:50%;background:var(--panel2);align-items:center;justify-content:center;font-size:14px}
+.stp.on{background:var(--acc);color:var(--acc-ink)}.stp.on b{background:#ffffff40;color:#fff}
+.stp.done b{background:var(--ok);color:#fff}
+.stp:disabled{opacity:.45;cursor:default}
+.tools{display:flex;gap:8px;align-items:center}
+.seg{display:inline-flex;background:var(--panel);border-radius:999px;padding:3px;box-shadow:0 2px 0 var(--line)}
+.seg button{border:0;background:transparent;border-radius:999px;padding:6px 14px;font-weight:700;font-size:15px;color:var(--muted)}
+.seg button.on{background:var(--acc);color:var(--acc-ink)}
+.ib{border:0;background:var(--panel);border-radius:14px;width:42px;height:42px;font-size:20px;box-shadow:0 2px 0 var(--line)}
+main{flex:1;padding:6px 22px 18px;width:100%;max-width:1500px;margin:0 auto}
+.panel{background:var(--panel);border-radius:var(--r);box-shadow:var(--shadow);padding:20px 22px}
+.btn{border:0;border-radius:16px;padding:12px 22px;font-weight:800;font-size:18px;background:var(--panel);box-shadow:0 4px 0 var(--line);color:var(--ink)}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 var(--line)}
+.btn.pri{background:var(--acc);color:var(--acc-ink);box-shadow:0 4px 0 rgba(0,0,0,.25)}
+.btn.big{font-size:22px;padding:14px 30px}
+.btn.sm{padding:7px 14px;font-size:15px;border-radius:12px}
+.btn:disabled{opacity:.45;cursor:default}
+.foot{display:flex;justify-content:space-between;align-items:center;padding:12px 22px 20px;gap:12px;max-width:1500px;margin:0 auto;width:100%}
+.hint{color:var(--warn);font-weight:700;font-size:15px}
+.sub{color:var(--muted);font-size:16px}
+/* step 0 */
+.cnt{display:flex;gap:12px;margin:14px 0 20px;flex-wrap:wrap}
+.cntb{border:3px solid var(--line);background:var(--panel);border-radius:20px;padding:10px 20px;min-width:128px;display:flex;flex-direction:column;align-items:center;gap:2px;font-weight:800;box-shadow:0 4px 0 var(--line)}
+.cntb .num{font-family:'Baloo 2',sans-serif;font-size:34px;line-height:1}
+.cntb.on{border-color:var(--acc);background:var(--tint)}
+.sgrid{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}
+.scard{background:var(--panel);border-radius:var(--r);box-shadow:var(--shadow);padding:18px;display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:start}
+.scard .big-av{background:linear-gradient(#e7f2ff,#fff);border-radius:20px;padding:6px;display:flex;justify-content:center}
+.nm{font-size:22px;font-weight:800;border:3px solid var(--line);border-radius:14px;padding:8px 12px;width:100%;background:var(--panel);font-family:inherit}
+.lab{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:10px 0 4px}
+.typ{display:flex;gap:8px}
+.typb{flex:1;border:3px solid var(--line);background:var(--panel2);border-radius:16px;padding:2px 4px;font-weight:800;display:flex;flex-direction:column;align-items:center}
+.typb.on{border-color:var(--acc);background:var(--tint)}
+.sw{display:flex;gap:7px;flex-wrap:wrap}
+.swb{width:32px;height:32px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px var(--line)}
+.swb.on{box-shadow:0 0 0 3px var(--acc)}
+.stb{border:3px solid var(--line);background:var(--panel2);border-radius:14px;padding:0 2px;display:flex;flex-direction:column;align-items:center;font-size:12px;font-weight:700}
+.stb.on{border-color:var(--acc);background:var(--tint)}
+.tog{border:3px solid var(--line);background:var(--panel2);border-radius:12px;padding:5px 12px;font-weight:700;font-size:15px}
+.tog.on{border-color:var(--acc);background:var(--tint)}
+.sel{border:3px solid var(--line);background:var(--panel);border-radius:12px;padding:5px 8px;font-weight:700;font-size:15px}
+/* step 1 */
+.cal{display:grid;grid-template-columns:minmax(380px,520px) 1fr;gap:22px;align-items:start}
+.cal .scene{position:sticky;top:10px}
+.sceneb{background:#fff;border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+.sceneb>svg{display:block;width:100%;height:auto}
+.wk{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:6px 0}
+.wk button{border:3px solid var(--line);background:var(--panel2);border-radius:12px;padding:8px 0;font-weight:800;font-size:15px}
+.wk button.on{background:var(--acc);border-color:var(--acc);color:var(--acc-ink)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:6px 0}
+.inp{border:3px solid var(--line);background:var(--panel);border-radius:12px;padding:6px 10px;font-weight:700;font-size:17px}
+.seas{display:flex;gap:8px;flex-wrap:wrap}
+.seasb{border:3px solid var(--line);background:var(--panel2);border-radius:14px;padding:6px 14px;font-weight:800;display:flex;align-items:center;gap:6px}
+.seasb.on{border-color:var(--acc);background:var(--tint)}
+.sent{margin:10px 0}
+.sent .lab{margin:0 0 3px}
+.sin{display:flex;gap:6px;align-items:center}
+.sin input{flex:1;min-width:0;border:3px solid var(--line);background:var(--panel);border-radius:14px;padding:8px 12px;font-size:24px;font-weight:800;font-family:'Baloo 2',Nunito,sans-serif;color:var(--ink)}
+.sin input.ed{border-color:var(--acc)}
+.fr{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px}
+.fr button{border:2px dashed var(--line);background:transparent;border-radius:999px;padding:3px 11px;font-size:14px;font-weight:700;color:var(--muted)}
+.fr button:hover{border-color:var(--acc);color:var(--ink)}
+.rst{border:0;background:var(--panel2);border-radius:10px;width:34px;height:34px;font-size:16px;flex:none}
+/* step 2 */
+.qs{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 16px}
+.qc{border:0;background:var(--panel);box-shadow:0 4px 0 var(--line);border-radius:16px;padding:10px 16px;font-weight:800;font-size:17px;text-align:left}
+.qc:first-child{background:var(--acc);color:var(--acc-ink);box-shadow:0 4px 0 rgba(0,0,0,.25)}
+.wgrid{display:grid;gap:18px;grid-template-columns:1fr}
+.wgrid.n2,.wgrid.n4{grid-template-columns:repeat(2,minmax(0,1fr))}
+.wgrid.n3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.wgrid.n1{max-width:760px;margin:0 auto}
+@media (max-width:1180px){.wgrid.n3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:820px){.wgrid.n2,.wgrid.n3,.wgrid.n4{grid-template-columns:1fr}.cal{grid-template-columns:1fr}.cal .scene{position:static}.scard{grid-template-columns:1fr}}
+.wcard{background:var(--panel);border-radius:var(--r);box-shadow:var(--shadow);padding:14px;display:flex;flex-direction:column;gap:8px}
+.wh{display:flex;align-items:center;gap:10px}
+.wh h3{font-size:24px}
+.tagp{margin-left:auto;font-size:12px;font-weight:800;background:var(--panel2);color:var(--muted);border-radius:999px;padding:3px 10px;white-space:nowrap}
+.wscene{border-radius:20px;overflow:hidden;background:#cfe8ff;line-height:0}
+.wscene>svg{width:100%;height:auto}
+.cbtn{border:3px solid var(--line);background:var(--panel2);border-radius:14px;padding:6px 12px;display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;width:100%;text-align:left}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chp{border:3px solid var(--line);background:var(--panel2);border-radius:14px;padding:3px 10px 3px 4px;display:flex;align-items:center;gap:4px;font-weight:800;font-size:16px}
+.chp.on{border-color:var(--acc);background:var(--tint)}
+.chp .o{background:var(--acc);color:#fff;border-radius:50%;width:20px;height:20px;font-size:12px;display:inline-flex;align-items:center;justify-content:center;margin-left:2px}
+.wcard .sin input{font-size:20px}
+/* step 3 */
+.mtabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.mtab{border:3px solid var(--line);background:var(--panel);border-radius:18px;padding:4px 14px 4px 6px;display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px;box-shadow:0 3px 0 var(--line)}
+.mtab.on{border-color:var(--acc);background:var(--tint)}
+.mood{display:grid;grid-template-columns:minmax(340px,480px) 1fr;gap:22px}
+@media (max-width:900px){.mood{grid-template-columns:1fr}}
+.mstage{background:linear-gradient(#dff0ff,#fff7e0);border-radius:var(--r);box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;gap:6px;padding:14px;min-height:430px;position:relative}
+.mstage .mi{position:absolute;right:16px;top:16px;background:#fff;border-radius:50%;padding:10px;box-shadow:0 4px 14px rgba(0,0,0,.15)}
+.mchips{display:flex;gap:10px;flex-wrap:wrap}
+.mch{border:3px solid var(--line);background:var(--panel2);border-radius:18px;padding:6px 14px 6px 8px;display:flex;align-items:center;gap:8px;font-weight:800;font-size:20px}
+.mch.body{border-style:dashed}
+.mch.on{border-style:solid;border-color:var(--acc);background:var(--tint)}
+.mch.skip{font-size:16px;color:var(--muted)}
+/* step 4 */
+.fin{display:grid;grid-template-columns:1fr 360px;gap:20px}
+.fin.nor{grid-template-columns:1fr}
+@media (max-width:1100px){.fin{grid-template-columns:1fr}}
+.fsvg{display:block;width:100%;height:auto;border-radius:var(--r);box-shadow:var(--shadow)}
+.ftxt h2{margin-bottom:8px}.ftxt .l{font-size:20px;font-weight:700;margin:4px 0}
+.ftxt .st{border-top:2px dashed var(--line);margin-top:12px;padding-top:10px;font-size:19px;line-height:1.35}
+.ftxt .st b{color:var(--acc)}
+.acts{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+.rv{display:grid;gap:8px;margin-top:10px}
+.rv button{text-align:left;border:0;background:var(--panel2);border-radius:14px;padding:10px 14px;font-weight:800;font-size:17px}
+.rv button small{display:block;color:var(--muted);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+/* modal */
+.ovl{position:fixed;inset:0;background:rgba(15,22,40,.55);z-index:50;display:flex;align-items:center;justify-content:center;padding:16px}
+.dlg{background:var(--panel);border-radius:26px;box-shadow:var(--shadow);padding:22px 26px;max-width:860px;width:100%;max-height:92vh;overflow:auto}
+.dlg.q{text-align:center;max-width:1000px;padding:44px}
+.dlg.q .big{font-family:'Baloo 2',sans-serif;font-size:clamp(34px,6vw,70px);font-weight:800;line-height:1.1}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin:12px 0}
+.cg{border:3px solid var(--line);background:var(--panel2);border-radius:16px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:6px;font-weight:800;font-size:15px;text-align:center}
+.cg.on{border-color:var(--acc);background:var(--tint)}
+.clist{max-height:46vh;overflow:auto;display:grid;gap:6px;margin-top:8px}
+.clist button{display:flex;align-items:center;gap:12px;border:0;background:var(--panel2);border-radius:12px;padding:7px 12px;font-weight:800;font-size:17px;text-align:left}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--ink);color:var(--bg);border-radius:16px;padding:10px 20px;font-weight:800;z-index:80}
+.flag{display:block;border-radius:5px;flex:none}
+@media print{body{background:#fff!important}.top,.foot,.tools,.acts,.noprint,.ovl{display:none!important}main{padding:0;max-width:none}.fin{grid-template-columns:1fr}.fsvg{box-shadow:none}.panel{box-shadow:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="modal"></div>
+<script>
+/* ====================== UTILITIES ====================== */
+const $=(s,r)=>(r||document).querySelector(s),$$=(s,r)=>Array.from((r||document).querySelectorAll(s));
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let UIDN=0;const U=()=>'g'+(++UIDN);
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function shade(hex,amt){const n=parseInt(hex.slice(1),16);let r=(n>>16)+amt,g=((n>>8)&255)+amt,b=(n&255)+amt;r=clamp(r,0,255);g=clamp(g,0,255);b=clamp(b,0,255);return'#'+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1)}
+function rng(seed){let s=seed>>>0||1;return()=>{s=(s+0x6D2B79F5)>>>0;let t=s;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296}}
+const FONT="Nunito,'Trebuchet MS','Segoe UI',Arial,sans-serif",FONTH="'Baloo 2',Nunito,'Trebuchet MS',Arial,sans-serif";
+
+/* ====================== DATES ====================== */
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const WEEK=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const mkDate=(y,m,d)=>{const t=new Date(2000,0,1);t.setFullYear(y,m-1,d);return t};
+const dim=(y,m)=>mkDate(y,m+1,0).getDate();
+function ord(n){const s=['th','st','nd','rd'],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0])}
+const seasonOf=m=>m>=3&&m<=5?'spring':m>=6&&m<=8?'summer':m>=9&&m<=11?'autumn':'winter';
+const pad=n=>String(n).padStart(2,'0');
+
+/* ====================== DATA ====================== */
+const SKINS=[['#fde0c9','Light'],['#f3c29b','Fair'],['#d99a6c','Tan'],['#b5733f','Brown'],['#7c4a2a','Deep']];
+const HAIRC=[['#1d1a1a','Black'],['#6b4226','Brown'],['#e3b85b','Blonde'],['#c8571e','Ginger']];
+const SHIRTS=['#e5484d','#f59f00','#2f9e44','#1c7ed6','#7048e8','#e64980','#12b886','#fd7e14'];
+const STYLES={boy:[['short','Short'],['spiky','Spiky'],['curly','Curly'],['side','Side part']],girl:[['ponytail','Ponytail'],['pigtails','Pigtails'],['long','Long'],['bun','Bun']]};
+const WEATHER=[
+ {k:'sunny',l:'Sunny',g:'sky',core:1},{k:'cloudy',l:'Cloudy',g:'sky',core:1},{k:'rainy',l:'Rainy',g:'sky',core:1},{k:'windy',l:'Windy',g:'sky',core:1},{k:'snowy',l:'Snowy',g:'sky',core:1},{k:'foggy',l:'Foggy',g:'sky',core:1},
+ {k:'stormy',l:'Stormy',g:'sky'},{k:'hot',l:'Hot',g:'temp'},{k:'cold',l:'Cold',g:'temp'},{k:'warm',l:'Warm',g:'temp'},{k:'cool',l:'Cool',g:'temp'}];
+const WL=Object.fromEntries(WEATHER.map(w=>[w.k,w]));
+const WCONF=[['sunny','cloudy'],['sunny','rainy'],['sunny','snowy'],['sunny','foggy'],['sunny','stormy'],['rainy','snowy'],['rainy','foggy'],['snowy','foggy'],['snowy','stormy'],['rainy','stormy'],['cloudy','stormy'],['cloudy','foggy'],
+ ['hot','cold'],['hot','cool'],['hot','warm'],['warm','cold'],['warm','cool'],['cool','cold'],['snowy','hot'],['snowy','warm'],['foggy','stormy']];
+const wCompat=(a,b)=>!WCONF.some(([x,y])=>(x===a&&y===b)||(x===b&&y===a));
+const WBUT=[['sunny','cold'],['sunny','cool'],['cloudy','warm'],['cloudy','hot'],['rainy','warm'],['rainy','hot'],['foggy','warm'],['foggy','hot'],['stormy','warm'],['stormy','hot'],['windy','hot']];
+const MOODS=[
+ {k:'happy',l:'Happy',t:'feel',pos:1},{k:'sad',l:'Sad',t:'feel'},{k:'excited',l:'Excited',t:'feel',pos:1},{k:'scared',l:'Scared',t:'feel'},{k:'nervous',l:'Nervous',t:'feel'},{k:'stressed',l:'Stressed',t:'feel'},{k:'calm',l:'Calm',t:'feel',pos:1},
+ {k:'sleepy',l:'Sleepy',t:'body'},{k:'tired',l:'Tired',t:'body'},{k:'hungry',l:'Hungry',t:'body'},{k:'thirsty',l:'Thirsty',t:'body'},{k:'hot',l:'Hot',t:'body'},{k:'cold',l:'Cold',t:'body'},{k:'okay',l:'Okay',t:'body',pos:1}];
+const ML=Object.fromEntries(MOODS.map(m=>[m.k,m]));
+const MCONF=[['happy','sad'],['excited','sad'],['calm','stressed'],['calm','nervous'],['calm','scared'],['calm','excited'],['hot','cold'],['okay','sad'],['okay','happy'],['okay','excited'],['sleepy','excited']];
+const mCompat=(a,b)=>!MCONF.some(([x,y])=>(x===a&&y===b)||(x===b&&y===a));
+const COUNTRIES=[['ua','Ukraine'],['de','Germany'],['fr','France'],['pl','Poland'],['nl','Netherlands',1],['be','Belgium'],['cz','Czechia'],['sk','Slovakia'],['gb','United Kingdom',1],['it','Italy'],['es','Spain'],['at','Austria'],['ro','Romania'],['ch','Switzerland'],['dk','Denmark'],['se','Sweden'],['no','Norway'],['pt','Portugal'],['ie','Ireland'],['hu','Hungary']].map(([c,n,the])=>({c,n,the:!!the}));
+const OTHERS=[['al','Albania'],['ad','Andorra'],['ar','Argentina'],['am','Armenia'],['au','Australia'],['az','Azerbaijan'],['by','Belarus'],['ba','Bosnia and Herzegovina'],['br','Brazil'],['bg','Bulgaria'],['ca','Canada'],['cl','Chile'],['cn','China'],['co','Colombia'],['hr','Croatia'],['cy','Cyprus'],['eg','Egypt'],['ee','Estonia'],['fi','Finland'],['ge','Georgia'],['gr','Greece'],['is','Iceland'],['in','India'],['id','Indonesia'],['il','Israel'],['jp','Japan'],['kz','Kazakhstan'],['lv','Latvia'],['li','Liechtenstein'],['lt','Lithuania'],['lu','Luxembourg'],['mt','Malta'],['mx','Mexico'],['md','Moldova'],['me','Montenegro'],['ma','Morocco'],['nz','New Zealand'],['mk','North Macedonia'],['rs','Serbia'],['si','Slovenia'],['za','South Africa'],['kr','South Korea'],['th','Thailand'],['tr','Turkey'],['ae','United Arab Emirates',1],['us','United States',1],['uz','Uzbekistan'],['vn','Vietnam']].map(([c,n,the])=>({c,n,the:!!the}));
+const ALLC=COUNTRIES.concat(OTHERS);
+const cByCode=c=>ALLC.find(x=>x.c===c)||null;
+const cName=c=>{const x=cByCode(c);return x?x.n:''};
+const cThe=c=>{const x=cByCode(c);return x?(x.the?'the '+x.n:x.n):''};
+
+/* ====================== FLAGS (original SVG artwork) ====================== */
+const fr_=(x,y,w,h,f)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${f}"/>`;
+const H3=(a,b,c)=>fr_(0,0,60,13.4,a)+fr_(0,13.3,60,13.4,b)+fr_(0,26.6,60,13.4,c);
+const V3=(a,b,c)=>fr_(0,0,20.1,40,a)+fr_(20,0,20.1,40,b)+fr_(40,0,20,40,c);
+const H2=(a,b)=>fr_(0,0,60,20.1,a)+fr_(0,20,60,20,b);
+const star=(cx,cy,r,f)=>{let p=[];for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,rr=i%2?r*.4:r;p.push((cx+rr*Math.cos(a)).toFixed(2)+','+(cy+rr*Math.sin(a)).toFixed(2))}return`<polygon points="${p.join(' ')}" fill="${f}"/>`};
+const nordic=(bg,cr,x0,y0,t,inner,it)=>fr_(0,0,60,40,bg)+fr_(x0,0,t,40,cr)+fr_(0,y0,60,t,cr)+(inner?fr_(x0+(t-it)/2,0,it,40,inner)+fr_(0,y0+(t-it)/2,60,it,inner):'');
+const FLAGART={
+ ua:()=>H2('#0057b7','#ffd700'),de:()=>H3('#000','#dd0000','#ffce00'),fr:()=>V3('#0055a4','#fff','#ef4135'),pl:()=>H2('#fff','#dc143c'),nl:()=>H3('#ae1c28','#fff','#21468b'),be:()=>V3('#000','#fdda24','#ef3340'),
+ cz:()=>H2('#fff','#d7141a')+'<path d="M0 0L30 20L0 40Z" fill="#11457e"/>',
+ sk:()=>H3('#fff','#0b4ea2','#ee1c25')+'<path d="M9 9h17v13c0 6-5 9-8.5 11C14 31 9 28 9 22z" fill="#ee1c25" stroke="#fff" stroke-width="1.2"/><path d="M17.5 12v13M13.5 16h8M14.5 20h6" stroke="#fff" stroke-width="1.8"/><path d="M11.5 28q3-4.5 6 0q3-4.5 6 0q-2 4-6 5.5q-4-1.5-6-5.5z" fill="#0b4ea2"/>',
+ gb:()=>'<g transform="scale(1 1.3333)"><path d="M0 0v30h60V0z" fill="#00247d"/><path d="M0 0L60 30M60 0L0 30" stroke="#fff" stroke-width="6"/><clipPath id="ukc"><path d="M30 15h30v15zv15H0zH0V0zV0h30z"/></clipPath><path d="M0 0L60 30M60 0L0 30" clip-path="url(#ukc)" stroke="#cf142b" stroke-width="4"/><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/><path d="M30 0v30M0 15h60" stroke="#cf142b" stroke-width="6"/></g>',
+ it:()=>V3('#009246','#fff','#ce2b37'),
+ es:()=>fr_(0,0,60,10,'#aa151b')+fr_(0,10,60,20,'#f1bf00')+fr_(0,30,60,10,'#aa151b')+'<path d="M13 15h9v6c0 3.5-3 5-4.5 6C16 26 13 24.500 13 21z" fill="#aa151b" stroke="#8a6a00" stroke-width=".8"/><rect x="11" y="15" width="1.8" height="10" fill="#c9a227"/><rect x="22.200" y="15" width="1.800" height="10" fill="#c9a227"/>',
+ at:()=>H3('#ed2939','#fff','#ed2939'),ro:()=>V3('#002b7f','#fcd116','#ce1126'),
+ ch:()=>fr_(0,0,60,40,'#d52b1e')+fr_(26,8,8,24,'#fff')+fr_(18,16,24,8,'#fff'),
+ dk:()=>nordic('#c8102e','#fff',17,17,6),se:()=>nordic('#006aa7','#fecc02',16,16,8),no:()=>nordic('#ba0c2f','#fff',16,15,10,'#00205b',4),
+ pt:()=>fr_(0,0,24,40,'#006600')+fr_(24,0,36,40,'#ff0000')+'<circle cx="24" cy="20" r="7" fill="#ffcc00" stroke="#006600" stroke-width=".8"/><path d="M20.200 15.500h7.600v5.200c0 3.200-3.800 4.800-3.800 4.800s-3.800-1.600-3.800-4.800z" fill="#ff0000" stroke="#fff" stroke-width=".9"/>',
+ ie:()=>V3('#169b62','#fff','#ff883e'),hu:()=>H3('#ce2939','#fff','#477050'),
+ fi:()=>nordic('#fff','#003580',16,15,10),is:()=>nordic('#02529c','#fff',16,15,10,'#dc1e35',4),
+ gr:()=>{let s='';for(let i=0;i<9;i++)s+=fr_(0,i*40/9,60,40/9+.1,i%2?'#fff':'#0d5eaf');return s+fr_(0,0,22.3,22.3,'#0d5eaf')+fr_(8.9,0,4.5,22.3,'#fff')+fr_(0,8.9,22.3,4.5,'#fff')},
+ bg:()=>H3('#fff','#00966e','#d62612'),lu:()=>H3('#ed2939','#fff','#00a1de'),ee:()=>H3('#0072ce','#000','#fff'),lt:()=>H3('#fdb913','#006a44','#c1272d'),
+ lv:()=>fr_(0,0,60,40,'#9e3039')+fr_(0,16,60,8,'#fff'),
+ jp:()=>fr_(0,0,60,40,'#fff')+'<circle cx="30" cy="20" r="12" fill="#bc002d"/>',
+ tr:()=>fr_(0,0,60,40,'#e30a17')+'<circle cx="23" cy="20" r="10" fill="#fff"/><circle cx="26" cy="20" r="8" fill="#e30a17"/>'+star(33,20,5.5,'#fff'),
+ us:()=>{let s='';for(let i=0;i<13;i++)s+=fr_(0,i*40/13,60,40/13+.1,i%2?'#fff':'#b22234');s+=fr_(0,0,26,21.6,'#3c3b6e');for(let r=0;r<9;r++){const n=r%2?5:6;for(let c=0;c<n;c++)s+=star((r%2?4.3:2.2)+c*4.3,2.1+r*2.1,1,'#fff')}return s},
+ ge:()=>fr_(0,0,60,40,'#fff')+fr_(26,0,8,40,'#f00')+fr_(0,16,60,8,'#f00')+[[13,8],[47,8],[13,32],[47,32]].map(([x,y])=>`<path d="M${x-3.5} ${y}h7M${x} ${y-3.5}v7" stroke="#f00" stroke-width="2.4"/>`).join(''),
+ am:()=>H3('#d90012','#0033a0','#f2a800'),
+ cl:()=>fr_(0,0,60,20,'#fff')+fr_(0,20,60,20,'#d52b1e')+fr_(0,0,20,20,'#0039a6')+star(10,10,6,'#fff'),
+ co:()=>fr_(0,0,60,20,'#fcd116')+fr_(0,20,60,10,'#003893')+fr_(0,30,60,10,'#ce1126'),
+ id:()=>H2('#ce1126','#fff')};
+function flagSVG(code,h,cls){h=h||40;const w=h*1.5,art=FLAGART[code],nm=cName(code);
+ const body=art?art():`<rect width="60" height="40" fill="#dfe6ee"/><circle cx="30" cy="20" r="14" fill="#8fb8de"/><path d="M16 20h28M30 6c-7 8-7 20 0 28M30 6c7 8 7 20 0 28M18 12q12 4 24 0M18 28q12-4 24 0" stroke="#fff" stroke-width="1.4" fill="none"/>${code?`<text x="30" y="37" font-size="8" font-weight="800" text-anchor="middle" fill="#35506b" font-family="${FONT}">${esc(code.toUpperCase())}</text>`:''}`;
+ return`<svg class="flag ${cls||''}" viewBox="0 0 60 40" width="${w}" height="${h}" role="img" aria-label="Flag of ${esc(nm||'country')}"><clipPath id="fcl"><rect width="60" height="40" rx="4"/></clipPath><linearGradient id="fgl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".18"/></linearGradient><g clip-path="url(#fcl)">${body}<rect width="60" height="40" fill="url(#fgl)"/></g><rect x=".5" y=".5" width="59" height="39" rx="4" fill="none" stroke="rgba(0,0,0,.25)"/></svg>`}
+const hasFlag=c=>!!FLAGART[c];
+/* ====================== AVATARS ====================== */
+const EXP={
+ neutral:{eye:'open',brow:'flat',mouth:'smallSmile'},
+ happy:{eye:'arc',brow:'up',mouth:'bigSmile',blush:'#ff8fa3'},
+ sad:{eye:'sad',brow:'sad',mouth:'frown',tear:1,tilt:5},
+ excited:{eye:'sparkle',brow:'high',mouth:'bigSmile',blush:'#ff8fa3'},
+ scared:{eye:'wide',brow:'high',mouth:'o',sweat:1},
+ nervous:{eye:'side',brow:'worried',mouth:'wavy',sweat:1,tilt:-3},
+ stressed:{eye:'squint',brow:'angry',mouth:'teeth',steam:1},
+ calm:{eye:'closed',brow:'soft',mouth:'smallSmile',blush:'#ffb3c1'},
+ sleepy:{eye:'closed',brow:'droop',mouth:'yawn',zzz:1,tilt:6},
+ tired:{eye:'half',brow:'droop',mouth:'flat',bags:1,tilt:4},
+ hungry:{eye:'open',brow:'worried',mouth:'o',drool:1},
+ thirsty:{eye:'half',brow:'flat',mouth:'tongue'},
+ hot:{eye:'half',brow:'flat',mouth:'pant',sweat:1,blush:'#ff5a5a',heat:1},
+ cold:{eye:'open',brow:'worried',mouth:'wavy',blush:'#8ec9ff',shiver:1},
+ okay:{eye:'open',brow:'flat',mouth:'smallSmile'}};
+const MPOSE={happy:'wave',excited:'up',scared:'head',nervous:'hug',stressed:'head',hungry:'tummy',hot:'fan',cold:'hug'};
+const POSES={idle:{L:[[62,152],[48,196],[46,234]],R:[[138,152],[152,196],[154,234]]},wave:{R:[[138,152],[168,134],[178,98]]},up:{L:[[62,152],[34,122],[28,80]],R:[[138,152],[166,122],[172,80]]},
+ hug:{L:[[62,152],[72,198],[114,190]],R:[[138,152],[128,198],[86,190]]},tummy:{R:[[138,152],[152,196],[116,202]]},head:{L:[[62,152],[38,122],[70,88]],R:[[138,152],[162,122],[130,88]]},
+ fan:{R:[[138,152],[164,150],[150,112]]},umbrella:{R:[[138,152],[160,148],[168,126]]}};
+const DARK='#2b2233';
+function eyeSVG(cx,cy,k,dir,skin){
+ switch(k){
+  case'arc':return`<path d="M${cx-8} ${cy+3} Q${cx} ${cy-10} ${cx+8} ${cy+3}" stroke="${DARK}" stroke-width="3.6" fill="none" stroke-linecap="round"/>`;
+  case'closed':return`<path d="M${cx-8} ${cy} Q${cx} ${cy+7} ${cx+8} ${cy}" stroke="${DARK}" stroke-width="3.4" fill="none" stroke-linecap="round"/>`;
+  case'wide':return`<ellipse cx="${cx}" cy="${cy}" rx="9.5" ry="11.5" fill="#fff" stroke="#00000022"/><circle cx="${cx}" cy="${cy}" r="3.4" fill="${DARK}"/>`;
+  case'sparkle':return`<ellipse cx="${cx}" cy="${cy}" rx="8.5" ry="10" fill="#fff" stroke="#00000022"/><circle cx="${cx}" cy="${cy+1}" r="6" fill="${DARK}"/><circle cx="${cx-2}" cy="${cy-2}" r="2.2" fill="#fff"/><circle cx="${cx+2.5}" cy="${cy+3}" r="1.1" fill="#fff"/>`;
+  case'side':return`<ellipse cx="${cx}" cy="${cy}" rx="8" ry="9" fill="#fff" stroke="#00000022"/><circle cx="${cx+4.5}" cy="${cy+1}" r="4.4" fill="${DARK}"/><circle cx="${cx+3}" cy="${cy-1}" r="1.4" fill="#fff"/>`;
+  case'sad':return`<ellipse cx="${cx}" cy="${cy}" rx="8" ry="9" fill="#fff" stroke="#00000022"/><circle cx="${cx}" cy="${cy+3.5}" r="4.6" fill="${DARK}"/><circle cx="${cx-1.5}" cy="${cy+1.5}" r="1.5" fill="#fff"/>`;
+  case'half':return`<ellipse cx="${cx}" cy="${cy}" rx="8" ry="9" fill="#fff" stroke="#00000022"/><circle cx="${cx}" cy="${cy+2}" r="4.4" fill="${DARK}"/><path d="M${cx-9.5} ${cy+1} A9.5 10 0 0 1 ${cx+9.5} ${cy+1}Z" fill="${skin}"/><path d="M${cx-9} ${cy+1} H${cx+9}" stroke="${DARK}" stroke-width="2.4" stroke-linecap="round"/>`;
+  case'squint':return`<path d="M${cx-dir*8} ${cy-6} L${cx+dir*6} ${cy} L${cx-dir*8} ${cy+6}" stroke="${DARK}" stroke-width="3.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+  default:return`<ellipse cx="${cx}" cy="${cy}" rx="8" ry="9" fill="#fff" stroke="#00000022"/><circle cx="${cx+dir*.5}" cy="${cy+1}" r="4.6" fill="${DARK}"/><circle cx="${cx-1.6}" cy="${cy-1.6}" r="1.6" fill="#fff"/>`}}
+const BROWS={flat:['M70 78 Q80 74 90 78','M110 78 Q120 74 130 78'],up:['M70 74 Q80 66 90 73','M110 73 Q120 66 130 74'],high:['M70 70 Q80 61 90 68','M110 68 Q120 61 130 70'],sad:['M69 80 L91 72','M109 72 L131 80'],angry:['M69 72 L91 80','M109 80 L131 72'],worried:['M69 78 Q80 73 91 69','M109 69 Q120 73 131 78'],soft:['M70 80 Q80 76 90 80','M110 80 Q120 76 130 80'],droop:['M69 80 Q80 76 91 77','M109 77 Q120 76 131 80']};
+function mouthSVG(k){const M='#7a1f2b',T='#ff7a8a';
+ switch(k){
+  case'bigSmile':return`<path d="M84 111 Q100 140 116 111 Q100 117 84 111Z" fill="${M}"/><path d="M86 112 Q100 119 114 112 L113 115.500 Q100 121 87 115.500Z" fill="#fff"/><path d="M92 124 Q100 131 108 124 Q100 120 92 124Z" fill="${T}"/>`;
+  case'frown':return`<path d="M89 127 Q100 114 111 127" stroke="${DARK}" stroke-width="3.6" fill="none" stroke-linecap="round"/>`;
+  case'o':return`<ellipse cx="100" cy="122" rx="6" ry="8" fill="${M}"/>`;
+  case'wavy':return`<path d="M86 121 Q92.500 114 99 121 T112 121" stroke="${DARK}" stroke-width="3.4" fill="none" stroke-linecap="round"/>`;
+  case'flat':return`<path d="M90 120 L110 120" stroke="${DARK}" stroke-width="3.6" stroke-linecap="round"/>`;
+  case'yawn':return`<ellipse cx="100" cy="124" rx="9" ry="12" fill="${M}"/><ellipse cx="100" cy="131" rx="5.500" ry="4" fill="${T}"/>`;
+  case'teeth':return`<rect x="87" y="114" width="26" height="12" rx="4" fill="#fff" stroke="${M}" stroke-width="2.4"/><path d="M93 114v12M100 114v12M107 114v12M87 120h26" stroke="${M}" stroke-width="1.5"/>`;
+  case'tongue':return`<path d="M90 118 L110 118" stroke="${DARK}" stroke-width="3.4" stroke-linecap="round"/><path d="M94 118 Q100 136 106 118Z" fill="${T}" stroke="#c0394d" stroke-width="1.5"/>`;
+  case'pant':return`<path d="M87 113 Q100 140 113 113Z" fill="${M}"/><path d="M93 120 Q100 138 107 120Z" fill="${T}"/>`;
+  default:return`<path d="M90 116 Q100 125 110 116" stroke="${DARK}" stroke-width="3.6" fill="none" stroke-linecap="round"/>`}}
+function hairBack(st,gid){const f=`fill="url(#${gid})"`;
+ switch(st){
+  case'ponytail':return`<path d="M136 60 C178 50 190 114 162 158 C160 124 152 100 138 84Z" ${f}/><ellipse cx="140" cy="68" rx="7" ry="10" fill="#ff6b9a"/>`;
+  case'pigtails':return`<path d="M60 76 C28 80 22 132 40 158 C50 134 56 112 66 98Z" ${f}/><path d="M140 76 C172 80 178 132 160 158 C150 134 144 112 134 98Z" ${f}/><circle cx="60" cy="80" r="7" fill="#ff6b9a"/><circle cx="140" cy="80" r="7" fill="#ff6b9a"/>`;
+  case'long':return`<path d="M48 80 C38 30 162 30 152 80 C164 130 160 178 146 198 L54 198 C40 178 36 130 48 80Z" ${f}/>`;
+  case'bun':return`<circle cx="100" cy="32" r="22" ${f}/><path d="M84 46 Q100 54 116 46" stroke="#ff6b9a" stroke-width="6" fill="none" stroke-linecap="round"/>`;
+  default:return''}}
+function hairFront(st,gid){const f=`fill="url(#${gid})"`,girl=`<path d="M52 94 C47 44 80 33 100 33 C122 33 155 44 148 94 C142 74 128 62 112 58 C104 66 90 72 76 74 C66 78 58 84 52 94Z" ${f}/>`;
+ switch(st){
+  case'short':return`<path d="M53 90 C50 50 76 36 100 36 C126 36 150 50 147 90 C142 70 126 60 100 60 C76 60 58 70 53 90Z" ${f}/>`;
+  case'spiky':return`<path d="M53 88 L54 54 L68 62 L74 34 L88 54 L100 28 L112 54 L126 34 L132 62 L146 54 L147 88 C140 68 124 60 100 60 C76 60 60 68 53 88Z" ${f}/>`;
+  case'curly':return[[60,70,16],[76,52,18],[100,44,19],[124,52,18],[140,70,16],[52,92,12],[148,92,12]].map(([x,y,r])=>`<circle cx="${x}" cy="${y}" r="${r}" ${f}/>`).join('')+`<path d="M54 90 C54 62 146 62 146 90 C138 72 62 72 54 90Z" ${f}/>`;
+  case'side':return`<path d="M52 92 C46 46 92 32 120 38 C144 44 152 66 148 92 C142 66 120 56 94 64 C72 70 58 80 52 92Z" ${f}/>`;
+  default:return girl}}
+/* st: student; o:{exp,pose,acc:{umbrella,coat,scarf,wind},uid} -> <g> in local coords (feet y~300) */
+function avatarG(st,o){o=o||{};const id=U(),acc=o.acc||{},exp=EXP[o.exp]||EXP.neutral,skin=st.skin,hair=st.hair,type=st.type;
+ const shirt=acc.coat?shade(st.shirt,-18):st.shirt,pose=POSES[o.pose]?o.pose:'idle';
+ const sh=(c)=>shade(c,-34),skD=shade(skin,-26);
+ let arms=Object.assign({},POSES.idle,POSES[pose]);if(acc.umbrella)arms=Object.assign({},arms,{R:POSES.umbrella.R});
+ const arm=pts=>{const p=pts.map(q=>q.join(',')).join(' '),h=pts[2];return`<polyline points="${p}" fill="none" stroke="${sh(shirt)}" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" transform="translate(2 3)"/><polyline points="${p}" fill="none" stroke="url(#${id}s)" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${h[0]}" cy="${h[1]}" r="11.500" fill="url(#${id}k)"/>`};
+ const wind=acc.wind?'rotate(-5 100 60) skewX(-3)':'';
+ const tilt=exp.tilt||0;
+ const eyes=eyeSVG(80,94,exp.eye,-1,skin)+eyeSVG(120,94,exp.eye,1,skin);
+ const br=BROWS[exp.brow];
+ let ex='';
+ if(exp.blush)ex+=`<ellipse cx="68" cy="109" rx="9" ry="5.500" fill="${exp.blush}" opacity=".55"/><ellipse cx="132" cy="109" rx="9" ry="5.500" fill="${exp.blush}" opacity=".55"/>`;
+ if(exp.bags)ex+=`<path d="M71 105 Q80 111 89 105M111 105 Q120 111 129 105" stroke="#00000030" stroke-width="2.200" fill="none"/>`;
+ let out='';
+ if(exp.sweat)out+=`<path d="M142 56 Q150 70 142 76 Q134 70 142 56Z" fill="#9fdcff" stroke="#4aa3d8" stroke-width="1.500"/>`;
+ if(exp.tear)ex+=`<path d="M76 108 Q83 119 76 124 Q69 119 76 108Z" fill="#9fdcff" stroke="#4aa3d8" stroke-width="1.500"/>`;
+ if(exp.drool)ex+=`<path d="M108 128 Q113 137 108 140 Q103 137 108 128Z" fill="#9fdcff" stroke="#4aa3d8" stroke-width="1.200"/>`;
+ if(exp.zzz)out+=`<text x="148" y="50" font-size="26" font-weight="800" fill="#6b5bd6" font-family="${FONTH}">Z</text><text x="166" y="30" font-size="19" font-weight="800" fill="#8a7be0" font-family="${FONTH}">Z</text><text x="180" y="14" font-size="14" font-weight="800" fill="#a99df0" font-family="${FONTH}">z</text>`;
+ if(exp.steam)out+=`<g fill="#fff" stroke="#c9d3df" stroke-width="2"><circle cx="64" cy="30" r="8"/><circle cx="100" cy="20" r="10"/><circle cx="136" cy="30" r="8"/></g>`;
+ if(exp.shiver)out+=`<path d="M34 78 l-8 5 l8 5 l-8 5 M166 78 l8 5 l-8 5 l8 5" stroke="#4d9bf0" stroke-width="3.500" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+ if(exp.heat)out+=`<path d="M70 28 q6-8 0-16 q-6-8 0-16 M100 22 q6-8 0-16 M130 28 q6-8 0-16 q-6-8 0-16" stroke="#ff9a3c" stroke-width="3.500" fill="none" stroke-linecap="round" opacity=".85" transform="translate(0 10)"/>`;
+ const glasses=st.glasses?`<g fill="rgba(255,255,255,.2)" stroke="#2b2233" stroke-width="3.600"><circle cx="80" cy="94" r="16"/><circle cx="120" cy="94" r="16"/></g><path d="M96 92 Q100 88 104 92M64 92 L54 90M136 92 L146 90" stroke="#2b2233" stroke-width="3.200" fill="none"/>`:'';
+ const scarf=acc.scarf?`<path d="M68 138 Q100 164 132 138 L136 156 Q100 182 64 156Z" fill="#f4f6f8" stroke="#cfd6de"/><path d="M72 150 Q100 172 128 150" stroke="#e5484d" stroke-width="5" fill="none"/><path d="M112 164 L130 168 L126 204 L108 198Z" fill="#f4f6f8" stroke="#cfd6de"/><path d="M110 184 L128 190" stroke="#e5484d" stroke-width="5"/>`:'';
+ const coatD=acc.coat?`<path d="M100 150 V240" stroke="${sh(shirt)}" stroke-width="3"/><circle cx="106" cy="176" r="3.500" fill="#f3e3c3"/><circle cx="106" cy="200" r="3.500" fill="#f3e3c3"/><circle cx="106" cy="224" r="3.500" fill="#f3e3c3"/>`:`<path d="M86 136 L100 154 L114 136Z" fill="url(#${id}k)"/>`;
+ let umb='';
+ if(acc.umbrella){const uc=['#ffc53d','#4dabf7','#ff6b9a','#69db7c'][(st.idx||0)%4];
+  umb=`<path d="M168 128 V44" stroke="#6b4a2b" stroke-width="5" stroke-linecap="round"/><path d="M104 56 Q104 -6 168 -6 Q232 -6 232 56 Q216 44 200 56 Q184 44 168 56 Q152 44 136 56 Q120 44 104 56Z" fill="${uc}" stroke="${shade(uc,-50)}" stroke-width="2"/><path d="M168 -6 L136 56 M168 -6 L200 56 M168 -6 L120 40 M168 -6 L216 40" stroke="${shade(uc,-45)}" stroke-width="1.500" opacity=".6"/><path d="M124 22 Q150 6 168 2" stroke="#fff" stroke-width="5" fill="none" opacity=".5" stroke-linecap="round"/>`}
+ return`<g><defs>
+  <radialGradient id="${id}h" cx=".38" cy=".3" r=".85"><stop offset="0" stop-color="${shade(skin,22)}"/><stop offset=".6" stop-color="${skin}"/><stop offset="1" stop-color="${skD}"/></radialGradient>
+  <radialGradient id="${id}k" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="${shade(skin,14)}"/><stop offset="1" stop-color="${skD}"/></radialGradient>
+  <linearGradient id="${id}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${shade(shirt,28)}"/><stop offset="1" stop-color="${shirt}"/></linearGradient>
+  <linearGradient id="${id}p" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3d5a99"/><stop offset="1" stop-color="#27396b"/></linearGradient>
+  <linearGradient id="${id}r" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${shade(hair,30)}"/><stop offset="1" stop-color="${shade(hair,-22)}"/></linearGradient></defs>
+  <g transform="${wind}">${hairBack(st.style,id+'r')}</g>
+  <rect x="64" y="234" width="32" height="54" rx="12" fill="url(#${id}p)"/><rect x="104" y="234" width="32" height="54" rx="12" fill="url(#${id}p)"/>
+  <ellipse cx="78" cy="292" rx="22" ry="10" fill="#f5f5f7" stroke="#c9ccd3"/><ellipse cx="122" cy="292" rx="22" ry="10" fill="#f5f5f7" stroke="#c9ccd3"/>
+  <path d="M50 152 Q50 136 70 134 L130 134 Q150 136 150 152 L154 238 Q154 246 146 246 L54 246 Q46 246 46 238Z" fill="url(#${id}s)"/>
+  <path d="M50 152 Q50 136 70 134 L130 134 Q150 136 150 152 L154 238 Q154 246 146 246 L54 246 Q46 246 46 238Z" fill="none" stroke="${sh(shirt)}" stroke-opacity=".5"/>
+  ${coatD}
+  <rect x="89" y="122" width="22" height="22" rx="9" fill="url(#${id}k)"/>
+  <g transform="rotate(${tilt} 100 134)">
+   <circle cx="54" cy="98" r="8.500" fill="url(#${id}k)"/><circle cx="146" cy="98" r="8.500" fill="url(#${id}k)"/>
+   <circle cx="100" cy="92" r="47" fill="url(#${id}h)"/>
+   <g transform="${wind}">${hairFront(st.style,id+'r')}</g>
+   <g stroke="${shade(hair,-26)}" stroke-width="4.400" fill="none" stroke-linecap="round"><path d="${br[0]}"/><path d="${br[1]}"/></g>
+   ${ex}${eyes}<ellipse cx="100" cy="104" rx="3.600" ry="2.600" fill="${skD}" opacity=".7"/>${mouthSVG(exp.mouth)}${glasses}
+  </g>
+  ${scarf}${arm(arms.L)}${arm(arms.R)}${umb}${out}</g>`}
+const AVBOX='-40 -20 280 340';
+function avatarSVG(st,o,w){return`<svg viewBox="${AVBOX}" width="${w||120}" height="${(w||120)*340/280}" role="img" aria-label="Avatar of ${esc(st.name||'student')}">${avatarG(st,o)}</svg>`}
+function defaultStudent(i,type){const t=type||(i%2?'girl':'boy');return{id:'s'+Date.now().toString(36)+i,idx:i,name:'',type:t,skin:SKINS[(i*2)%5][0],hair:HAIRC[[1,0,2,3][i%4]][0],style:STYLES[t][i%4>1?(i%4)-2:0][0],shirt:SHIRTS[[3,0,2,4][i%4]],glasses:false,pron:'auto',country:'',city:'',weather:[],mood:[],skip:false,sent:{}}}
+/* ====================== SCENES ====================== */
+const SEAS={
+ spring:{sky:['#86cdff','#eaf7ff'],h1:'#b2e08f',h2:'#94cf72',g:['#9bd873','#6fb552'],leaf:['#82cf60','#5fae43','#98dc76'],name:'Spring'},
+ summer:{sky:['#2f98ff','#c9e9ff'],h1:'#69c553',h2:'#46a63c',g:['#76d654','#47a83a'],leaf:['#3e9e3b','#2f8a33','#54b84b'],name:'Summer'},
+ autumn:{sky:['#f0b385','#fdeedd'],h1:'#d6a057',h2:'#b9783c',g:['#c4a84a','#9a8838'],leaf:['#e8742a','#d9482b','#f2b233'],name:'Autumn'},
+ winter:{sky:['#a6bbd8','#f1f6fc'],h1:'#e6edf7',h2:'#d2dded',g:['#f8fbfe','#dbe6f2'],leaf:[],name:'Winter'}};
+function cloudG(x,y,s,fill,op){return`<g transform="translate(${x} ${y}) scale(${s})" opacity="${op==null?1:op}"><ellipse cx="0" cy="8" rx="46" ry="16" fill="${fill}"/><circle cx="-18" cy="-4" r="20" fill="${fill}"/><circle cx="8" cy="-12" r="26" fill="${fill}"/><circle cx="30" cy="0" r="17" fill="${fill}"/><ellipse cx="0" cy="14" rx="44" ry="8" fill="#00000010"/></g>`}
+function treeG(x,y,s,season,k,id){const r=rng(k*97+5),S=SEAS[season];let o=`<g transform="translate(${x} ${y}) scale(${s})"><ellipse cx="0" cy="3" rx="48" ry="9" fill="#0000001f"/>`;
+ const pine=(k%3===2)&&(season==='winter'||season==='autumn');
+ if(pine){o+=`<rect x="-6" y="-30" width="12" height="32" fill="url(#${id}t)"/>`;[[0,-30,54,70],[0,-70,44,60],[0,-108,34,52]].forEach(([cx,cy,w,h],i)=>{o+=`<path d="M${cx-w} ${cy} L${cx} ${cy-h} L${cx+w} ${cy}Z" fill="${i%2?'#2f7a4a':'#37895a'}"/>`;if(season==='winter')o+=`<path d="M${cx-w*.7} ${cy-h*.3} L${cx} ${cy-h} L${cx+w*.7} ${cy-h*.3} Q${cx} ${cy-h*.5} ${cx-w*.7} ${cy-h*.3}Z" fill="#fff"/>`})}
+ else{o+=`<path d="M-9 2 C-7 -40 -11 -75 -4 -105 L6 -105 C11 -75 7 -40 9 2Z" fill="url(#${id}t)"/>`;
+  if(season==='winter'){const br=[[-4,-90,-46,-128],[2,-96,44,-134],[0,-110,-18,-168],[2,-108,26,-162],[-2,-80,-52,-96],[3,-84,50,-100]];br.forEach(([a,b,c,d])=>{o+=`<path d="M${a} ${b} L${c} ${d}" stroke="#6b4a2b" stroke-width="5" stroke-linecap="round"/><ellipse cx="${(a+c)/2}" cy="${(b+d)/2-4}" rx="14" ry="4" fill="#fff" transform="rotate(${(c-a)>0?-20:20} ${(a+c)/2} ${(b+d)/2})"/>`});o+=`<ellipse cx="0" cy="0" rx="34" ry="8" fill="#fff"/>`}
+  else{const cols=S.leaf;for(let i=0;i<7;i++){const cx=-46+r()*92,cy=-150+r()*60,rad=24+r()*16,c=cols[i%cols.length];o+=`<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${rad.toFixed(1)}" fill="${shade(c,-24)}"/><circle cx="${(cx-4).toFixed(1)}" cy="${(cy-5).toFixed(1)}" r="${(rad*.82).toFixed(1)}" fill="${c}"/><circle cx="${(cx-9).toFixed(1)}" cy="${(cy-11).toFixed(1)}" r="${(rad*.34).toFixed(1)}" fill="${shade(c,34)}" opacity=".7"/>`}
+   if(season==='spring')for(let i=0;i<10;i++)o+=`<circle cx="${(-50+r()*100).toFixed(1)}" cy="${(-170+r()*70).toFixed(1)}" r="4" fill="#ffc2d6"/>`;
+   if(season==='autumn')for(let i=0;i<5;i++)o+=`<ellipse cx="${(-40+r()*80).toFixed(1)}" cy="${(4+r()*6).toFixed(1)}" rx="7" ry="3.500" fill="${S.leaf[i%3]}" transform="rotate(${(r()*60-30).toFixed(0)})"/>`}}
+ return o+'</g>'}
+function houseG(x,y,u,season){const w=season==='winter'||season==='autumn';return`<g transform="translate(${x} ${y}) scale(${u})"><ellipse cx="0" cy="3" rx="82" ry="9" fill="#0000001f"/>
+ <rect x="-62" y="-72" width="124" height="72" rx="4" fill="#f6e7c9"/><rect x="-62" y="-72" width="124" height="72" rx="4" fill="url(#hshade)" opacity=".0"/>
+ <rect x="30" y="-132" width="16" height="40" fill="#9a5b3c"/><rect x="28" y="-136" width="20" height="8" rx="2" fill="#7e4a30"/>
+ <path d="M-76 -68 L0 -134 L76 -68Z" fill="#b8453a"/><path d="M-76 -68 L0 -134 L0 -68Z" fill="#00000012"/>
+ ${season==='winter'?'<path d="M-78 -66 L0 -137 L78 -66 Q70 -72 60 -70 Q50 -78 40 -72 Q30 -82 20 -76 Q10 -88 0 -84 Q-10 -88 -20 -76 Q-30 -82 -40 -72 Q-50 -78 -60 -70 Q-70 -72 -78 -66Z" fill="#fff"/>':''}
+ <rect x="-14" y="-44" width="28" height="44" rx="14" fill="#8a5a3a"/><circle cx="8" cy="-22" r="2.500" fill="#e8c36a"/>
+ <rect x="-52" y="-54" width="26" height="26" rx="3" fill="${w?'#ffd86b':'#bfe3ff'}" stroke="#8a5a3a" stroke-width="4"/><path d="M-39 -54V-28M-52 -41H-26" stroke="#8a5a3a" stroke-width="3"/>
+ <rect x="26" y="-54" width="26" height="26" rx="3" fill="${w?'#ffd86b':'#bfe3ff'}" stroke="#8a5a3a" stroke-width="4"/><path d="M39 -54V-28M26 -41H52" stroke="#8a5a3a" stroke-width="3"/>
+ ${w?'<g fill="#fff" opacity=".75"><circle cx="40" cy="-146" r="8"/><circle cx="52" cy="-160" r="11"/><circle cx="68" cy="-178" r="14"/></g>':''}</g>`}
+function seasonBG(season,month,W,H,o){o=o||{};const S=SEAS[season],id=U(),gy=H*.6,u=H/520,r=rng(month*13+season.length*7+1);let s='';
+ s+=`<defs><linearGradient id="${id}a" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${S.sky[0]}"/><stop offset="1" stop-color="${S.sky[1]}"/></linearGradient>
+ <linearGradient id="${id}g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${S.g[0]}"/><stop offset="1" stop-color="${S.g[1]}"/></linearGradient>
+ <linearGradient id="${id}t" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7a5230"/><stop offset=".5" stop-color="#9a6c42"/><stop offset="1" stop-color="#5e3d22"/></linearGradient>
+ <radialGradient id="${id}s"><stop offset="0" stop-color="#fffbe0"/><stop offset=".45" stop-color="${season==='autumn'?'#ffb347':'#ffe066'}"/><stop offset="1" stop-color="${season==='autumn'?'#ff9a3c':'#ffd43b'}"/></radialGradient></defs>`;
+ s+=`<rect width="${W}" height="${H}" fill="url(#${id}a)"/>`;
+ if(month===4)for(let i=0;i<6;i++){const cols=['#ff6b6b','#ffa94d','#ffe066','#69db7c','#4dabf7','#9775fa'];s+=`<path d="M${W*.18+i*7*u} ${gy-H*.04} A${W*.22-i*7*u} ${W*.22-i*7*u} 0 0 1 ${W*.62-i*7*u} ${gy-H*.04}" stroke="${cols[i]}" stroke-width="${8*u}" fill="none" opacity=".55"/>`}
+ const sun={spring:[.82,.17,.075],summer:[.8,.15,.095],autumn:[.18,.27,.08],winter:[.82,.2,.06]}[season];
+ s+=`<circle cx="${W*sun[0]}" cy="${H*sun[1]}" r="${H*sun[2]*1.7}" fill="${season==='winter'?'#fff':'#fff6c2'}" opacity=".35"/><circle cx="${W*sun[0]}" cy="${H*sun[1]}" r="${H*sun[2]}" fill="url(#${id}s)" opacity="${season==='winter'?.85:1}"/>`;
+ if(season==='summer')for(let i=0;i<12;i++){const a=i*Math.PI/6;s+=`<path d="M${W*sun[0]+Math.cos(a)*H*.115} ${H*sun[1]+Math.sin(a)*H*.115}L${W*sun[0]+Math.cos(a)*H*.16} ${H*sun[1]+Math.sin(a)*H*.16}" stroke="#ffd43b" stroke-width="${5*u}" stroke-linecap="round"/>`}
+ const cf=season==='winter'?'#fff':season==='autumn'?'#fff4ea':'#fff';
+ [[.15,.12,1],[.45,.2,1.2],[.68,.1,.8]].forEach(([a,b,c])=>s+=cloudG(W*a,H*b,c*u*1.1,cf,.95));
+ if(month===7||month===8)s+=`<g transform="translate(${W*.35} ${H*.3})"><path d="M0 -26 L16 0 L0 30 L-16 0Z" fill="#ff6b6b"/><path d="M0 -26 L16 0 L0 30Z" fill="#fa5252"/><path d="M0 30 q-10 20 6 36 q-12 4 -4 24" stroke="#fff" stroke-width="2" fill="none"/></g>`;
+ s+=`<path d="M0 ${gy} C${W*.12} ${gy-H*.2} ${W*.3} ${gy-H*.08} ${W*.46} ${gy-H*.14} S${W*.8} ${gy-H*.22} ${W} ${gy-H*.06} V${gy+4} H0Z" fill="${S.h1}"/><path d="M0 ${gy+2} C${W*.18} ${gy-H*.1} ${W*.38} ${gy-H*.02} ${W*.58} ${gy-H*.08} S${W*.88} ${gy-H*.1} ${W} ${gy-H*.02} V${gy+8} H0Z" fill="${S.h2}"/>`;
+ s+=`<rect y="${gy}" width="${W}" height="${H-gy}" fill="url(#${id}g)"/>`;
+ s+=`<path d="M${W*.46} ${H} C${W*.5} ${gy+H*.16} ${W*.6} ${gy+H*.08} ${W*.66} ${gy+H*.02} L${W*.69} ${gy+H*.02} C${W*.64} ${gy+H*.1} ${W*.62} ${gy+H*.2} ${W*.7} ${H}Z" fill="${season==='winter'?'#e7eef7':'#e3cfa0'}" opacity=".9"/>`;
+ const nT=Math.max(3,Math.round(W/230));
+ for(let i=0;i<nT;i++){const tx=W*(.04+.93*i/(nT-1))+r()*30,ty=gy+H*(.02+r()*.06);if(Math.abs(tx-W*.66)<90*u)continue;s+=treeG(tx,ty,u*(.55+r()*.35),season,i,id)}
+ s+=houseG(W*.66,gy+H*.05,u*.95,season);
+ for(let i=0;i<2;i++)s+=treeG(W*(.9-i*.45)+r()*20,gy+H*(.2+r()*.05),u*(.8+r()*.2),season,i+5,id);
+ // seasonal props
+ const gP=()=>[W*(.05+r()*.9),gy+H*(.14+r()*.22)];
+ if(season==='spring')for(let i=0;i<16;i++){const[x,y]=gP(),c=['#ff6b9a','#ffd43b','#fff','#b197fc'][i%4];s+=`<g transform="translate(${x} ${y}) scale(${u})"><path d="M0 0V-16" stroke="#3f9a3a" stroke-width="3"/><circle r="7" cy="-18" fill="${c}"/><circle r="3" cy="-18" fill="#ffd43b"/></g>`}
+ if(season==='summer')for(let i=0;i<6;i++){const[x,y]=gP();s+=`<g transform="translate(${x} ${y}) scale(${u*1.1})"><path d="M0 0V-44" stroke="#3a8f34" stroke-width="4"/><path d="M0 -14q12-6 16 2q-10 2-16-2M0 -24q-12-6-16 2q10 2 16-2" fill="#3f9a3a"/>${Array.from({length:12},(_,j)=>`<ellipse cx="0" cy="-58" rx="5" ry="12" fill="#ffc41f" transform="rotate(${j*30} 0 -46)"/>`).join('')}<circle cy="-46" r="9" fill="#6b4226"/></g>`}
+ if(season==='autumn'){for(let i=0;i<4;i++){const[x,y]=gP();s+=`<g transform="translate(${x} ${y}) scale(${u*(.9+r()*.3)})"><ellipse cy="-14" rx="24" ry="19" fill="#f08a24"/><ellipse cy="-14" rx="12" ry="19" fill="#f79a35"/><path d="M0 -33q-2-8 4-10" stroke="#5b8a2e" stroke-width="4" fill="none"/></g>`}
+  for(let i=0;i<16;i++)s+=`<ellipse cx="${(r()*W).toFixed(0)}" cy="${(H*.1+r()*H*.8).toFixed(0)}" rx="${7*u}" ry="${3.5*u}" fill="${S.leaf[i%3]}" transform="rotate(${(r()*180).toFixed(0)} ${(r()*W).toFixed(0)} 0)" opacity=".9"/>`}
+ if(season==='winter'){s+=`<g transform="translate(${W*.3} ${gy+H*.24}) scale(${u*1.1})"><ellipse cy="2" rx="30" ry="7" fill="#0000001c"/><circle cy="-18" r="24" fill="#fff" stroke="#d3dff0"/><circle cy="-52" r="18" fill="#fff" stroke="#d3dff0"/><circle cy="-80" r="13" fill="#fff" stroke="#d3dff0"/><circle cx="-4.500" cy="-83" r="1.800" fill="#222"/><circle cx="4.500" cy="-83" r="1.800" fill="#222"/><path d="M0 -79l14 4-14 3Z" fill="#ff8c1a"/><path d="M-13 -70q13 8 26 0l2 7q-15 8-30 0Z" fill="#e5484d"/><path d="M-9 -93h18l-3-12h-12Z" fill="#364fc7"/></g>`;
+  for(let i=0;i<40;i++)s+=`<circle cx="${(r()*W).toFixed(0)}" cy="${(r()*H).toFixed(0)}" r="${(1.5+r()*2.5)*u}" fill="#fff" opacity=".9"/>`;
+  for(let i=0;i<6;i++){const[x,y]=gP();s+=`<ellipse cx="${x}" cy="${y}" rx="${40*u}" ry="${7*u}" fill="#fff" opacity=".8"/>`}}
+ if(month===12)s+=`<g transform="translate(${W*.13} ${gy+H*.2}) scale(${u*1.1})"><rect x="-6" y="-16" width="12" height="18" fill="#7a5230"/>${[[0,-14,36,38],[0,-44,30,34],[0,-72,22,30]].map(([cx,cy,w,h])=>`<path d="M${cx-w} ${cy} L${cx} ${cy-h} L${cx+w} ${cy}Z" fill="#2f8a52"/>`).join('')}<path d="M0 -112l4 9 10 1-8 6 3 10-9-6-9 6 3-10-8-6 10-1Z" fill="#ffd43b"/>${[[-14,-26,'#ff6b6b'],[12,-34,'#ffd43b'],[-8,-52,'#4dabf7'],[10,-62,'#ff6b6b'],[0,-84,'#ffd43b']].map(([x,y,c])=>`<circle cx="${x}" cy="${y}" r="4.500" fill="${c}"/>`).join('')}</g>`;
+ return s}
+function calCard(x,y,sc,d){const wk=d.wk,dayN=d.day,mon=d.mon;return`<g transform="translate(${x} ${y}) scale(${sc})"><ellipse cx="86" cy="262" rx="90" ry="10" fill="#00000026"/>
+ <rect x="0" y="0" width="172" height="210" rx="16" fill="#fff" stroke="#d5dbe4" stroke-width="2"/><path d="M0 16Q0 0 16 0H156Q172 0 172 16V58H0Z" fill="#e5484d"/><path d="M0 16Q0 0 16 0H156Q172 0 172 16V30H0Z" fill="#fff" opacity=".12"/>
+ ${[24,60,96,132,148].map(px=>`<rect x="${px-4}" y="-8" width="8" height="22" rx="4" fill="#5f6b7a"/>`).join('')}
+ <text x="86" y="44" text-anchor="middle" font-size="26" font-weight="800" fill="#fff" font-family="${FONTH}">${esc(mon)}</text>
+ <text x="86" y="132" text-anchor="middle" font-size="${String(dayN).length>1?78:90}" font-weight="800" fill="#2b3445" font-family="${FONTH}">${dayN}</text>
+ <rect x="14" y="152" width="144" height="40" rx="10" fill="#f1f4f8"/><text x="86" y="180" text-anchor="middle" font-size="${wk.length>8?22:26}" font-weight="800" fill="#e5484d" font-family="${FONTH}">${esc(wk)}</text>
+ <rect x="76" y="212" width="20" height="46" fill="#8a5a3a"/><rect x="18" y="226" width="136" height="38" rx="9" fill="#b5834f" stroke="#7a5230" stroke-width="3"/><path d="M26 236H146M26 254H146" stroke="#00000018"/>
+ <text x="86" y="254" text-anchor="middle" font-size="26" font-weight="800" fill="#fff" font-family="${FONTH}">${esc(d.year)}</text></g>`}
+/* ---------- weather ---------- */
+function weatherG(st,ws,season,o){o=o||{};const W=400,H=330,id=U(),has=k=>ws.includes(k),r=rng(ws.join('').length*11+(st.idx||0)*5+7);
+ const snowy=has('snowy'),rainy=has('rainy'),stormy=has('stormy'),foggy=has('foggy'),cloudy=has('cloudy'),windy=has('windy'),hot=has('hot'),cold=has('cold'),warm=has('warm'),cool=has('cool');
+ let sky=['#55adff','#d6eeff'];
+ if(stormy)sky=['#364154','#78849a'];else if(snowy)sky=['#b0c0d4','#eef3f8'];else if(rainy)sky=['#66798f','#a8b6c4'];else if(foggy)sky=['#c3ccd4','#e9ecef'];else if(cloudy)sky=['#93abc3','#dde7ef'];else if(hot)sky=['#ffa04a','#ffe9b3'];else if(windy)sky=['#69b4ff','#dbf0ff'];
+ const gs=SEAS[snowy?'winter':season].g,dark=(rainy||stormy)?-26:0,gc=snowy?['#f8fbfe','#dbe6f2']:[shade(gs[0],dark),shade(gs[1],dark)];
+ const tseason=snowy?'winter':season,gy=H*.64;
+ let s=`<g><defs><clipPath id="${id}c"><rect width="${W}" height="${H}" rx="${o.rx==null?26:o.rx}"/></clipPath>
+ <linearGradient id="${id}a" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sky[0]}"/><stop offset="1" stop-color="${sky[1]}"/></linearGradient>
+ <linearGradient id="${id}g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${gc[0]}"/><stop offset="1" stop-color="${gc[1]}"/></linearGradient>
+ <linearGradient id="${id}t" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7a5230"/><stop offset=".5" stop-color="#9a6c42"/><stop offset="1" stop-color="#5e3d22"/></linearGradient>
+ <radialGradient id="${id}s"><stop offset="0" stop-color="#fffbe0"/><stop offset=".5" stop-color="${hot?'#ffb02e':'#ffe066'}"/><stop offset="1" stop-color="${hot?'#ff8c1a':'#ffd43b'}"/></radialGradient>
+ <linearGradient id="${id}f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".75"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><g clip-path="url(#${id}c)">`;
+ s+=`<rect width="${W}" height="${H}" fill="url(#${id}a)"/>`;
+ const showSun=!(stormy||rainy||snowy||foggy||cloudy);
+ if(showSun){const sr=hot?44:cold||cool?26:34;s+=`<circle cx="318" cy="64" r="${sr*1.8}" fill="#fff6c2" opacity="${cold||cool?.2:.4}"/><circle cx="318" cy="64" r="${sr}" fill="url(#${id}s)" opacity="${cold||cool?.8:1}"/>`;if(hot||has('sunny'))for(let i=0;i<12;i++){const a=i*Math.PI/6;s+=`<path d="M${318+Math.cos(a)*(sr+8)} ${64+Math.sin(a)*(sr+8)}L${318+Math.cos(a)*(sr+(hot?24:16))} ${64+Math.sin(a)*(sr+(hot?24:16))}" stroke="#ffd43b" stroke-width="4" stroke-linecap="round"/>`}}
+ const cc=stormy?'#4a5568':rainy?'#7b8ba0':snowy?'#e1e8f0':cloudy?'#f3f6f9':'#ffffff';
+ if(cloudy)[[70,64,1.1],[190,48,1.3],[300,78,1],[130,110,.9]].forEach(a=>s+=cloudG(a[0],a[1],a[2],cc,.97));
+ else if(rainy||stormy)[[70,56,1.3],[190,40,1.5],[310,60,1.3],[130,92,1.1],[260,100,1.1]].forEach(a=>s+=cloudG(a[0],a[1],a[2],cc,1));
+ else if(snowy)[[80,56,1.2],[200,44,1.4],[310,70,1.1]].forEach(a=>s+=cloudG(a[0],a[1],a[2],cc,.98));
+ else if(has('sunny')||windy)s+=cloudG(90,70,.9,'#fff',.95);
+ s+=`<path d="M0 ${gy} C60 ${gy-52} 140 ${gy-18} 210 ${gy-40} S340 ${gy-62} 400 ${gy-26} V${gy+4} H0Z" fill="${shade(gs[0],dark-12)}" opacity=".85"/>`;
+ s+=`<rect y="${gy}" width="${W}" height="${H-gy}" fill="url(#${id}g)"/>`;
+ [[44,gy+8,.5,1],[360,gy+4,.45,2]].forEach(a=>s+=treeG(a[0],a[1],a[2],tseason,a[3],id));
+ if(foggy){s+=`<rect y="${gy-70}" width="${W}" height="60" fill="url(#${id}f)"/><rect y="${gy-20}" width="${W}" height="70" fill="url(#${id}f)"/><rect y="${gy+30}" width="${W}" height="50" fill="url(#${id}f)" opacity=".8"/><rect y="40" width="${W}" height="50" fill="url(#${id}f)" opacity=".6"/>`}
+ if(rainy||stormy){const n=stormy?72:48,dx=windy?20:7;for(let i=0;i<n;i++){const x=r()*(W+40)-20,y=r()*H*.9;s+=`<path d="M${x.toFixed(0)} ${y.toFixed(0)}l${-dx} 22" stroke="#d9ecff" stroke-width="2.200" stroke-linecap="round" opacity=".8"/>`}
+  [[110,gy+52,34],[300,gy+60,28],[210,gy+82,24]].forEach(([x,y,w])=>s+=`<ellipse cx="${x}" cy="${y}" rx="${w}" ry="6" fill="#9fc5e8" opacity=".75"/><ellipse cx="${x}" cy="${y}" rx="${w*.5}" ry="2.600" fill="none" stroke="#fff" opacity=".7"/>`)}
+ if(stormy)s+=`<rect width="${W}" height="${H}" fill="#fff" opacity=".07"/><path d="M296 70 L272 128 L294 124 L276 182 L322 112 L298 116 L312 70Z" fill="#fff6a8" stroke="#ffd43b" stroke-width="2"/>`;
+ if(snowy)for(let i=0;i<56;i++)s+=`<circle cx="${(r()*W).toFixed(0)}" cy="${(r()*H).toFixed(0)}" r="${(1.6+r()*2.8).toFixed(1)}" fill="#fff" opacity=".92"/>`;
+ if(windy){for(let i=0;i<4;i++){const y=90+i*38+r()*10;s+=`<path d="M${20+r()*60} ${y} q60-24 110 0 t90 -2 q20 -6 26 6" stroke="#fff" stroke-width="3.500" fill="none" stroke-linecap="round" opacity=".85"/>`}
+  const lc=(SEAS[tseason].leaf.length?SEAS[tseason].leaf:['#cfd8e3']);for(let i=0;i<5;i++)s+=`<ellipse cx="${(60+r()*280).toFixed(0)}" cy="${(120+r()*110).toFixed(0)}" rx="8" ry="4" fill="${lc[i%lc.length]}" transform="rotate(${(r()*120-60).toFixed(0)} 200 200)"/>`}
+ if(hot){s+=`<rect width="${W}" height="${H}" fill="#ff8a00" opacity=".12"/>`;for(let i=0;i<3;i++)s+=`<path d="M20 ${gy-6-i*10} q25-8 50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0" stroke="#fff" stroke-width="2.500" fill="none" opacity=".45"/>`}
+ if(warm)s+=`<rect width="${W}" height="${H}" fill="#ffcf70" opacity=".1"/>`;
+ if(cool)s+=`<rect width="${W}" height="${H}" fill="#8fc4ff" opacity=".1"/>`;
+ if(cold){s+=`<rect width="${W}" height="${H}" fill="#5fa3ff" opacity=".15"/>`;for(let i=0;i<8;i++)s+=`<path d="M${(r()*W).toFixed(0)} ${(r()*H*.6).toFixed(0)}l4 4m-4 0l4-4" stroke="#fff" stroke-width="2" opacity=".8"/>`}
+ // avatar
+ const a=o.scale||.62,acc={umbrella:rainy||stormy,coat:snowy||cold,scarf:snowy||cold,wind:windy};
+ let pose=MPOSE[(st.mood||[])[0]]||null;if(!pose)pose=(rainy||stormy)?'idle':(snowy||cold)?'hug':hot?'fan':has('sunny')?'wave':'idle';
+ const expK=(!st.skip&&st.mood&&st.mood.length)?(['happy','sad','excited','scared','nervous','stressed','calm'].find(k=>st.mood.includes(k))||st.mood[0]):'neutral';
+ const ax=W/2-100*a,ay=H-26-300*a;
+ s+=`<ellipse cx="${W/2}" cy="${H-24}" rx="${52*a*1.4}" ry="9" fill="#00000030"/><g transform="translate(${ax} ${ay}) scale(${a})">${avatarG(st,{exp:expK,pose,acc})}</g>`;
+ if(cold)s+=`<g fill="#fff" opacity=".85"><circle cx="${W/2+34}" cy="${H-26-300*a+112*a}" r="6"/><circle cx="${W/2+46}" cy="${H-26-300*a+104*a}" r="9"/><circle cx="${W/2+62}" cy="${H-26-300*a+96*a}" r="12"/></g>`;
+ return s+'</g></g>'}
+function cloudPath(cx,cy,sc,f){return`<g transform="translate(${cx} ${cy}) scale(${sc})"><ellipse cx="0" cy="6" rx="16" ry="8" fill="${f}"/><circle cx="-7" cy="0" r="8" fill="${f}"/><circle cx="3" cy="-5" r="10" fill="${f}"/><circle cx="11" cy="1" r="7" fill="${f}"/></g>`}
+function wIcon(k,sz){sz=sz||44;let b='';
+ const th=(fill,lv)=>`<rect x="17" y="5" width="10" height="26" rx="5" fill="#fff" stroke="#8a97a8" stroke-width="2"/><circle cx="22" cy="35" r="7" fill="${fill}" stroke="#8a97a8" stroke-width="2"/><rect x="20" y="${31-lv}" width="4" height="${lv+4}" rx="2" fill="${fill}"/>`;
+ switch(k){
+  case'sunny':b=`<circle cx="22" cy="22" r="9" fill="#ffd43b" stroke="#f59f00" stroke-width="2"/>`+Array.from({length:8},(_,i)=>{const a=i*Math.PI/4;return`<path d="M${22+Math.cos(a)*13} ${22+Math.sin(a)*13}L${22+Math.cos(a)*18} ${22+Math.sin(a)*18}" stroke="#f59f00" stroke-width="2.500" stroke-linecap="round"/>`}).join('');break;
+  case'cloudy':b=cloudPath(22,22,1.4,'#b9c6d4');break;
+  case'rainy':b=cloudPath(22,16,1.3,'#7f93a8')+[[13,32],[22,34],[31,32]].map(([x,y])=>`<path d="M${x} ${y}q3 5 0 7q-3-2 0-7Z" fill="#4dabf7"/>`).join('');break;
+  case'windy':b='<path d="M6 16h22a5 5 0 1 0-5-5M4 24h30a5 5 0 1 1-5 5M8 32h14a4 4 0 1 1-4 4" stroke="#6b8cae" stroke-width="3" fill="none" stroke-linecap="round"/>';break;
+  case'snowy':b=Array.from({length:3},(_,i)=>`<path d="M22 6V38" stroke="#74a8e8" stroke-width="3" stroke-linecap="round" transform="rotate(${i*60} 22 22)"/>`).join('')+'<circle cx="22" cy="22" r="3" fill="#74a8e8"/>';break;
+  case'foggy':b=cloudPath(22,14,1.2,'#c6ced7')+'<path d="M6 28h32M10 34h26M6 40h30" stroke="#a8b3bf" stroke-width="3" stroke-linecap="round"/>';break;
+  case'stormy':b=cloudPath(22,14,1.3,'#56627a')+'<path d="M24 24l-7 11h6l-3 9 11-13h-6l3-7Z" fill="#ffd43b" stroke="#f59f00" stroke-width="1.500"/>';break;
+  case'hot':b=th('#e5484d',22);break;case'warm':b=th('#ff922b',15);break;case'cool':b=th('#74c0fc',8);break;case'cold':b=th('#339af0',3);break;}
+ return`<svg viewBox="0 0 44 44" width="${sz}" height="${sz}" aria-hidden="true">${b}</svg>`}
+function moodIcon(k,sz){sz=sz||110;let b='';const P=(d,f,s)=>`<path d="${d}" fill="${f||'none'}"${s?` stroke="${s}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"`:''}/>`;
+ switch(k){
+  case'happy':b=P('M50 84C20 62 14 40 28 28C38 20 48 26 50 34C52 26 62 20 72 28C86 40 80 62 50 84Z','#ff5c7a','#c92a4a')+'<path d="M34 34q4-6 10-6" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" opacity=".7"/>'+P('M82 14l3 7 7 1-5 5 1 7-6-4-6 4 1-7-5-5 7-1Z','#ffd43b')+P('M16 74l2 5 5 1-4 4 1 5-4-3-4 3 1-5-4-4 5-1Z','#ffd43b');break;
+  case'sad':b=cloudPath(50,38,3.1,'#8a9bb0')+[[34,68],[50,76],[66,68]].map(([x,y])=>`<path d="M${x} ${y}q6 10 0 14q-6-4 0-14Z" fill="#4dabf7"/>`).join('');break;
+  case'excited':b=`<polygon points="${Array.from({length:16},(_,i)=>{const a=-Math.PI/2+i*Math.PI/8,r=i%2?22:42;return(50+r*Math.cos(a)).toFixed(1)+','+(50+r*Math.sin(a)).toFixed(1)}).join(' ')}" fill="#ffd43b" stroke="#f08c00" stroke-width="3"/>`+'<circle cx="18" cy="18" r="4" fill="#ff6b6b"/><circle cx="84" cy="22" r="4" fill="#4dabf7"/><circle cx="82" cy="82" r="4" fill="#69db7c"/><circle cx="16" cy="80" r="4" fill="#da77f2"/>';break;
+  case'scared':b=P('M24 86V44C24 24 36 12 50 12S76 24 76 44V86L66 78L58 86L50 78L42 86L34 78Z','#f4f1ff','#8f84c8')+'<ellipse cx="40" cy="44" rx="6" ry="9" fill="#2b2233"/><ellipse cx="60" cy="44" rx="6" ry="9" fill="#2b2233"/><ellipse cx="50" cy="64" rx="6" ry="8" fill="#2b2233"/>';break;
+  case'nervous':b=[[34,44,1],[66,44,-1]].map(([x,y,d])=>`<g transform="translate(${x} ${y}) scale(${d} 1)"><path d="M0 0C10-26 34-30 34-10C34 6 14 10 0 2Z" fill="#9775fa" stroke="#6741d9" stroke-width="2.500"/><path d="M0 4C8 12 24 28 22 38C12 44 2 22 0 4Z" fill="#b197fc" stroke="#6741d9" stroke-width="2.500"/></g>`).join('')+'<rect x="47" y="30" width="6" height="40" rx="3" fill="#5f3dc4"/>';break;
+  case'stressed':b=P('M50 50m0 0C50 44 60 42 62 50C64 62 44 66 38 54C30 38 50 24 66 30C86 38 86 66 66 76C44 86 20 68 22 46','none','#e8590c')+P('M74 12L62 34h10L66 50','#ffd43b','#f59f00');break;
+  case'calm':b=P('M20 70C20 34 50 16 82 18C84 50 62 76 20 70Z','#69db7c','#2f9e44')+'<path d="M24 66C42 54 56 40 70 28" stroke="#2f9e44" stroke-width="3" fill="none"/><path d="M10 84q10-8 20 0t20 0 20 0 20 0" stroke="#4dabf7" stroke-width="4" fill="none" stroke-linecap="round"/>';break;
+  case'sleepy':b=P('M62 12A38 38 0 1 0 88 62A30 30 0 0 1 62 12Z','#ffe066','#f59f00')+P('M72 22l3 6 6 1-4 4 1 6-6-3-5 3 1-6-4-4 6-1Z','#fff3bf')+'<text x="14" y="30" font-size="22" font-weight="800" fill="#6b5bd6" font-family="'+FONTH+'">Z</text><text x="30" y="16" font-size="14" font-weight="800" fill="#8a7be0" font-family="'+FONTH+'">z</text>';break;
+  case'tired':b='<rect x="10" y="32" width="72" height="36" rx="8" fill="#f1f3f5" stroke="#6b7684" stroke-width="4"/><rect x="82" y="42" width="8" height="16" rx="3" fill="#6b7684"/><rect x="15" y="37" width="14" height="26" rx="4" fill="#e5484d"/>';break;
+  case'hungry':b=P('M50 30C34 22 14 32 18 56C22 78 38 90 50 84C62 90 78 78 82 56C86 32 66 22 50 30Z','#ff5c5c','#c92a2a')+P('M50 30q0-14 12-18','none','#5b8a2e')+P('M52 22q12-10 22 0q-8 10-22 0Z','#69db7c','#2f9e44')+'<path d="M30 46q4-8 12-8" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" opacity=".6"/>';break;
+  case'thirsty':b=P('M26 16H74L66 88H34Z','#e7f5ff','#74a8d8')+P('M29 40H71L66 88H34Z','#4dabf7')+'<path d="M32 50q9-6 18 0t18 0" stroke="#a5d8ff" stroke-width="3" fill="none"/><path d="M44 24L40 44" stroke="#fff" stroke-width="4" opacity=".8" stroke-linecap="round"/>';break;
+  case'hot':b='<rect x="40" y="10" width="20" height="56" rx="10" fill="#fff" stroke="#8a97a8" stroke-width="3"/><circle cx="50" cy="76" r="15" fill="#e5484d" stroke="#8a97a8" stroke-width="3"/><rect x="46" y="26" width="8" height="48" rx="4" fill="#e5484d"/><path d="M72 22q6-6 0-12M82 28q6-6 0-12" stroke="#ff9a3c" stroke-width="3.500" fill="none" stroke-linecap="round"/>';break;
+  case'cold':b=Array.from({length:3},(_,i)=>`<path d="M50 10V90" stroke="#4d9bf0" stroke-width="5" stroke-linecap="round" transform="rotate(${i*60} 50 50)"/>`).join('')+Array.from({length:6},(_,i)=>`<path d="M50 22l-6-6M50 22l6-6" stroke="#4d9bf0" stroke-width="3.500" stroke-linecap="round" transform="rotate(${i*60} 50 50)"/>`).join('')+'<circle cx="50" cy="50" r="6" fill="#d0ebff" stroke="#4d9bf0" stroke-width="3"/>';break;
+  case'okay':b='<circle cx="50" cy="50" r="38" fill="#b2f2bb" stroke="#2f9e44" stroke-width="4"/><path d="M30 52l14 14 28-30" stroke="#2f9e44" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round"/>';break;}
+ return`<svg viewBox="0 0 100 100" width="${sz}" height="${sz}" aria-hidden="true">${b}</svg>`}
+/* ====================== STATE ====================== */
+const KEY='daily_calendar_v1';
+let S=null;
+function freshState(){const t=new Date();return{v:1,started:false,step:0,maxStep:0,n:2,students:[defaultStudent(0),defaultStudent(1)],date:{y:t.getFullYear(),m:t.getMonth()+1,d:t.getDate()},seasonManual:null,fmt:'uk',level:'simple',csent:{},moodIdx:0}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function loadSaved(){try{const r=localStorage.getItem(KEY);if(!r)return null;const o=JSON.parse(r);if(o&&o.v===1&&Array.isArray(o.students)&&o.students.length&&o.date)return o}catch(e){}return null}
+function hasProgress(o){return o&&o.started}
+const students=()=>S.students.slice(0,S.n);
+const sName=st=>(st.name||'').trim()||('Student '+(st.idx+1));
+const PRON={he:{S:'He',s:'he',feels:'feels',lives:'lives'},she:{S:'She',s:'she',feels:'feels',lives:'lives'},they:{S:'They',s:'they',feels:'feel',lives:'live'}};
+const pronOf=st=>PRON[st.pron&&st.pron!=='auto'?st.pron:(st.type==='boy'?'he':'she')];
+const dateObj=()=>mkDate(S.date.y,S.date.m,S.date.d);
+const season=()=>S.seasonManual||seasonOf(S.date.m);
+const seasonWord=()=>season()==='autumn'&&S.fmt==='us'?'fall':season();
+function setDate(y,m,d){y=clamp(+y||S.date.y,1900,2100);m=clamp(+m||S.date.m,1,12);d=clamp(+d||1,1,dim(y,m));S.date={y,m,d}}
+function goWeekday(name){const cur=(dateObj().getDay()+6)%7,tgt=WEEK.indexOf(name),dt=dateObj();dt.setDate(dt.getDate()+(tgt-cur));setDate(dt.getFullYear(),dt.getMonth()+1,dt.getDate())}
+function toggleIn(list,k,ok,max){const i=list.indexOf(k);if(i>=0){list.splice(i,1);return list}const keep=list.filter(x=>ok(x,k));keep.push(k);while(keep.length>max)keep.shift();list.length=0;keep.forEach(x=>list.push(x));return list}
+const toggleWeather=(st,k)=>toggleIn(st.weather,k,wCompat,2);
+const toggleMood=(st,k)=>{st.skip=false;toggleIn(st.mood,k,mCompat,2)};
+
+/* ====================== TEXT ====================== */
+function wPhrase(ws){if(!ws.length)return'___';if(ws.length===1)return WL[ws[0]].l.toLowerCase();const [a,b]=ws,but=WBUT.some(([x,y])=>(x===a&&y===b)||(x===b&&y===a));return WL[a].l.toLowerCase()+(but?' but ':' and ')+WL[b].l.toLowerCase()}
+const placeOf=st=>st.city.trim()||(st.country?cThe(st.country):'');
+function mWords(ms){const w=k=>ML[k].l.toLowerCase();if(ms.length===1)return w(ms[0]);const[a,b]=ms,pa=ML[a].pos,pb=ML[b].pos;return w(a)+((!!pa!==!!pb)?' but ':' and ')+w(b)}
+function moodFirst(st){if(st.skip)return"I'd like to skip today.";const ms=st.mood;if(!ms.length)return'I feel ___ today.';
+ if(ms.length===2)return`I'm ${mWords(ms)}.`;const k=ms[0],simple=S.level==='simple';
+ if(simple)return(k==='sleepy'||k==='tired')?`I'm a little ${k}.`:`I'm ${k}.`;
+ if(k==='happy')return"I'm happy today!";if(k==='okay')return"I'm okay today.";if(k==='sleepy'||k==='tired')return`I'm a little ${k}.`;
+ if(ML[k].t==='feel')return`I'm feeling ${k}.`;return`I'm ${k}.`}
+function moodThird(st){if(st.skip)return`${sName(st)} would rather not say how ${pronOf(st).s==='they'?'they':pronOf(st).s} feel${pronOf(st).s==='they'?'':'s'} today.`;if(!st.mood.length)return'';const p=pronOf(st),ms=st.mood;
+ let w=mWords(ms);if(ms.length===1&&(ms[0]==='sleepy'||ms[0]==='tired'))w='a little '+w;return`${p.S} ${p.feels} ${w} today.`}
+function autoSent(st,key){
+ const place=placeOf(st),wp=wPhrase(st.weather),ctry=st.country?cThe(st.country):'';
+ switch(key){
+  case'live':if(S.level==='challenge'&&st.city.trim()&&st.country)return`I live in ${st.city.trim()}, ${ctry}.`;return`I live in ${ctry||'___'}.`;
+  case'w1':return`It's ${wp}${place?' in '+place:''}.`;
+  case'w2':return`The weather is ${wp}${place?' in '+place:''}.`;
+  case'mood':return moodFirst(st)}
+ return''}
+function sentOf(st,key){const e=st.sent[key];return e&&e.edited?e.text:autoSent(st,key)}
+function calAuto(){const wk=DAYS[dateObj().getDay()],mo=MONTHS[S.date.m-1],d=S.date.d;
+ return{day:`Today is ${wk}.`,date:S.fmt==='us'?`It is ${mo} ${ord(d)}.`:`It is the ${ord(d)} of ${mo}.`,year:`The year is ${S.date.y}.`,season:`It is ${seasonWord()}.`}}
+function calSent(k){const e=S.csent[k];return e&&e.edited?e.text:calAuto()[k]}
+const longDate=()=>{const wk=DAYS[dateObj().getDay()],mo=MONTHS[S.date.m-1];return S.fmt==='us'?`${wk}, ${mo} ${ord(S.date.d)}, ${S.date.y}`:`${wk}, the ${ord(S.date.d)} of ${mo}, ${S.date.y}`};
+function studentLines(st){const L=[],n=sName(st),p=pronOf(st),c=st.country?cThe(st.country):'';
+ if(c)L.push(`${n} ${p.lives} in ${c}.`);else L.push(`${n} hasn't chosen a country yet.`);
+ if(st.weather.length){const pl=placeOf(st);L.push(`It's ${wPhrase(st.weather)}${pl?' in '+pl:''}.`)}
+ const m=moodThird(st);if(m)L.push(m);return L}
+function finalText(){return{title:'Our Daily Calendar',l1:`Today is ${longDate()}.`,l2:`It is ${seasonWord()}.`,stu:students().map(st=>({st,lines:studentLines(st)}))}}
+function reviewPrompts(){const out=[],ss=students(),wk=DAYS[dateObj().getDay()];const ca=calAuto();
+ out.push({q:'What day is it today?',a:ca.day,g:'Calendar'},{q:"What's the date today?",a:ca.date,g:'Calendar'},{q:'What season is it?',a:ca.season,g:'Calendar'});
+ ss.forEach(st=>{const n=sName(st),p=pronOf(st),c=st.country?cThe(st.country):'';
+  if(c){out.push({q:`Where does ${n} live?`,a:`${n} ${p.lives} in ${c}.`,g:n});out.push({q:`What's the weather like in ${st.country?cName(st.country):''}?`.replace(/in (United Kingdom|Netherlands|United States|United Arab Emirates)\?/,m=>'in the '+m.slice(3)),a:st.weather.length?`It's ${wPhrase(st.weather)}.`:'',g:n,skip:!st.weather.length})}
+  if(st.mood.length||st.skip)out.push({q:`How does ${n} feel today?`,a:moodThird(st),g:n})});
+ const used=[...new Set(ss.flatMap(s=>s.weather))];
+ if(used.length>=1){const u=used.find(k=>WL[k].g==='sky')||used[0],oth=['sunny','rainy','cloudy','snowy'].find(k=>k!==u);const pair=[u,oth].sort(()=>0);out.push({q:`Is it ${WL[u].l.toLowerCase()} or ${WL[oth].l.toLowerCase()}?`,a:ss.filter(s=>s.weather.includes(u)).map(s=>`In ${s.country?cThe(s.country):placeOf(s)||sName(s)}: ${WL[u].l.toLowerCase()}.`).join(' '),g:'Group'})}
+ const mk=[...new Set(ss.flatMap(s=>s.mood))];
+ if(mk.length){const k=mk.includes('sleepy')?'sleepy':mk[0];out.push({q:`Who is feeling ${k}?`,a:ss.filter(s=>s.mood.includes(k)).map(sName).join(', '),g:'Group'})}
+ const snow=ss.filter(s=>s.weather.includes('snowy')&&s.country);
+ if(snow.length)out.push({q:'Which country has snowy weather?',a:snow.map(s=>cThe(s.country)).join(', '),g:'Group'});
+ else{const w0=used.find(k=>WL[k].g==='sky');if(w0){const m=ss.filter(s=>s.weather.includes(w0)&&s.country);if(m.length)out.push({q:`Which country has ${WL[w0].l.toLowerCase()} weather?`,a:m.map(s=>cThe(s.country)).join(', '),g:'Group'})}}
+ return out.filter(x=>!x.skip)}
+const QS_WEATHER=["What's the weather like where you live?","Where do you live?","Which country are you from?","Is it sunny or cloudy?","Is it hot or cold?"];
+const FRAMES={day:['Today is ___.'],date:['The date is ___.','It is the ___ of ___.'],year:['The year is ___.'],season:['It is ___.','The season is ___.'],live:['I live in ___.',"I'm from ___."],w1:["It's ___.","It's ___ and ___.","It's ___ but ___."],w2:['The weather is ___.','The weather is ___ and ___.'],mood:['I feel ___ today.',"I'm ___ but ___.","I'm ___."]};
+/* ====================== UI ====================== */
+const STEPS=['Students','Calendar','Weather','Mood','Our Calendar'];
+function seasonIcon(se,sz){let b='';
+ if(se==='spring')b=Array.from({length:6},(_,i)=>`<ellipse cx="50" cy="26" rx="11" ry="17" fill="#ff8fb3" transform="rotate(${i*60} 50 50)"/>`).join('')+'<circle cx="50" cy="50" r="11" fill="#ffd43b"/>';
+ else if(se==='summer')b='<circle cx="50" cy="50" r="22" fill="#ffd43b" stroke="#f59f00" stroke-width="3"/>'+Array.from({length:10},(_,i)=>`<path d="M50 14V4" stroke="#f59f00" stroke-width="6" stroke-linecap="round" transform="rotate(${i*36} 50 50)"/>`).join('');
+ else if(se==='autumn')b='<path d="M50 90C26 74 14 52 22 28C36 36 44 30 50 10C56 30 64 36 78 28C86 52 74 74 50 90Z" fill="#e8742a" stroke="#b5481a" stroke-width="3"/><path d="M50 90V32M50 60L34 46M50 60L66 46" stroke="#b5481a" stroke-width="3.500" fill="none" stroke-linecap="round"/>';
+ else b=Array.from({length:3},(_,i)=>`<path d="M50 8V92M50 20l-8-8M50 20l8-8M50 80l-8 8M50 80l8 8" stroke="#6b8de8" stroke-width="5" stroke-linecap="round" fill="none" transform="rotate(${i*60} 50 50)"/>`).join('')+'<circle cx="50" cy="50" r="6" fill="#d0ebff" stroke="#6b8de8" stroke-width="3"/>';
+ return`<svg viewBox="0 0 100 100" width="${sz}" height="${sz}" aria-hidden="true">${b}</svg>`}
+const logoSVG='<svg viewBox="0 0 40 40" width="38" height="38"><rect x="3" y="7" width="34" height="30" rx="7" fill="#fff" stroke="#c9d1de" stroke-width="2"/><path d="M3 14a7 7 0 0 1 7-7h20a7 7 0 0 1 7 7v4H3Z" fill="#e5484d"/><rect x="11" y="2" width="4" height="9" rx="2" fill="#5f6b7a"/><rect x="25" y="2" width="4" height="9" rx="2" fill="#5f6b7a"/><circle cx="20" cy="28" r="6" fill="#ffd43b"/></svg>';
+function header(){const ready=S.started;
+ return`<header class="top noprint"><div class="logo">${logoSVG}Daily Calendar</div><nav class="steps" aria-label="Steps">${STEPS.map((t,i)=>`<button class="stp ${S.step===i?'on':i<S.step?'done':''}" data-a="go" data-i="${i}" ${i>S.maxStep?'disabled':''}><b>${i<S.step?'✓':i+1}</b>${t}</button>`).join('')}</nav>
+ <div class="tools"><div class="seg" title="Difficulty"><button class="${S.level==='simple'?'on':''}" data-a="level" data-v="simple">Simple</button><button class="${S.level==='challenge'?'on':''}" data-a="level" data-v="challenge">Challenge</button></div><button class="ib" data-a="settings" title="Settings" aria-label="Settings">⚙</button></div></header>`}
+function footer(){const s=S.step;if(s===4)return'';const labels=['Continue','Continue to Weather','Continue to Mood','Build our calendar'];
+ const blocked=s===0&&students().some(x=>!x.name.trim());
+ return`<footer class="foot noprint"><div>${s>0?'<button class="btn" data-a="back">← Back</button>':''}</div><div style="display:flex;align-items:center;gap:14px">${blocked?'<span class="hint">Add a name for every student to continue.</span>':''}<button class="btn pri big" data-a="next" ${blocked?'disabled':''}>${labels[s]} →</button></div></footer>`}
+function render(){document.body.dataset.season=season();const m=$('#main'),sy=window.scrollY;
+ $('#app').innerHTML=header()+`<main id="main">${[stepStudents,stepCalendar,stepWeather,stepMood,stepFinal][S.step]()}</main>`+footer();save()}
+
+/* ---------- step 0 ---------- */
+function headSVG(st,w){return`<svg viewBox="30 12 140 140" width="${w}" height="${w}" aria-hidden="true">${avatarG(st,{exp:'happy'})}</svg>`}
+function stepStudents(){
+ return`<section><h1>Meet our students!</h1><p class="sub">Choose how many students and give each one a name and a look.</p>
+ <div class="cnt" role="group" aria-label="Number of students">${[1,2,3,4].map(n=>`<button class="cntb ${S.n===n?'on':''}" data-a="n" data-v="${n}"><span class="num">${n}</span>${n===1?'student':'students'}</button>`).join('')}</div>
+ <div class="sgrid">${students().map(studentCard).join('')}</div></section>`}
+function studentCard(st,i){const types=['boy','girl'];
+ const tb=types.map(t=>{const o=Object.assign({},st,{type:t,style:STYLES[t].some(x=>x[0]===st.style)?st.style:STYLES[t][0][0]});return`<button class="typb ${st.type===t?'on':''}" data-a="type" data-i="${i}" data-v="${t}" aria-label="${t}">${avatarSVG(o,{exp:'happy'},74)}${t==='boy'?'Boy':'Girl'}</button>`}).join('');
+ return`<div class="scard"><div class="big-av" data-pv="${i}">${avatarSVG(st,{exp:'happy',pose:'wave'},138)}</div><div>
+ <div class="lab" style="margin-top:0">Name</div><input class="nm" data-in="name" data-i="${i}" value="${esc(st.name)}" placeholder="Student ${i+1} name" maxlength="18" autocomplete="off" aria-label="Name of student ${i+1}">
+ <div class="lab">Avatar</div><div class="typ">${tb}</div>
+ <div class="lab">Skin tone</div><div class="sw">${SKINS.map(([c,n])=>`<button class="swb ${st.skin===c?'on':''}" style="background:${c}" data-a="skin" data-i="${i}" data-v="${c}" title="${n}" aria-label="${n} skin"></button>`).join('')}</div>
+ <div class="lab">Hair color</div><div class="sw">${HAIRC.map(([c,n])=>`<button class="swb ${st.hair===c?'on':''}" style="background:${c}" data-a="hair" data-i="${i}" data-v="${c}" title="${n}" aria-label="${n} hair"></button>`).join('')}</div>
+ <div class="lab">Hairstyle</div><div class="sw">${STYLES[st.type].map(([k,n])=>`<button class="stb ${st.style===k?'on':''}" data-a="style" data-i="${i}" data-v="${k}" title="${n}">${headSVG(Object.assign({},st,{style:k}),52)}${n}</button>`).join('')}</div>
+ <div class="lab">Clothing color</div><div class="sw">${SHIRTS.map(c=>`<button class="swb ${st.shirt===c?'on':''}" style="background:${c}" data-a="shirt" data-i="${i}" data-v="${c}" aria-label="Clothing color"></button>`).join('')}</div>
+ <div class="row" style="margin-top:12px"><button class="tog ${st.glasses?'on':''}" data-a="glasses" data-i="${i}" aria-pressed="${st.glasses}">👓 Glasses ${st.glasses?'on':'off'}</button><label class="sub">Pronoun <select class="sel" data-in="pron" data-i="${i}"><option value="auto" ${st.pron==='auto'?'selected':''}>auto</option><option value="he" ${st.pron==='he'?'selected':''}>he</option><option value="she" ${st.pron==='she'?'selected':''}>she</option><option value="they" ${st.pron==='they'?'selected':''}>they</option></select></label></div></div></div>`}
+
+/* ---------- sentences UI ---------- */
+function sentField(kind,i,key,label,val,edited,frames){
+ return`<div class="sent"><div class="lab">${label}</div><div class="sin"><input data-in="sent" data-k="${kind}" data-i="${i}" data-key="${key}" value="${esc(val)}" class="${edited?'ed':''}" aria-label="${esc(label)}"><button class="rst" data-a="rst" data-k="${kind}" data-i="${i}" data-key="${key}" title="Reset to suggested sentence" aria-label="Reset sentence">↺</button></div>
+ <div class="fr">${(frames||[]).map((f,j)=>`<button data-a="frame" data-k="${kind}" data-i="${i}" data-key="${key}" data-j="${j}">${esc(f)}</button>`).join('')}</div></div>`}
+const calEdited=k=>!!(S.csent[k]&&S.csent[k].edited);
+const stEdited=(st,k)=>!!(st.sent[k]&&st.sent[k].edited);
+
+/* ---------- step 1 ---------- */
+function calSceneSVG(){const se=season(),d=S.date,wk=DAYS[dateObj().getDay()],W=640,H=540;
+ return`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Calendar scene: ${wk}, ${MONTHS[d.m-1]} ${d.d}, ${d.y}, ${se}">${seasonBG(se,d.m,W,H)}${calCard(40,230,1.15,{wk,day:d.d,mon:MONTHS[d.m-1],year:d.y})}
+ <g transform="translate(18 18)"><rect width="190" height="54" rx="27" fill="#ffffffd9"/><g transform="translate(8 6)">${seasonIcon(se,42).replace('<svg ','<svg x="0" y="0" ')}</g><text x="60" y="36" font-size="26" font-weight="800" fill="#2b3445" font-family="${FONTH}">${SEAS[se].name}</text></g></svg>`}
+function stepCalendar(){const d=S.date,cur=WEEK[(dateObj().getDay()+6)%7],iso=`${d.y}-${pad(d.m)}-${pad(d.d)}`,auto=seasonOf(d.m);
+ const fld=[['day','Day of the week'],['date','Date'],['year','Year'],['season','Season']];
+ return`<section class="cal"><div class="panel"><h2>Our Daily Calendar</h2><p class="sub">Choose the date. Every change updates the picture.</p>
+ <div class="lab">Date</div><div class="row"><input type="date" class="inp" id="dp" value="${iso}" min="1900-01-01" max="2100-12-31" aria-label="Date"><button class="btn sm" data-a="today">Today</button></div>
+ <div class="lab">Day of the week</div><div class="wk">${WEEK.map(w=>`<button class="${w===cur?'on':''}" data-a="wd" data-v="${w}">${w.slice(0,3)}</button>`).join('')}</div>
+ <div class="row"><label class="sub">Day <select class="sel" data-in="dom">${Array.from({length:dim(d.y,d.m)},(_,i)=>`<option ${d.d===i+1?'selected':''}>${i+1}</option>`).join('')}</select></label>
+ <label class="sub">Month <select class="sel" data-in="mon">${MONTHS.map((m,i)=>`<option value="${i+1}" ${d.m===i+1?'selected':''}>${m}</option>`).join('')}</select></label>
+ <label class="sub">Year <button class="btn sm" data-a="yr" data-v="-1" aria-label="Previous year">−</button> <input class="inp" data-in="year" value="${d.y}" size="4" style="width:84px;text-align:center" inputmode="numeric" aria-label="Year"> <button class="btn sm" data-a="yr" data-v="1" aria-label="Next year">+</button></label></div>
+ <div class="lab">Season ${S.seasonManual?`<span class="sub">(chosen by teacher)</span>`:`<span class="sub">(from the month)</span>`}</div><div class="seas">${['spring','summer','autumn','winter'].map(k=>`<button class="seasb ${season()===k?'on':''}" data-a="season" data-v="${k}">${seasonIcon(k,26)}${SEAS[k].name}</button>`).join('')}${S.seasonManual?`<button class="btn sm" data-a="season" data-v="auto">↺ Auto (${SEAS[auto].name})</button>`:''}</div>
+ <div class="lab">Date format</div><div class="seg"><button class="${S.fmt==='uk'?'on':''}" data-a="fmt" data-v="uk">British: the 12th of October</button><button class="${S.fmt==='us'?'on':''}" data-a="fmt" data-v="us">American: October 12th</button></div>
+ <div style="margin-top:8px">${fld.map(([k,l])=>sentField('c',0,k,l,calSent(k),calEdited(k),FRAMES[k])).join('')}</div></div>
+ <div class="scene"><div class="sceneb" id="calscene">${calSceneSVG()}</div></div></section>`}
+
+/* ---------- step 2 ---------- */
+function wCardScene(st){return`<svg viewBox="0 0 400 330" role="img" aria-label="Weather scene for ${esc(sName(st))}">${weatherG(st,st.weather,season())}</svg>`}
+function countryBtn(st,i){return`<button class="cbtn" data-a="country" data-i="${i}">${flagSVG(st.country,30)}<span>${st.country?esc(cName(st.country)):'Choose a country'}</span><span style="margin-left:auto;color:var(--muted)">▾</span></button>`}
+function weatherChips(st,i){const mk=w=>{const o=st.weather.indexOf(w.k);return`<button class="chp ${o>=0?'on':''}" data-a="w" data-i="${i}" data-k="${w.k}" aria-pressed="${o>=0}">${wIcon(w.k,30)}${w.l}${o>=0&&st.weather.length>1?`<span class="o">${o+1}</span>`:''}</button>`};
+ return`<div class="lab">Weather <span class="sub" style="text-transform:none;letter-spacing:0">(choose 1 or 2)</span></div><div class="chips">${WEATHER.filter(w=>w.core).map(mk).join('')}</div><div class="chips" style="margin-top:6px">${WEATHER.filter(w=>!w.core).map(mk).join('')}</div>`}
+function wCard(st,i){const ch=S.level==='challenge';
+ return`<article class="wcard" data-card="${i}"><div class="wh">${headSVG(st,52)}<h3>${esc(sName(st))}</h3><span class="tagp">Practice weather</span></div>
+ <div class="wscene" data-sc="${i}">${wCardScene(st)}</div>
+ <div class="lab" style="margin:2px 0">Country</div>${countryBtn(st,i)}
+ <div class="lab" style="margin:2px 0">City (optional)</div><input class="inp" data-in="city" data-i="${i}" value="${esc(st.city)}" placeholder="e.g. a city name" maxlength="28" style="width:100%" aria-label="City of ${esc(sName(st))}">
+ ${weatherChips(st,i)}
+ <div>${sentField('s',i,'live','I live…',sentOf(st,'live'),stEdited(st,'live'),FRAMES.live)}${sentField('s',i,'w1','The weather…',sentOf(st,'w1'),stEdited(st,'w1'),FRAMES.w1)}${ch?sentField('s',i,'w2','Longer sentence',sentOf(st,'w2'),stEdited(st,'w2'),FRAMES.w2):''}</div></article>`}
+function stepWeather(){return`<section><h1>What's the weather like?</h1><div class="qs noprint">${QS_WEATHER.map(q=>`<button class="qc" data-a="bigq" data-q="${esc(q)}">${esc(q)}</button>`).join('')}</div>
+ <div class="wgrid n${S.n}">${students().map(wCard).join('')}</div></section>`}
+
+/* ---------- step 3 ---------- */
+function stepMood(){const ss=students(),i=Math.min(S.moodIdx,ss.length-1),st=ss[i];
+ const exp=st.skip?'neutral':((['happy','sad','excited','scared','nervous','stressed','calm'].find(k=>st.mood.includes(k)))||st.mood[0]||'neutral');
+ const pose=st.skip?'idle':(MPOSE[st.mood[0]]||'idle');
+ const main=st.mood[0];
+ const chip=m=>{const o=st.mood.indexOf(m.k);return`<button class="mch ${m.t==='body'?'body':''} ${o>=0?'on':''}" data-a="m" data-i="${i}" data-k="${m.k}" aria-pressed="${o>=0}">${moodIcon(m.k,38)}${m.l}</button>`};
+ return`<section><h1>How are you feeling today?</h1>
+ <div class="mtabs">${ss.map((s,j)=>`<button class="mtab ${j===i?'on':''}" data-a="mtab" data-i="${j}">${headSVG(s,40)}${esc(sName(s))}${s.skip?' <span class="sub">(skipped)</span>':s.mood.length?` <span class="sub">· ${esc(mWords(s.mood))}</span>`:''}</button>`).join('')}</div>
+ <div class="mood"><div class="mstage">${avatarSVG(st,{exp,pose},300)}${main&&!st.skip?`<div class="mi">${moodIcon(main,92)}</div>`:''}</div>
+ <div class="panel"><h2>${esc(sName(st))}: choose how you feel</h2><p class="sub">Choose one or two words. You can skip if you don't want to say.</p>
+ <div class="lab">Feelings</div><div class="mchips">${MOODS.filter(m=>m.t==='feel').map(chip).join('')}</div>
+ <div class="lab">Body (physical states)</div><div class="mchips">${MOODS.filter(m=>m.t==='body').map(chip).join('')}</div>
+ <div class="row" style="margin-top:12px"><button class="mch skip ${st.skip?'on':''}" data-a="mskip" data-i="${i}">Skip this question</button>${st.mood.length||st.skip?`<button class="mch skip" data-a="mclear" data-i="${i}">Clear</button>`:''}</div>
+ ${sentField('s',i,'mood','Our sentence',sentOf(st,'mood'),stEdited(st,'mood'),FRAMES.mood)}</div></div></section>`}
+
+/* ---------- step 4 ---------- */
+function cut(t,n){t=String(t);return t.length>n?t.slice(0,n-1)+'…':t}
+const embed=(svg,x,y)=>svg.replace('<svg ',`<svg x="${x}" y="${y}" `);
+function finalSVG(){const ss=students(),n=ss.length,W=1600,H=900,se=season(),mo=S.date.m,T=finalText();
+ let s=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" class="fsvg" role="img" aria-label="Our Daily Calendar">${seasonBG(se,mo,W,H)}`;
+ s+=`<g><rect x="250" y="22" width="1100" height="170" rx="34" fill="#fff" opacity=".93"/><g transform="translate(290 42)">${seasonIcon(se,120)}</g><text x="840" y="82" text-anchor="middle" font-size="50" font-weight="800" fill="#25324a" font-family="${FONTH}">${esc(T.title)}</text><text x="840" y="128" text-anchor="middle" font-size="31" font-weight="800" fill="#e5484d" font-family="${FONTH}">${esc(T.l1)}</text><text x="840" y="170" text-anchor="middle" font-size="27" font-weight="700" fill="#4a5870" font-family="${FONTH}">${esc(T.l2)}</text></g>`;
+ const zw=n===1?600:n===2?560:n===3?480:350,gap=n===4?24:34,total=n*zw+(n-1)*gap,x0=(W-total)/2,sc=zw/400,zy=222,zh=330*sc,py=zy+zh+22;
+ if(n>1){let p='';ss.forEach((_,i)=>{const cx=x0+i*(zw+gap)+50,cy=py+36;p+=(i?` Q ${cx-(zw+gap)/2} ${cy-46} ${cx} ${cy}`:`M ${cx} ${cy}`)});s+=`<path d="${p}" stroke="#fff" stroke-width="7" stroke-dasharray="4 14" stroke-linecap="round" fill="none" opacity=".95"/>`}
+ ss.forEach((st,i)=>{const x=x0+i*(zw+gap);
+  s+=`<rect x="${x-8}" y="${zy-8}" width="${zw+16}" height="${zh+16}" rx="${26*sc+8}" fill="#fff" opacity=".96"/><g transform="translate(${x} ${zy}) scale(${sc})">${weatherG(st,st.weather,se)}</g>`;
+  const nm=cut(sName(st),14),pw=40+nm.length*17;
+  s+=`<g transform="translate(${x+14} ${zy+14})"><rect width="${pw}" height="44" rx="22" fill="#ffffffe6"/><text x="${pw/2}" y="31" text-anchor="middle" font-size="26" font-weight="800" fill="#25324a" font-family="${FONTH}">${esc(nm)}</text></g>`;
+  s+=`<rect x="${x}" y="${py}" width="${zw}" height="150" rx="24" fill="#fff" opacity=".95"/>`;
+  s+=embed(flagSVG(st.country,44),x+16,py+14);
+  const cn=st.country?cName(st.country):'Country?',place=(st.city.trim()?st.city.trim()+(st.country?', ':'')+'':'')+(st.country?cn:'');
+  s+=`<text x="${x+96}" y="${py+40}" font-size="${(place||cn).length>20?22:27}" font-weight="800" fill="${st.country?'#25324a':'#8a97a8'}" font-family="${FONTH}">${esc(cut(st.city.trim()?place:cn,26))}</text>`;
+  if(st.weather.length){let ix=x+16;st.weather.forEach(k=>{s+=embed(wIcon(k,36),ix,py+64);ix+=40});s+=`<text x="${ix+6}" y="${py+90}" font-size="23" font-weight="800" fill="#4a5870" font-family="${FONTH}">${esc(cut(cap(wPhrase(st.weather)),24))}</text>`}
+  else s+=`<text x="${x+16}" y="${py+90}" font-size="22" font-weight="700" fill="#8a97a8" font-family="${FONTH}">Weather?</text>`;
+  if(st.skip)s+=`<text x="${x+16}" y="${py+132}" font-size="22" font-weight="700" fill="#8a97a8" font-family="${FONTH}">Mood: skipped</text>`;
+  else if(st.mood.length){s+=embed(moodIcon(st.mood[0],36),x+16,py+104)+`<text x="${x+62}" y="${py+131}" font-size="23" font-weight="800" fill="#e5484d" font-family="${FONTH}">${esc(cut(cap(mWords(st.mood)),26))}</text>`}
+  else s+=`<text x="${x+16}" y="${py+132}" font-size="22" font-weight="700" fill="#8a97a8" font-family="${FONTH}">Mood?</text>`;
+  });
+ return s+'</svg>'}
+const cap=t=>t.charAt(0).toUpperCase()+t.slice(1);
+function stepFinal(){const T=finalText(),rv=S.review;
+ return`<section><div class="acts noprint" style="margin-top:0"><button class="btn pri" data-a="editmenu">← Back to Edit</button><button class="btn ${rv?'pri':''}" data-a="review">${rv?'Hide':'Show'} speaking review</button><button class="btn" data-a="png">⬇ Download PNG</button><button class="btn" data-a="print">🖨 Print</button><button class="btn" data-a="newcal">＋ New calendar</button></div>
+ <div class="fin ${rv?'':'nor'}"><div id="finalwrap">${finalSVG()}
+ <div class="panel ftxt" style="margin-top:18px"><h2>${esc(T.title)}</h2><div class="l">${esc(T.l1)}</div><div class="l">${esc(T.l2)}</div>${T.stu.map(({st,lines})=>`<div class="st"><b>${esc(sName(st))}</b> — ${lines.map(esc).join(' ')}</div>`).join('')}</div></div>
+ ${rv?`<aside class="panel noprint"><h2>Speaking review</h2><p class="sub">Click a question to show it in big letters.</p><div class="rv">${reviewPrompts().map((p,i)=>`<button data-a="bigq" data-q="${esc(p.q)}" data-ans="${esc(p.a)}"><small>${esc(p.g)}</small>${esc(p.q)}</button>`).join('')}</div></aside>`:''}</div></section>`}
+
+/* ---------- modal ---------- */
+function openModal(h,cls){$('#modal').innerHTML=`<div class="ovl" data-a="mclose" role="dialog" aria-modal="true"><div class="dlg ${cls||''}" data-stop="1">${h}</div></div>`}
+function closeModal(){$('#modal').innerHTML=''}
+let CB=null;
+function ask(msg,yes,cb){CB=cb;openModal(`<h2>${msg}</h2><div class="acts" style="justify-content:flex-end"><button class="btn" data-a="mclose">Cancel</button><button class="btn pri" data-a="mok">${yes}</button></div>`)}
+function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}
+function countryDialog(i,search){const st=S.students[i];
+ if(!search)return openModal(`<h2>${esc(sName(st))}: choose a country</h2><div class="cgrid">${COUNTRIES.map(c=>`<button class="cg ${st.country===c.c?'on':''}" data-a="pickc" data-i="${i}" data-c="${c.c}">${flagSVG(c.c,40)}${esc(c.n)}</button>`).join('')}<button class="cg" data-a="otherc" data-i="${i}"><svg viewBox="0 0 60 40" width="60" height="40"><rect width="60" height="40" rx="5" fill="#dfe6ee"/><circle cx="30" cy="20" r="14" fill="#8fb8de"/><path d="M16 20h28M30 6c-7 8-7 20 0 28M30 6c7 8 7 20 0 28" stroke="#fff" stroke-width="1.5" fill="none"/></svg>Other country…</button></div><div class="acts" style="justify-content:space-between">${st.country?`<button class="btn" data-a="pickc" data-i="${i}" data-c="">Clear country</button>`:'<span></span>'}<button class="btn" data-a="mclose">Close</button></div>`);
+ openModal(`<h2>Other country</h2><input class="inp" id="csearch" data-in="csearch" data-i="${i}" placeholder="Type to search…" style="width:100%;font-size:20px" autocomplete="off"><div class="clist" id="clist">${clistHTML(i,'')}</div><div class="acts" style="justify-content:space-between"><button class="btn" data-a="country" data-i="${i}">← Back</button><button class="btn" data-a="mclose">Close</button></div>`);setTimeout(()=>{const e=$('#csearch');e&&e.focus()},30)}
+function clistHTML(i,q){q=q.trim().toLowerCase();const l=ALLC.filter(c=>!q||c.n.toLowerCase().includes(q)).sort((a,b)=>a.n.localeCompare(b.n));return l.length?l.map(c=>`<button data-a="pickc" data-i="${i}" data-c="${c.c}">${flagSVG(c.c,30)}${esc(c.n)}${hasFlag(c.c)?'':' <span class="sub">(no flag artwork yet)</span>'}</button>`).join(''):'<p class="sub">No country found.</p>'}
+function settingsDialog(){openModal(`<h2>Settings</h2><div class="lab">Date format</div><div class="seg"><button class="${S.fmt==='uk'?'on':''}" data-a="fmt" data-v="uk" data-keep="1">British: the 12th of October</button><button class="${S.fmt==='us'?'on':''}" data-a="fmt" data-v="us" data-keep="1">American: October 12th</button></div>
+ <div class="lab">Mode</div><div class="seg"><button class="${S.level==='simple'?'on':''}" data-a="level" data-v="simple" data-keep="1">Simple</button><button class="${S.level==='challenge'?'on':''}" data-a="level" data-v="challenge" data-keep="1">Challenge</button></div>
+ <p class="sub">Simple: short sentences, one idea at a time. Challenge: longer sentences, two weather words, extra questions.</p>
+ <div class="acts" style="justify-content:space-between;margin-top:22px"><button class="btn" data-a="newcal">＋ Start New Calendar</button><button class="btn pri" data-a="mclose">Done</button></div>`)}
+function startDialog(sv){openModal(`<h1>Daily Calendar</h1><p class="sub" style="font-size:20px">Welcome back! A previous calendar was saved in this browser.</p><div class="acts" style="margin-top:18px"><button class="btn pri big" data-a="cont">Continue Previous Calendar</button><button class="btn big" data-a="fresh">Start New Calendar</button></div>`)}
+
+/* ---------- actions ---------- */
+function go(i){S.step=clamp(i,0,4);S.maxStep=Math.max(S.maxStep,S.step);S.started=true;render();window.scrollTo(0,0)}
+function updateSentInputs(){$$('input[data-in=sent]').forEach(inp=>{const k=inp.dataset.k,key=inp.dataset.key;let v,ed;if(k==='c'){v=calSent(key);ed=calEdited(key)}else{const st=S.students[+inp.dataset.i];if(!st)return;v=sentOf(st,key);ed=stEdited(st,key)}if(document.activeElement!==inp)inp.value=v;inp.classList.toggle('ed',ed)})}
+function patchCalScene(){const e=$('#calscene');if(e)e.innerHTML=calSceneSVG();document.body.dataset.season=season()}
+function patchCard(i){const st=S.students[i],c=$(`[data-sc="${i}"]`);if(c)c.innerHTML=wCardScene(st)}
+function frameApply(k,i,key,j){const fr=FRAMES[key][j];if(k==='c')S.csent[key]={edited:true,text:fr};else S.students[i].sent[key]={edited:true,text:fr};save();updateSentInputs();const inp=$(`input[data-in=sent][data-k="${k}"][data-i="${i}"][data-key="${key}"]`);if(inp){inp.value=fr;inp.focus();const p=fr.indexOf('___');if(p>=0)inp.setSelectionRange(p,p+3)}}
+function newCalendar(){const prev=S.level,fmt=S.fmt;S=freshState();S.level=prev;S.fmt=fmt;S.started=true;closeModal();render();window.scrollTo(0,0)}
+function exportPNG(){try{const svg=finalSVG(),url=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml;charset=utf-8'})),img=new Image();
+ img.onload=()=>{try{const c=document.createElement('canvas');c.width=1600;c.height=900;c.getContext('2d').drawImage(img,0,0,1600,900);c.toBlob(b=>{if(!b)return toast('PNG export is not available here. Please use Print.');const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='our-daily-calendar.png';document.body.appendChild(a);a.click();a.remove();toast('PNG saved')})}catch(e){toast('PNG export is not available here. Please use Print.')}};
+ img.onerror=()=>toast('PNG export is not available here. Please use Print.');img.src=url}catch(e){toast('PNG export is not available here. Please use Print.')}}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t)return;
+ if(t.dataset.a==='mclose'&&e.target.closest('[data-stop]')&&t.classList.contains('ovl')&&e.target!==t)return;
+ const a=t.dataset.a,d=t.dataset,i=+d.i,st=S&&S.students[i];
+ switch(a){
+ case'mclose':closeModal();break;
+ case'mok':{const f=CB;CB=null;closeModal();f&&f();break}
+ case'cont':closeModal();render();break;
+ case'fresh':newCalendar();break;
+ case'go':if(+d.i<=S.maxStep)go(+d.i);break;
+ case'next':go(S.step+1);break;
+ case'back':go(S.step-1);break;
+ case'n':{const n=+d.v;if(n===S.n)break;const apply=()=>{while(S.students.length<n)S.students.push(defaultStudent(S.students.length));S.students.length=n;S.students.forEach((s,k)=>s.idx=k);S.n=n;S.moodIdx=0;render()};
+  if(n>S.n){apply();break}const lost=S.students.slice(n).filter(s=>s.name.trim()||s.country||s.weather.length||s.mood.length);
+  if(lost.length)ask(`Remove ${lost.map(s=>esc(sName(s))).join(', ')}? Their information will be deleted.`,'Remove',apply);else apply();break}
+ case'type':{st.type=d.v;if(!STYLES[st.type].some(x=>x[0]===st.style))st.style=STYLES[st.type][0][0];render();break}
+ case'skin':st.skin=d.v;render();break;case'hair':st.hair=d.v;render();break;case'style':st.style=d.v;render();break;case'shirt':st.shirt=d.v;render();break;case'glasses':st.glasses=!st.glasses;render();break;
+ case'level':S.level=d.v;if(d.keep)settingsDialog();render();if(d.keep)settingsDialog();break;
+ case'fmt':S.fmt=d.v;render();if(d.keep)settingsDialog();break;
+ case'settings':settingsDialog();break;
+ case'today':{const t=new Date();setDate(t.getFullYear(),t.getMonth()+1,t.getDate());render();break}
+ case'wd':goWeekday(d.v);render();break;
+ case'yr':setDate(S.date.y+ +d.v,S.date.m,S.date.d);render();break;
+ case'season':S.seasonManual=d.v==='auto'?null:d.v;render();break;
+ case'rst':{if(d.k==='c')delete S.csent[d.key];else delete S.students[i].sent[d.key];save();updateSentInputs();break}
+ case'frame':frameApply(d.k,i,d.key,+d.j);break;
+ case'country':countryDialog(i,false);break;
+ case'otherc':countryDialog(i,true);break;
+ case'pickc':st.country=d.c;closeModal();render();break;
+ case'w':toggleWeather(st,d.k);render();break;
+ case'm':toggleMood(st,d.k);render();break;
+ case'mtab':S.moodIdx=i;render();break;
+ case'mskip':st.skip=!st.skip;if(st.skip)st.mood=[];render();break;
+ case'mclear':st.mood=[];st.skip=false;render();break;
+ case'bigq':openModal(`<div class="big">${esc(d.q)}</div>${d.ans?`<p class="sub" style="font-size:22px;margin-top:22px" id="ansb"><button class="btn" data-a="showans" data-ans="${esc(d.ans)}">Show answer</button></p>`:''}<div class="acts" style="justify-content:center"><button class="btn pri" data-a="mclose">Close</button></div>`,'q');break;
+ case'showans':{const p=$('#ansb');if(p)p.innerHTML=`<b>${esc(d.ans)}</b>`;break}
+ case'editmenu':openModal(`<h2>Back to Edit</h2><p class="sub">Nothing will be lost.</p><div class="acts"><button class="btn big" data-a="jump" data-i="0">1 · Students</button><button class="btn big" data-a="jump" data-i="1">2 · Calendar</button><button class="btn big" data-a="jump" data-i="2">3 · Weather</button><button class="btn big" data-a="jump" data-i="3">4 · Mood</button></div><div class="acts" style="justify-content:flex-end"><button class="btn" data-a="mclose">Close</button></div>`);break;
+ case'jump':closeModal();go(+d.i);break;
+ case'review':S.review=!S.review;render();break;
+ case'png':exportPNG();break;
+ case'print':try{window.print()}catch(er){toast('Printing is not available here.')}break;
+ case'newcal':ask('Start a new calendar? The current calendar will be erased.','Start new',newCalendar);break;
+ }});
+document.addEventListener('input',e=>{const t=e.target,k=t.dataset&&t.dataset.in;if(!k)return;const i=+t.dataset.i;
+ if(k==='name'){S.students[i].name=t.value;save();$$(`[data-card="${i}"] h3`).forEach(h=>h.textContent=sName(S.students[i]));const f=$('.foot');if(f&&S.step===0)f.outerHTML=footer();return}
+ if(k==='city'){S.students[i].city=t.value;save();updateSentInputs();return}
+ if(k==='sent'){const kind=t.dataset.k,key=t.dataset.key,v={edited:true,text:t.value};if(kind==='c')S.csent[key]=v;else S.students[i].sent[key]=v;t.classList.add('ed');save();return}
+ if(k==='csearch'){const l=$('#clist');if(l)l.innerHTML=clistHTML(i,t.value)}});
+document.addEventListener('change',e=>{const t=e.target,k=t.dataset&&t.dataset.in,i=+t.dataset.i;if(!k)return;
+ if(k==='pron'){S.students[i].pron=t.value;save();return}
+ if(k==='dom'){setDate(S.date.y,S.date.m,+t.value);render()}
+ if(k==='mon'){setDate(S.date.y,+t.value,S.date.d);render()}
+ if(k==='year'){setDate(+t.value,S.date.m,S.date.d);render()}
+ if(t.id==='dp'){const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(t.value);if(m){setDate(+m[1],+m[2],+m[3]);render()}}});
+document.addEventListener('change',e=>{if(e.target.id==='dp'){const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(e.target.value);if(m){setDate(+m[1],+m[2],+m[3]);render()}}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+/* weather/mood changes also need patch-level updates for scene (full render keeps it simple) */
+/* ---------- boot ---------- */
+(function boot(){const sv=loadSaved();S=freshState();
+ if(sv){S=Object.assign(freshState(),sv);S.students.forEach((s,i)=>{s.idx=i;s.sent=s.sent||{};s.weather=s.weather||[];s.mood=s.mood||[];s.country=s.country||'';s.city=s.city||''});S.n=clamp(S.n,1,4);S.students.length=S.n;
+  render();if(S.started)startDialog(sv)}
+ else render()})();
+
+</script>
+</body>
+</html>
