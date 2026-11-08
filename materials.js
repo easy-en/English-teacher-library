@@ -2,6 +2,31 @@
 const materials = [
  
   {
+    title: "HEY, ARE YOU OK?",
+    category: "speaking",
+    level: "A1–A2",
+    type: "Speaking Game",
+    description: "Practise feelings, emotions and supportive conversations through interactive speaking challenges.",
+    link: "HEY%2C%20ARE%20YOU%20OK.html"
+  },
+  {
+    title: "MY WEEK, MY PLANS!",
+    category: "grammar",
+    level: "A2–B1",
+    type: "Interactive Activity",
+    description: "Plan your week, organise activities and practise talking about schedules and future plans.",
+    link: "MY%20WEEK%2C%20MY%20PLANS!%20.html"
+  },
+  {
+    title: "Minecraft: Unlock the Secret Treasure!",
+    category: "grammar",
+    level: "Pre-A1–A1",
+    type: "Interactive Game",
+    description: "Complete 20 Present Simple challenges, collect keys and unlock the secret treasure.",
+    link: "minecraft-treasure%20.html"
+  },
+
+  {
     title: "Build My World",
     category: "grammar",
     level: "Pre-A1–A1",
