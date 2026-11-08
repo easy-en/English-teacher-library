@@ -1,5 +1,39 @@
 // English Teacher Library — game catalogue. Add new games to this list.
 const materials = [
+ 
+  {
+    title: "Build My World",
+    category: "grammar",
+    level: "Pre-A1–A1",
+    type: "Interactive Game",
+    description: "Present Simple: affirmative and negative sentences. Answer questions and build your own world.",
+    link: "build-my-world.html"
+  },
+  {
+    title: "Crime Scene: The Case File",
+    category: "vocabulary",
+    level: "A2–B1",
+    type: "Interactive Game",
+    description: "Wider World 3 | Crime Vocabulary. Investigate crimes, collect clues and practise crime-related words.",
+    link: "Crime%20Scene_%20The%20Case%20File.html"
+  },
+  {
+    title: "Real Life, Real Connections",
+    category: "vocabulary",
+    level: "B1",
+    type: "Interactive Activity",
+    description: "Wider World 3 | Unit 7: People Power. Practise phrasal verbs, everyday expressions and real-life communication.",
+    link: "real-life-real-connections%20.html"
+  },
+  {
+    title: "Shopping Mission",
+    category: "vocabulary",
+    level: "A1–A2",
+    type: "Interactive Game",
+    description: "Wider World 2 | Unit 7: Shops & Containers. Visit different shops, complete shopping tasks and practise containers.",
+    link: "shopping-mission.html"
+  },
+
   { title: "The Future Glitch 2.0", category: "grammar", level: "A1–A2", type: "Interactive Game", description: "Practise future forms in an interactive adventure.", link: "future-glitch-2.html" },
   { title: "Present Simple Adventure", category: "grammar", level: "Pre-A1–A1", type: "Interactive Game", description: "Practise Present Simple with fun interactive challenges.", link: "presentsimpleadventure.html" },
   { title: "Lucky Block Adventure", category: "grammar", level: "Pre-A1–A1", type: "Interactive Game", description: "Break 20 lucky blocks and practise Present Simple affirmative, negative and question forms.", link: "Present%20Simple%20-%20Lucky%20block%20.html" },
