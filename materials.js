@@ -1,6 +1,29 @@
 // Update GitHub Pages - Daily Calendar
 const materials = [
-
+  {
+    title: "My Lunch Box",
+    category: "vocabulary",
+    level: "Pre-A1–A1",
+    type: "Interactive Game",
+    description: "Practise food vocabulary and build your own lunch box.",
+    link: "My%20Lunch%20Box%20(1)%20(1).html"
+  },
+  {
+    title: "Magic Bedroom with Prepositions",
+    category: "grammar",
+    level: "A1",
+    type: "Interactive Game",
+    description: "Create a bedroom and practise prepositions of place.",
+    link: "Magic%20Bedroom%20with%20prepositions%20html.html"
+  },
+  {
+    title: "Magic Bedroom",
+    category: "vocabulary",
+    level: "Pre-A1–A1",
+    type: "Interactive Activity",
+    description: "Design your bedroom and practise furniture vocabulary and writing.",
+    link: "Magic%20Bedroom%20%E2%9C%A8.html"
+  },
   
 {
     title: "Daily Calendar",
