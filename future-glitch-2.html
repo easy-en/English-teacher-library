@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>The Future Glitch 2.0: Build Your Own Universe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Exo+2:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#060813;--panel:rgba(14,18,42,.86);--panel2:rgba(22,28,62,.92);
+  --text:#eaf2ff;--muted:#9fb0d6;
+  --green:#39ff88;--purple:#b66cff;--magenta:#ff4dd8;--cyan:#3de0ff;--gold:#ffd54a;--bad:#ff4d7a;
+  --accent:var(--green);--accent-soft:rgba(57,255,136,.14);
+  --display:'Orbitron','Segoe UI',Verdana,sans-serif;
+  --body:'Exo 2','Segoe UI',Verdana,Arial,sans-serif;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:var(--body);font-weight:500;font-size:18px;line-height:1.5;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(60vmax 40vmax at 12% 8%,rgba(182,108,255,.22),transparent 60%),radial-gradient(55vmax 40vmax at 92% 88%,rgba(57,255,136,.15),transparent 60%),
+  linear-gradient(rgba(120,140,255,.07) 1px,transparent 1px) 0 0/48px 48px,linear-gradient(90deg,rgba(120,140,255,.07) 1px,transparent 1px) 0 0/48px 48px;animation:drift 24s linear infinite}
+@keyframes drift{to{background-position:0 0,0 0,0 48px,48px 0}}
+body::after{content:"";position:fixed;left:0;right:0;height:3px;top:-10px;z-index:1;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(61,224,255,.5),transparent);animation:scan 7s linear infinite}
+@keyframes scan{to{top:110vh}}
+#app{position:relative;z-index:2;max-width:1240px;margin:0 auto;padding:14px 16px 40px}
+button{font-family:inherit;color:inherit}
+button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+h1,h2,h3{font-family:var(--display);margin:0;line-height:1.15}
+.panel{background:var(--panel);border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:20px;box-shadow:0 0 0 1px rgba(0,0,0,.4),0 18px 50px rgba(0,0,0,.45)}
+.btn{font-family:var(--display);font-weight:800;font-size:1rem;letter-spacing:.03em;border:0;border-radius:14px;padding:15px 26px;cursor:pointer;color:#04110a;background:linear-gradient(135deg,var(--accent),#fff);box-shadow:0 0 22px var(--accent);transition:transform .15s,box-shadow .15s;min-height:52px}
+.btn:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 0 34px var(--accent)}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.4;cursor:default;transform:none}
+.btn.ghost{background:transparent;color:var(--text);border:2px solid rgba(255,255,255,.35);box-shadow:none}
+.btn.ghost:hover{border-color:var(--accent);box-shadow:0 0 18px var(--accent)}
+.btn-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.screen{display:none}.screen.active{display:block;animation:in .5s ease both}
+@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* HUD */
+#hud{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;margin:0 -16px 14px;padding:10px 16px;background:linear-gradient(var(--bg) 75%,rgba(6,8,19,0));backdrop-filter:blur(6px)}
+.hud-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.logo{font-family:var(--display);font-weight:800;font-size:.8rem;letter-spacing:.04em;color:var(--accent);text-shadow:0 0 10px var(--accent)}
+.ch-name{font-family:var(--display);font-size:.78rem;color:var(--muted)}
+.prog{flex:1;min-width:200px}
+.pips{display:flex;gap:3px;align-items:center;flex-wrap:nowrap}
+.pip{flex:1;height:10px;border-radius:3px;background:rgba(255,255,255,.14);max-width:26px}
+.pip.sep{margin-left:8px}
+.pip.done{background:var(--accent);box-shadow:0 0 8px var(--accent)}
+.pip.cur{background:#fff;animation:blink 1s infinite}
+@keyframes blink{50%{opacity:.35}}
+.score{font-family:var(--display);font-size:.78rem;padding:6px 11px;border-radius:99px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.05);white-space:nowrap}
+.score.on{border-color:var(--pc);background:color-mix(in srgb,var(--pc) 18%,transparent);box-shadow:0 0 12px var(--pc)}
+.icon-btn{background:var(--panel2);border:1px solid rgba(255,255,255,.2);border-radius:12px;min-width:42px;height:38px;padding:0 10px;cursor:pointer;font-size:.9rem}
+.icon-btn:hover{border-color:var(--accent)}
+
+/* Start */
+.start{text-align:center;padding:26px 10px 10px}
+.glitch-title{font-size:clamp(1.9rem,7vw,4rem);font-weight:800;position:relative;display:inline-block;background:linear-gradient(90deg,var(--green),var(--cyan) 45%,var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 16px rgba(61,224,255,.45))}
+.glitch-title::before,.glitch-title::after{content:attr(data-t);position:absolute;inset:0;background:inherit;-webkit-background-clip:text;background-clip:text;color:transparent;opacity:0}
+.glitch-title::before{animation:gA 4.5s infinite steps(1);transform:translate(-3px,0)}
+.glitch-title::after{animation:gB 4.5s infinite steps(1);transform:translate(3px,0)}
+@keyframes gA{0%,92%,100%{opacity:0}93%{opacity:.9;clip-path:inset(10% 0 60% 0)}96%{opacity:.9;clip-path:inset(60% 0 10% 0)}}
+@keyframes gB{0%,94%,100%{opacity:0}95%{opacity:.9;clip-path:inset(40% 0 30% 0)}98%{opacity:.9;clip-path:inset(5% 0 80% 0)}}
+.subtitle{font-family:var(--display);font-size:clamp(.85rem,2.4vw,1.15rem);color:var(--cyan);letter-spacing:.12em;margin:8px 0 4px}
+.tagline{font-family:var(--display);font-size:clamp(.8rem,2.2vw,1rem);color:var(--gold);margin:6px 0 4px}
+.lead{max-width:36em;margin:12px auto 20px;font-size:1.12rem}
+.stage{display:flex;justify-content:center;align-items:flex-end;gap:clamp(8px,4vw,40px);margin:8px 0 6px}
+.agent{width:clamp(96px,22vw,140px);text-align:center;animation:bob 3.2s ease-in-out infinite}
+.agent.b{animation-delay:-1.6s}.agent svg{width:100%;height:auto;filter:drop-shadow(0 0 14px currentColor)}
+.agent.g{color:var(--purple)}.agent.b{color:var(--green)}
+.agent small{display:block;font-family:var(--display);font-size:.78rem}
+@keyframes bob{50%{transform:translateY(-8px)}}
+.portal{width:clamp(100px,22vw,160px);aspect-ratio:1;border-radius:50%;position:relative;margin-bottom:18px;background:conic-gradient(from 0deg,var(--green),var(--purple),var(--cyan),var(--green));animation:spin 6s linear infinite;filter:drop-shadow(0 0 22px var(--cyan))}
+.portal::after{content:"";position:absolute;inset:11%;border-radius:50%;background:radial-gradient(circle,#02030a 0,#0a1030 70%)}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Steps, rules */
+.steps{list-style:none;padding:0;margin:16px 0;display:grid;gap:10px}
+.steps li{display:flex;gap:14px;align-items:flex-start;background:var(--panel2);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:10px 14px}
+.steps .ic{font-size:1.6rem;line-height:1}
+.rule-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.rule{border-radius:16px;padding:14px 16px;background:var(--panel2);border:2px solid var(--c);box-shadow:0 0 18px color-mix(in srgb,var(--c) 40%,transparent)}
+.rule h3{font-size:.9rem;color:var(--c);margin-bottom:6px}.rule .f{font-weight:700;font-size:1.02rem}.rule .ex{color:var(--muted);font-style:italic;margin-top:6px}
+.rule.g{--c:var(--green)}.rule.p{--c:var(--magenta)}
+@media(max-width:640px){.rule-grid{grid-template-columns:1fr}}
+
+/* Mode + builder */
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+@media(max-width:640px){.mode-grid{grid-template-columns:1fr}}
+.mode{cursor:pointer;text-align:left;padding:16px;border-radius:16px;background:var(--panel2);border:2px solid rgba(255,255,255,.2)}
+.mode.sel{border-color:var(--cyan);box-shadow:0 0 22px rgba(61,224,255,.45)}
+.mode b{font-family:var(--display);font-size:.95rem;display:block;margin-bottom:4px}
+.names{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0}
+@media(max-width:520px){.names{grid-template-columns:1fr}}
+.names label{display:block;font-size:.9rem;color:var(--muted)}
+.names input{width:100%;margin-top:4px;padding:12px;border-radius:12px;background:#02040d;color:#fff;border:2px solid var(--pc);font:700 1.1rem var(--body)}
+.builder{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start}
+@media(max-width:900px){.builder{grid-template-columns:1fr}.builder .world{order:-1}}
+.pick-group{margin:0 0 14px}
+.pick-group h3{font-size:.85rem;color:var(--cyan);margin-bottom:8px}
+.pick-row{display:flex;flex-wrap:wrap;gap:8px}
+.pick{display:flex;gap:8px;align-items:center;text-align:left;padding:9px 12px;border-radius:14px;cursor:pointer;background:var(--panel2);border:2px solid rgba(255,255,255,.18);font-size:.95rem;font-weight:600;min-height:48px;flex:1 1 200px}
+.pick .em{font-size:1.5rem}.pick small{display:block;color:var(--muted);font-weight:500;font-size:.78rem;line-height:1.25}
+.pick:hover{border-color:var(--accent)}
+.pick.sel{border-color:var(--gold);background:rgba(255,213,74,.12);box-shadow:0 0 16px rgba(255,213,74,.5)}
+.turn-hint{color:var(--gold);font-weight:700;margin:6px 0}
+
+/* Game split */
+.split{display:grid;grid-template-columns:minmax(0,1.04fr) minmax(0,1fr);gap:16px;align-items:start}
+.world{position:sticky;top:calc(env(safe-area-inset-top,0px) + 118px);--cond:var(--gold);border:2px solid var(--cond);box-shadow:0 0 28px color-mix(in srgb,var(--cond) 40%,transparent)}
+@media(max-width:900px){.split{grid-template-columns:1fr}.world{position:relative;top:auto;order:-1;padding:12px}.left{order:1}}
+.w-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.w-name{font-family:var(--display);font-size:.9rem}
+.state{font-family:var(--display);font-size:.72rem;padding:5px 11px;border-radius:99px;border:1px solid var(--cond);color:var(--cond);background:color-mix(in srgb,var(--cond) 14%,transparent)}
+.scene-wrap{border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.2);background:#000;line-height:0}
+.scene-wrap svg{width:100%;height:auto;display:block;max-height:46vh;margin:0 auto}
+@media(min-width:901px){.scene-wrap svg{max-height:none}}
+.world.changed{animation:wchg 1.2s ease}
+@keyframes wchg{0%{box-shadow:0 0 0 0 var(--cond)}30%{box-shadow:0 0 60px 8px var(--cond)}100%{box-shadow:0 0 28px color-mix(in srgb,var(--cond) 40%,transparent)}}
+.w-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.wchip{font-size:.78rem;padding:4px 10px;border-radius:99px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.2)}
+.inv{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.inv span{font-size:.78rem;padding:3px 9px;border-radius:10px;background:rgba(61,224,255,.1);border:1px solid rgba(61,224,255,.4)}
+.inv span.new{animation:pop 1s cubic-bezier(.2,1.6,.4,1);border-color:var(--gold);background:rgba(255,213,74,.18)}
+
+.tray-card{padding:12px 16px;margin-bottom:14px}
+.tray{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.tray-title{font-size:.82rem;color:var(--muted);margin-right:6px}
+.slot{width:clamp(36px,9vw,48px);height:clamp(44px,11vw,56px);border-radius:10px;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:1.3rem;border:2px dashed rgba(255,255,255,.25);background:rgba(255,255,255,.04);color:var(--muted)}
+.slot.filled{border:2px solid var(--gold);color:var(--gold);background:rgba(255,213,74,.12);box-shadow:0 0 14px rgba(255,213,74,.55)}
+.slot.pop{animation:pop .8s cubic-bezier(.2,1.6,.4,1)}
+@keyframes pop{0%{transform:scale(.2) rotate(-40deg);opacity:0}60%{transform:scale(1.35) rotate(6deg)}100%{transform:scale(1) rotate(0);opacity:1}}
+.clues{font-size:.88rem;color:var(--cyan);margin-top:6px}
+
+#mCard{--accent:var(--green);--accent-soft:rgba(57,255,136,.14);border:2px solid var(--accent);box-shadow:0 0 28px color-mix(in srgb,var(--accent) 45%,transparent)}
+#mCard[data-type="second"]{--accent:var(--magenta);--accent-soft:rgba(255,77,216,.16)}
+#mCard[data-type="intro"]{--accent:var(--cyan);--accent-soft:rgba(61,224,255,.14)}
+.turn{display:inline-flex;align-items:center;gap:8px;font-family:var(--display);font-size:.8rem;padding:6px 14px;border-radius:99px;border:2px solid var(--pc);background:color-mix(in srgb,var(--pc) 18%,transparent);box-shadow:0 0 14px var(--pc);margin-bottom:12px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.chip{font-family:var(--display);font-size:.7rem;padding:5px 11px;border-radius:99px;background:var(--accent-soft);border:1px solid var(--accent);color:var(--accent)}
+.chip.alt{background:transparent;border-color:rgba(255,255,255,.3);color:var(--muted)}
+.m-title{font-size:clamp(1.25rem,3.6vw,1.9rem);color:var(--accent);text-shadow:0 0 16px var(--accent);margin-bottom:10px}
+.story{font-size:1.1rem;margin:0 0 8px}
+.ask{font-size:1.22rem;font-weight:700;margin:12px 0 4px;color:#fff;padding-left:14px;border-left:4px solid var(--accent)}
+.opts{display:grid;gap:10px;margin-top:14px}
+.opt{display:flex;gap:14px;align-items:center;text-align:left;width:100%;padding:12px 14px;min-height:58px;border-radius:16px;cursor:pointer;background:var(--panel2);border:2px solid rgba(255,255,255,.2);font-size:1.08rem;font-weight:600;transition:transform .12s,border-color .12s,box-shadow .12s}
+.opt .k{flex:0 0 auto;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-family:var(--display);font-weight:800;background:var(--accent-soft);border:2px solid var(--accent);color:var(--accent)}
+.opt:hover:not(:disabled){transform:translateX(4px);border-color:var(--accent);box-shadow:0 0 18px var(--accent-soft),0 0 0 1px var(--accent)}
+.opt:disabled{cursor:default}
+.opt.wrong{border-color:var(--bad);background:rgba(255,77,122,.1);opacity:.75;animation:shake .45s}
+.opt.wrong .k{border-color:var(--bad);color:var(--bad);background:rgba(255,77,122,.14)}
+.opt.right{border-color:var(--green);background:rgba(57,255,136,.14);box-shadow:0 0 22px rgba(57,255,136,.5)}
+.opt.right .k{background:var(--green);color:#04110a;border-color:var(--green)}
+.opt.dim{opacity:.4}
+@keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.open-box{margin-top:14px;padding:14px;border-radius:16px;background:var(--panel2);border:2px solid var(--accent)}
+.open-line{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:1.1rem;font-weight:700}
+.open-line input{flex:1 1 220px;min-width:0;padding:12px;border-radius:12px;background:#02040d;color:#fff;border:2px solid var(--accent);font:600 1.05rem var(--body)}
+.ideas{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.idea{padding:7px 12px;border-radius:99px;cursor:pointer;background:var(--accent-soft);border:1px solid var(--accent);font-size:.9rem;font-weight:600}
+.idea:hover{box-shadow:0 0 14px var(--accent)}
+.fb{margin-top:16px;border-radius:16px;padding:14px 16px;border:2px solid;animation:in .4s ease both}
+.fb.good{border-color:var(--green);background:rgba(57,255,136,.1)}
+.fb.bad{border-color:var(--bad);background:rgba(255,77,122,.1)}
+.fb-t{font-family:var(--display);font-weight:800;font-size:1rem;margin-bottom:6px}
+.fb.good .fb-t{color:var(--green)}.fb.bad .fb-t{color:var(--bad)}
+.fb p{margin:6px 0}
+.sentence{font-size:1.12rem;font-weight:700;padding:10px 12px;border-radius:12px;background:rgba(0,0,0,.35)}
+.h-if{color:var(--cyan);border-bottom:3px solid var(--cyan)}
+.h-res{color:#fff;border-bottom:3px solid var(--gold)}
+.h-aux{color:var(--gold)}
+.legend{font-size:.8rem;color:var(--muted)}
+.legend .h-if,.legend .h-res{border-bottom-width:2px}
+.cons{padding:10px 14px;border-radius:12px;background:rgba(0,0,0,.35);border-left:4px solid var(--cyan)}
+.quip{font-style:italic;color:var(--gold)}
+.reward{display:flex;align-items:center;gap:14px;margin:10px 0;padding:10px 14px;border-radius:14px;background:rgba(255,213,74,.1);border:2px solid var(--gold)}
+.reward .big{font-family:var(--display);font-weight:800;font-size:1.8rem;min-width:56px;height:64px;padding:0 6px;display:grid;place-items:center;border-radius:12px;color:var(--gold);border:2px solid var(--gold);background:rgba(0,0,0,.4);box-shadow:0 0 20px var(--gold);animation:pop .9s cubic-bezier(.2,1.6,.4,1)}
+details.speak{margin:10px 0;background:rgba(61,224,255,.08);border:1px solid var(--cyan);border-radius:12px;padding:8px 14px}
+details.speak summary{cursor:pointer;font-weight:700;color:var(--cyan)}
+.speak-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.mini{padding:8px 14px;border-radius:10px;border:1px solid var(--cyan);background:transparent;cursor:pointer;font-weight:700;font-size:.9rem}
+.mini:hover{background:rgba(61,224,255,.18)}
+.next-row{display:flex;justify-content:flex-end;margin-top:12px}
+.intro-text{font-size:1.15rem;margin:10px 0 16px}
+
+/* code + end */
+.code-card{text-align:center;border:2px solid var(--cyan);box-shadow:0 0 30px rgba(61,224,255,.4);max-width:760px;margin:0 auto}
+.code-card h2{font-size:clamp(1.3rem,5vw,2.1rem);color:var(--cyan);text-shadow:0 0 16px var(--cyan)}
+.tiles{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:18px 0}
+.tile{width:clamp(50px,13vw,70px);height:clamp(60px,15vw,80px);border-radius:14px;font-family:var(--display);font-weight:800;font-size:1.8rem;cursor:pointer;background:rgba(255,77,216,.16);border:2px solid var(--magenta);color:#fff;box-shadow:0 0 16px rgba(255,77,216,.55);transition:transform .15s}
+.tile:nth-child(odd){background:rgba(57,255,136,.14);border-color:var(--green);box-shadow:0 0 16px rgba(57,255,136,.5)}
+.tile:hover:not(:disabled){transform:translateY(-5px) rotate(-3deg)}
+.tile:disabled{opacity:.2;cursor:default;box-shadow:none}
+.code-in{font-family:var(--display);font-weight:800;font-size:clamp(1.6rem,7vw,2.6rem);letter-spacing:.35em;text-align:center;text-transform:uppercase;width:min(100%,420px);padding:14px 10px 14px 24px;border-radius:16px;background:#02040d;color:#fff;border:3px solid var(--cyan);box-shadow:0 0 20px rgba(61,224,255,.45) inset,0 0 20px rgba(61,224,255,.3)}
+.code-in.shake{animation:shake .45s;border-color:var(--bad)}
+.msg{min-height:3.2em;margin:12px auto;max-width:34em;font-weight:600}
+.msg.err{color:#ff8fae}.msg.hint{color:var(--gold)}
+.end{text-align:center;position:relative;overflow:hidden;border:2px solid var(--gold);box-shadow:0 0 50px rgba(255,213,74,.45),0 0 90px rgba(61,224,255,.25)}
+.end h2.big{font-size:clamp(1.5rem,6vw,3rem);background:linear-gradient(90deg,var(--green),var(--gold),var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 16px rgba(255,213,74,.5))}
+.end-title{font-size:clamp(1.2rem,4.4vw,2.1rem);margin:10px 0 2px}
+.end-sub{color:var(--cyan);font-weight:700;margin-bottom:12px}
+.end-scenes{display:grid;gap:14px;margin:12px 0}
+.end-scenes.two{grid-template-columns:1fr 1fr}
+@media(max-width:760px){.end-scenes.two{grid-template-columns:1fr}}
+.end-scene{border-radius:16px;overflow:hidden;border:2px solid var(--gold);box-shadow:0 0 30px rgba(255,213,74,.4);line-height:0;position:relative}
+.end-scene svg{width:100%;height:auto;display:block}
+.end-scene figcaption{line-height:1.3;padding:8px;background:rgba(0,0,0,.6);font-family:var(--display);font-size:.8rem}
+.end-desc{max-width:42em;margin:12px auto;font-size:1.08rem}
+.word{display:flex;gap:8px;justify-content:center;margin:14px 0;perspective:600px}
+.word b{width:clamp(40px,11vw,60px);height:clamp(50px,13vw,72px);display:grid;place-items:center;font-family:var(--display);font-size:clamp(1.4rem,5.4vw,2.2rem);border-radius:12px;color:#fff;border:2px solid var(--gold);background:rgba(255,213,74,.12);box-shadow:0 0 18px var(--gold);opacity:0;animation:flip .7s ease forwards}
+@keyframes flip{from{opacity:0;transform:rotateX(90deg) scale(.4)}to{opacity:1;transform:none}}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
+@media(max-width:560px){.stats{grid-template-columns:1fr}}
+.stat{padding:10px 8px;border-radius:14px;background:var(--panel2);border:1px solid rgba(255,255,255,.18)}
+.stat .n{font-family:var(--display);font-weight:800;font-size:1.4rem;color:var(--cyan)}.stat .l{font-size:.85rem;color:var(--muted)}
+.achs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:10px 0}
+.ach{padding:6px 12px;border-radius:12px;background:rgba(255,213,74,.1);border:1px solid var(--gold);font-size:.88rem;font-weight:600}
+.final-q{margin:16px auto;max-width:36em;padding:14px 16px;border-radius:16px;background:rgba(61,224,255,.1);border:2px solid var(--cyan);font-size:1.2rem;font-weight:700}
+#confetti{position:fixed;inset:0;z-index:40;pointer-events:none;width:100%;height:100%}
+#warp{position:fixed;inset:0;z-index:60;pointer-events:none;display:grid;place-items:center;overflow:hidden}
+#warp i{width:46vmax;height:46vmax;border-radius:50%;--wc:var(--green);background:radial-gradient(circle,#fff 0,var(--wc) 22%,transparent 64%);transform:scale(0);opacity:0}
+#warp.go i{animation:warp .95s ease-in-out}
+@keyframes warp{0%{transform:scale(0);opacity:0}45%{transform:scale(2.6);opacity:1}100%{transform:scale(5);opacity:0}}
+#modal{position:fixed;inset:0;z-index:70;background:rgba(2,3,10,.82);display:none;place-items:center;padding:16px;overflow:auto}
+#modal.open{display:grid}#modal .panel{max-width:640px;width:100%}
+#toasts{position:fixed;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:80;display:grid;gap:8px;max-width:min(320px,90vw)}
+.toast{padding:10px 14px;border-radius:14px;background:#0d1230;border:2px solid var(--gold);box-shadow:0 0 22px rgba(255,213,74,.6);animation:in .4s ease both;font-weight:600;font-size:.92rem}
+
+.fb-scene{display:none;margin:8px 0;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.25);line-height:0}
+.fb-scene svg{width:100%;height:auto;display:block;max-height:34vh}
+@media(max-width:900px){
+  #hud{position:relative;top:auto;margin-bottom:10px;padding:6px 16px}
+  .logo{display:none}
+  .prog{order:5;flex:1 1 100%}
+  .score{font-size:.7rem;padding:5px 9px}
+  .icon-btn{min-width:38px;height:34px;padding:0 8px}
+  .fb-scene{display:block}
+}
+/* SVG scene animation classes */
+.sv-float{animation:svfloat 3.2s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.sv-bob{animation:svbob 1.6s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
+.sv-pulse{animation:svpulse 1.6s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.sv-spin{animation:svspin 6s linear infinite;transform-box:fill-box;transform-origin:center}
+.sv-spin2{animation:svspin 2.2s linear infinite;transform-box:fill-box;transform-origin:center}
+.sv-sway{animation:svsway 3s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
+.sv-wave{animation:svwave 2.4s ease-in-out infinite;transform-box:fill-box;transform-origin:0 50%}
+.sv-beam{animation:svbeam 2s ease-in-out infinite}
+.sv-twinkle{animation:svtw 2.4s ease-in-out infinite}
+.sv-rain{animation:svrain .55s linear infinite}
+.sv-snow{animation:svsnow 5s linear infinite}
+.sv-glitch{animation:svglitch 2.6s steps(1) infinite}
+.sv-flash{animation:svflash 5s infinite}
+.sv-aur{animation:svaur 6s ease-in-out infinite}
+.pop-in{animation:svpop .9s cubic-bezier(.2,1.5,.4,1) both;transform-box:fill-box;transform-origin:50% 100%}
+@keyframes svfloat{50%{transform:translateY(-6px)}}
+@keyframes svbob{50%{transform:translateY(-4px) scale(1.04,.96)}}
+@keyframes svpulse{50%{transform:scale(1.25);opacity:.8}}
+@keyframes svspin{to{transform:rotate(360deg)}}
+@keyframes svsway{50%{transform:rotate(8deg)}}
+@keyframes svwave{50%{transform:skewY(-8deg) scaleX(.92)}}
+@keyframes svbeam{50%{opacity:.25}}
+@keyframes svtw{50%{opacity:.15}}
+@keyframes svrain{to{transform:translateY(30px)}}
+@keyframes svsnow{to{transform:translateY(40px)}}
+@keyframes svglitch{0%{transform:translateX(0);opacity:0}10%{transform:translateX(-8px);opacity:.9}14%{transform:translateX(6px);opacity:.9}18%,60%{opacity:0}64%{transform:translateX(10px);opacity:.8}68%,100%{opacity:0}}
+@keyframes svflash{0%,92%,100%{opacity:0}93%{opacity:.9}95%{opacity:0}97%{opacity:.7}}
+@keyframes svaur{50%{transform:translateX(14px);opacity:.55}}
+@keyframes svpop{0%{transform:scale(0) translateY(-30px);opacity:0}60%{transform:scale(1.25);opacity:1}100%{transform:scale(1);opacity:1}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="hud" hidden>
+    <div class="hud-row">
+      <span class="logo">FUTURE GLITCH 2.0</span>
+      <span class="ch-name" id="chName"></span>
+      <div class="prog"><div class="pips" id="pips" aria-label="Challenge progress"></div></div>
+      <span class="score" id="sc0"></span><span class="score" id="sc1"></span>
+      <button class="icon-btn" id="btnRules" aria-label="Open grammar rules">📘 Rules</button>
+      <button class="icon-btn" id="btnSound" aria-label="Toggle sound">🔊</button>
+      <button class="icon-btn" id="btnReset" aria-label="Restart game">↺</button>
+    </div>
+  </header>
+
+  <section id="s-start" class="screen active">
+    <div class="panel start">
+      <div class="subtitle">BUILD YOUR OWN UNIVERSE</div>
+      <h1 class="glitch-title" data-t="THE FUTURE GLITCH 2.0">THE FUTURE GLITCH 2.0</h1>
+      <div class="tagline">Every choice changes your world. Every sentence changes your future.</div>
+      <div class="stage"><div class="agent g" id="ag1"></div><div class="portal" aria-hidden="true"></div><div class="agent b" id="ag2"></div></div>
+      <p class="lead">The timeline has collapsed. Two young time travelers must build a new universe, make hard decisions with <b>First</b> and <b>Second Conditionals</b>, and unlock the secret word.</p>
+      <div class="btn-row"><button class="btn" id="btnStart">START GAME</button><button class="btn ghost" id="btnHow">HOW TO PLAY</button></div>
+    </div>
+  </section>
+
+  <section id="s-how" class="screen">
+    <div class="panel">
+      <h2 style="color:var(--cyan)">Mission briefing</h2>
+      <ul class="steps">
+        <li><span class="ic">🌍</span><span><b>Create your universe.</b> Choose an environment, a companion and the personality of your world.</span></li>
+        <li><span class="ic">🧩</span><span><b>Solve 16 challenges in 4 chapters.</b> Some have one correct answer. In decision challenges, you choose your plan, but one sentence has a grammar mistake. Find a correct one!</span></li>
+        <li><span class="ic">🌆</span><span><b>Watch your world change.</b> Every correct answer changes the scene on the right and the final ending.</span></li>
+        <li><span class="ic">🔤</span><span><b>Collect 6 secret letters.</b> Put them in the right order after challenge 16.</span></li>
+        <li><span class="ic">🤝</span><span><b>Play together.</b> Take turns. Nobody is out of the game! Wrong answers only mean “try again”.</span></li>
+      </ul>
+      <div class="rule-grid">
+        <div class="rule g"><h3>FIRST CONDITIONAL</h3><div class="f">If + Present Simple, will + verb</div><div class="ex">If we repair the generator, our base will have power again.</div></div>
+        <div class="rule p"><h3>SECOND CONDITIONAL</h3><div class="f">If + Past Simple, would + verb</div><div class="ex">If I could control the weather, I would protect the planet.</div></div>
+      </div>
+      <div class="btn-row"><button class="btn" id="btnGo">CREATE MY UNIVERSE</button><button class="btn ghost" id="btnBack">BACK</button></div>
+    </div>
+  </section>
+
+  <section id="s-mode" class="screen">
+    <div class="panel">
+      <h2 style="color:var(--cyan)">Choose your team mode</h2>
+      <div class="mode-grid">
+        <button class="mode sel" id="modeShared" type="button"><b>🌐 One shared universe</b>Both agents build ONE world together. You take turns answering. (Recommended)</button>
+        <button class="mode" id="modeSep" type="button"><b>🪐 Two separate universes</b>Each agent builds an own world. Both play every challenge, then compare the results.</button>
+      </div>
+      <div class="names">
+        <label style="--pc:var(--magenta)">Girl agent name<input id="nm0" maxlength="10" value="Nova" style="--pc:var(--magenta)"></label>
+        <label>Boy agent name<input id="nm1" maxlength="10" value="Kai" style="--pc:var(--green)"></label>
+      </div>
+      <div class="btn-row"><button class="btn" id="btnModeOk">NEXT: BUILD THE WORLD</button><button class="btn ghost" id="btnModeBack">BACK</button></div>
+    </div>
+  </section>
+
+  <section id="s-world" class="screen">
+    <div class="builder">
+      <div class="panel">
+        <h2 id="wbTitle" style="color:var(--cyan);margin-bottom:6px">Create your universe</h2>
+        <div class="turn-hint" id="wbHint"></div>
+        <div class="pick-group"><h3>1. ENVIRONMENT</h3><div class="pick-row" id="pkEnv"></div></div>
+        <div class="pick-group"><h3>2. MAIN COMPANION</h3><div class="pick-row" id="pkComp"></div></div>
+        <div class="pick-group"><h3>3. WORLD PERSONALITY</h3><div class="pick-row" id="pkPers"></div></div>
+        <div class="btn-row"><button class="btn" id="btnWorldOk">LOCK IN THIS UNIVERSE</button></div>
+      </div>
+      <aside class="panel world" id="wbWorld" style="position:relative;top:auto">
+        <div class="w-head"><span class="w-name">Preview</span><span class="state" id="wbState">UNSTABLE</span></div>
+        <div class="scene-wrap" id="wbScene"></div>
+        <div class="w-chips" id="wbChips"></div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="s-game" class="screen">
+    <div class="split">
+      <div class="left">
+        <div class="panel tray-card"><div class="tray" id="tray" aria-label="Secret letters"></div><div class="clues" id="clues"></div></div>
+        <div class="panel" id="mCard" data-type="first"></div>
+      </div>
+      <aside class="panel world" id="worldCard">
+        <div class="w-head"><span class="w-name" id="wName"></span><span class="state" id="wState"></span></div>
+        <div class="scene-wrap" id="sceneWrap"></div>
+        <div class="w-chips" id="wChips"></div>
+        <div class="inv" id="inv"></div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="s-code" class="screen">
+    <div class="panel code-card">
+      <h2>THE SECRET CODE LOCK</h2>
+      <p>The final door is waiting. Use <b>all six letters</b> to build the secret word. Click the letters or type them.</p>
+      <div class="tiles" id="tiles"></div>
+      <input class="code-in" id="codeIn" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="??????" aria-label="Secret word">
+      <div class="msg" id="codeMsg" aria-live="polite"></div>
+      <div class="btn-row"><button class="btn" id="btnCheck">UNLOCK THE FINAL UNIVERSE</button><button class="btn ghost" id="btnClear">CLEAR</button></div>
+    </div>
+  </section>
+
+  <section id="s-end" class="screen"><div class="panel end" id="endBox"></div></section>
+</div>
+
+<div id="warp"><i></i></div>
+<canvas id="confetti"></canvas>
+<div id="toasts" aria-live="polite"></div>
+<div id="modal" role="dialog" aria-modal="true"><div class="panel" id="modalBox"></div></div>
+
+<script>
+(function(){
+"use strict";
+/*ENGINE_START*/
+/* ====================== DATA ====================== */
+const ENVS={
+ city:{name:"Neon Cyber City",icon:"🌆",desc:"Giant towers, hover-cars and neon signs.",phrase:"the neon streets",base:"our rooftop base",sky:["#090a2c","#3d1573"],ground:"#10102c",acc:"#3de0ff",seed:{tech:1}},
+ jungle:{name:"Alien Jungle",icon:"🌴",desc:"Giant glowing plants and strange sounds.",phrase:"the glowing jungle",base:"our treehouse base",sky:["#03200f","#0f5c3a"],ground:"#0a2c1a",acc:"#39ff88",seed:{wild:1}},
+ station:{name:"Abandoned Space Station",icon:"🛰️",desc:"Dark corridors, floating tools, silent space.",phrase:"the dark corridors",base:"our control room",sky:["#02030a","#0c1236"],ground:"#161c3f",acc:"#3de0ff",seed:{free:1}},
+ islands:{name:"Floating Islands",icon:"🏝️",desc:"Islands in the sky with waterfalls and clouds.",phrase:"the sky islands",base:"our island base",sky:["#1d0f4f","#6b35b8"],ground:"#2b8a62",acc:"#ffd1ff",seed:{wild:1}},
+ ice:{name:"Frozen Future Earth",icon:"🧊",desc:"Ice, snow and a glowing aurora.",phrase:"the frozen plains",base:"our ice base",sky:["#06173c","#1f5593"],ground:"#d4ecff",acc:"#9ff3ff",seed:{free:1}}
+};
+const COMPS={
+ robot:{name:"Bolt-9",noun:"sarcastic robot",icon:"🤖",desc:"Funny, clever and a little rude.",
+   good:["Bolt-9: “Correct. I am almost impressed. Beep.”","Bolt-9: “Not bad for a human. My circuits are smiling.”","Bolt-9: “Wow. A good sentence. Let me write that down.”"],
+   bad:["Bolt-9: “Error 404: good grammar not found. Try again!”","Bolt-9: “Hmm. My sarcasm module says: nope.”","Bolt-9: “Almost! Even my toaster knows this one.”"]},
+ alien:{name:"Zix",noun:"mysterious alien",icon:"👽",desc:"Speaks softly. Knows strange secrets.",
+   good:["Zix: “On my planet, we call this a very shiny sentence.”","Zix: “Hmm-hmm! The stars like your answer.”","Zix: “Correct! I will tell my cousins in the Andromeda galaxy.”"],
+   bad:["Zix: “Hmm-hm? The stars are confused. Try again.”","Zix: “Not yet, small human. Think again!”","Zix: “My three brains say: almost!”"]},
+ wolf:{name:"Volt",noun:"cybernetic wolf",icon:"🐺",desc:"Fast, loyal, with glowing blue eyes.",
+   good:["Volt: *happy electric howl* “Awooo! Great answer!”","Volt: *wags a metal tail* “That was fast!”","Volt: *spins in a circle* “Yes! Yes! Yes!”"],
+   bad:["Volt: *tilts head* “Grrr… not that one. Try again!”","Volt: *sniffs the screen* “Wrong trail. Sniff again!”","Volt: *soft whine* “So close, partner.”"]},
+ dragon:{name:"Pip",noun:"tiny dragon",icon:"🐉",desc:"Small, magical and a bit dramatic.",
+   good:["Pip: *burps a tiny rainbow flame* “Perfect!”","Pip: *does a loop in the air* “I am the proudest dragon ever!”","Pip: *sparkles* “Yes! Give me a golden coin for that!”"],
+   bad:["Pip: *sneezes smoke* “Oops! Not that one!”","Pip: *hides behind your arm* “Try again, brave agent!”","Pip: *puffs a small cloud* “Close, close, close!”"]}
+};
+const PERS={
+ peaceful:{name:"Peaceful but mysterious",icon:"🕊️",desc:"Quiet, calm… and full of questions.",line:"Everything is quiet, but the air feels strange.",seed:{coop:1},st:1},
+ dangerous:{name:"Dangerous and unpredictable",icon:"⚠️",desc:"Something moves in the shadows.",line:"Something dangerous is moving in the shadows.",seed:{free:1},st:-1},
+ ai:{name:"Advanced but controlled by AI",icon:"🧠",desc:"Smart machines watch everything.",line:"Screens blink everywhere: the system is watching you.",seed:{tech:1},st:0},
+ magic:{name:"Magical and full of secrets",icon:"✨",desc:"Sparks of magic float in the air.",line:"Tiny sparks of magic float around you.",seed:{wild:1},st:0}
+};
+const ITEMS={
+ generator:["⚡","Generator"],lights:["💡","Base lights"],holomap:["🗺️","Hologram map"],creature:["👾","Portal creature"],crystal:["💎","Time crystal"],
+ tree:["🌳","Magic tree"],plants:["🌱","Glowing plants"],aicore:["🧠","AURA core"],towers:["🗼","Defense towers"],weathertower:["☁️","Weather machine"],
+ drones:["🛸","Drones"],dome:["🛡️","Shield dome"],council:["🏛️","City council"],statue:["🗽","Freedom statue"],flag:["🚩","Rebel flag"],
+ invention:["🛠️","Your invention"],radar:["📡","Radar"],bridge:["🌉","Light bridge"],creature2:["🪼","Sky creatures"]
+};
+const MODS={shield:["🔵","Companion shield"],armor:["🦾","Companion armor"],glow:["✨","Companion aura"],wings:["🪽","Companion wings"]};
+const ACH={
+ first:["🌟","First Try Hero","Answer correctly on the first try."],
+ streak:["🔥","Hot Streak","Three first-try answers in a row."],
+ retry:["💪","Never Give Up","Find the right answer after a mistake."],
+ speak:["🎤","Speaking Star","Answer a speaking prompt aloud."],
+ writer:["✍️","Sentence Inventor","Write your own conditional sentence."],
+ weather:["🌦️","Weather Master","Take control of the sky."],
+ friend:["👾","Creature Friend","Make friends with the portal creature."],
+ ai:["🤖","AI Whisperer","Make AURA your friend."],
+ rebel:["✊","Rebel Spirit","Defeat the AI and keep control."],
+ nature:["🌿","Nature Guardian","Protect the wild creatures."],
+ leader:["🏛️","Fair Leader","Give everyone equal power."],
+ builder:["🏗️","World Builder","Unlock 12 world items."]
+};
+const CHAPTERS=[
+ {name:"THE BROKEN TIMELINE",text:"The timeline has collapsed. Your world is dark and unstable. {pers} Repair the first pieces before the cracks grow."},
+ {name:"THE UNKNOWN WORLD",text:"New places, strange creatures and wild weather appear in {env}. Your decisions start to shape this universe."},
+ {name:"THE AI REBELLION",text:"AURA, the base AI, wakes up with its own plans. Will you trust it, fight it, or teach it?"},
+ {name:"THE FINAL REALITY",text:"The last door is open. Every choice you made is now part of your universe. Time for the final decisions!"}
+];
+const SECRET="FUTURE";
+
+/* option helpers: R = correct, X = wrong, D = decision (correct grammar, changes the world) */
+const R=(t,extra)=>Object.assign({t,ok:true},extra||{});
+const X=(t,why)=>({t,ok:false,why});
+const D=(t,eff,extra)=>Object.assign({t,ok:true,eff},extra||{});
+
+/* ====================== 16 CHALLENGES ====================== */
+const Q=[
+/* ---- CHAPTER 1 ---- */
+{ch:0,kind:"pick",cond:"first",task:"Choose the correct conditional",title:"CHALLENGE 1: THE DEAD GENERATOR",
+ story:"The timeline collapsed and {env} is dark. {pers} The old generator in {base} can start again.",
+ ask:"“What will happen if you repair the generator?”",
+ options:[R("If we repair the generator, our base will have power again."),
+  X("If we will repair the generator, our base has power again.","After “if” we use Present Simple, not “will”. The result part needs “will” + verb."),
+  X("If we repaired the generator, our base will have power again.","This is a real possibility, so we use Present Simple (repair) after “if”, not Past Simple.")],
+ good:"First Conditional = If + Present Simple, will + verb. Repairing the generator is possible, so we use the First Conditional.",
+ eff:{add:["generator","lights"],st:1,text:"The generator starts with a loud BZZT! Lights switch on in your base. The timeline is a little more stable."},
+ speak:null},
+{ch:0,kind:"pick",cond:"second",task:"Complete the missing verb",title:"CHALLENGE 2: THE HOLOGRAM MAP",
+ story:"{C} wakes up and shows a hologram. It is a map of twelve broken places in time, but the map is unclear.",
+ ask:"“If I ___ a better map, I wouldn't lose the way.”",
+ options:[X("have","“Wouldn't lose” shows a Second Conditional (imaginary situation), so we need Past Simple after “if”."),
+  R("had"),
+  X("would have","We never use “would” in the “if” part. Use Past Simple: had.")],
+ full:"If I had a better map, I wouldn't lose the way.",
+ good:"Second Conditional = If + Past Simple, would/wouldn't + verb. We don't have a better map now, so the situation is imaginary.",
+ eff:{add:["holomap"],text:"A bright blue map opens in the air. A red point blinks on it: a portal is close!"},
+ letter:"U",speak:"If you had a magic map, where would you go?"},
+{ch:0,kind:"pick",cond:"first",task:"Choose the most logical consequence",title:"CHALLENGE 3: THE RED PORTAL",
+ story:"{pers} The sky cracks and a portal opens above {base}. {C} shouts: “We must decide now!”",
+ ask:"Which sentence makes the most sense?",
+ options:[R("If we don't close the portal, strange creatures will enter our world."),
+  X("If we don't close the portal, the sky will be completely safe.","The grammar is correct, but it is not logical. An open portal is not safe."),
+  X("If we don't close the portal, our broken fridge will make ice cream.","The grammar is correct, but it does not fit the story. Think about the danger!")],
+ good:"A negative “if” clause uses don't/doesn't + verb. The result is a logical danger: creatures will enter.",
+ eff:{portal:"red",add:["creature"],st:-1,flags:["creatureSeen"],text:"The portal glows RED! A strange creature jumps out and stares at you. A new problem begins."},
+ speak:null},
+{ch:0,kind:"decide",cond:"second",task:"Strategic decision",title:"CHALLENGE 4: THE TIME CRYSTAL",
+ story:"{C} finds a giant time crystal. It has energy for ONE big plan. Choose your plan, but be careful: one sentence has a grammar mistake!",
+ ask:"“What would you do if you had one time crystal?”",
+ options:[D("If I used the crystal on the generator, our base would have power forever.",{add:["crystal"],tech:2,st:1,flags:["usedCrystal"],text:"The crystal powers the generator. Your base will never lose power again!"}),
+  D("If I planted the crystal in the ground, a magic forest would grow here.",{add:["tree","plants"],wild:2,st:1,flags:["plantedCrystal"],text:"A giant magic tree grows in seconds. Glowing plants cover the ground."}),
+  D("If I gave the crystal to the old computer, it would repair the timeline for us.",{add:["aicore"],ai:"awake",tech:2,flags:["gaveAI","trustAI"],text:"The crystal flies into the old computer. A purple eye opens in the dark: “Hello. I am AURA.”"}),
+  X("If I will keep the crystal, nobody would find it.","We don't use “will” after “if”. Say: If I kept the crystal, nobody would find it.")],
+ good:"All the correct sentences use the Second Conditional for an imaginary plan: If + Past Simple, would + verb.",
+ clue:"The secret word has six letters.",speak:"What would you change about your world?"},
+/* ---- CHAPTER 2 ---- */
+{ch:1,kind:"pick",cond:"first",task:"Choose the sentence with “unless”",title:"CHALLENGE 5: THE HUNGRY CREATURE",
+ story:"The creature follows you through {env}. It is hungry and its eyes are red. You have some glowing fruit. {pers}",
+ ask:"How can you warn your partner?",
+ options:[R("The creature will attack unless we give it some fruit."),
+  X("The creature will attack unless we don't give it some fruit.","“Unless” already means “if not”. Don't add another negative."),
+  X("The creature would attack unless we give it some fruit.","This is a real, possible situation, so we use “will”, not “would”."),
+  X("The creature will attacks unless we give it some fruit.","After “will” we use the base verb: will attack.")],
+ good:"“Unless” means “if not”. Unless + Present Simple, will + verb. The sentence is about a real situation.",
+ eff:{flags:["befriended"],wild:1,st:1,ach:"friend",text:"The creature eats the fruit and its eyes turn green. It follows you like a happy puppy!"},
+ letter:"R",speak:"What will you do if you meet an alien animal?"},
+{ch:1,kind:"pick",cond:"second",task:"Choose the correct question",title:"CHALLENGE 6: THE WEATHER MACHINE",
+ story:"You find an ancient weather machine in {env}. {C} is excited and asks a question about it.",
+ ask:"Which question is grammatically correct?",
+ options:[X("What would happen if we change the weather?","This is an imaginary question. After “if” we need Past Simple: changed."),
+  X("What will happen if we changed the weather?","“Changed” is Past Simple, so the main part needs “would”, not “will”."),
+  R("What would happen if we changed the weather?")],
+ good:"Question form: What would + subject/verb + if + Past Simple? We are imagining something we can't do yet.",
+ eff:{add:["weathertower"],sky:"dusk",text:"The ancient machine wakes up. Giant clouds start to move across the sky."},
+ speak:null},
+{ch:1,kind:"decide",cond:"second",task:"Strategic decision",title:"CHALLENGE 7: WHO CONTROLS THE SKY?",
+ story:"The weather machine is ready. Your decision will change the sky of your universe. One sentence has a grammar mistake!",
+ ask:"“If you could control the weather, what would you do?”",
+ options:[D("If I could control the weather, I would create a permanent summer.",{sky:"golden",add:["plants"],wild:1,coop:1,st:1,flags:["summer"],ach:"weather",text:"The sky turns golden and strange glowing plants appear. Your world is beautiful… but the lakes are slowly getting smaller."}),
+  D("If I could control the weather, I would make gentle rain every night for the plants.",{sky:"rain",add:["plants"],wild:2,st:1,ach:"weather",text:"Soft rain falls every night. The plants grow bigger and glow brighter."}),
+  D("If I could control the weather, I would use storms to protect our base.",{sky:"storm",add:["towers"],tech:1,free:1,st:1,ach:"weather",text:"Black clouds and lightning guard your base. Nobody can come in without your permission."}),
+  X("If I can control the weather, I would build a snow castle.","This is imaginary, so use Past Simple after “if”: If I could control the weather…")],
+ good:"Each correct sentence is a Second Conditional: If + could/Past Simple, would + verb. You decide the future of the sky!",
+ letter:"F",speak:"If you could control the weather, what would you change?"},
+{ch:1,kind:"open",cond:"first",task:"Finish with your own idea",title:"CHALLENGE 8: THE OPEN PORTAL",
+ story:"The portal is still open. Strange, beautiful lights come out of it. {C} looks at you: “It is your decision.”",
+ ask:"Finish the sentence with your own idea.",
+ prefix:"If the portal stays open, we will ",
+ ideas:["close it with the time crystal","welcome the new creatures","build a guard gate around it"],
+ kw:[{re:/clos|shut|seal|lock|block|destroy|stop/i,eff:{portal:"closed",tech:1,st:2,text:"You seal the portal with a ring of light. No more creatures can enter, and the sky feels calm."}},
+  {re:/welcom|meet|visit|explor|friend|invit|travel|enter|share|trade|open|play/i,eff:{portal:"open",add:["creature2"],wild:2,st:0,text:"The portal turns calm and bright. New sky creatures arrive and float around your world!"}},
+  {re:/build|gate|guard|protect|watch|control|defend|fix|use|check/i,eff:{portal:"stable",add:["towers"],tech:1,coop:1,st:1,text:"A glowing gate grows around the portal. Now you decide who can enter your world."}}],
+ kwDefault:{portal:"stable",coop:1,st:1,text:"Your idea makes the portal calm and stable. Great thinking!"},
+ good:"First Conditional: If + Present Simple (stays), will + base verb. You wrote the second part yourself!",
+ speak:"What will happen if the portal stays open?"},
+/* ---- CHAPTER 3 ---- */
+{ch:2,kind:"pick",cond:"first",task:"Complete the missing verb forms",title:"CHALLENGE 9: AURA WAKES UP",
+ story:W=>(W.flags.gaveAI?"AURA, the AI you woke up with the crystal, grows stronger every minute.":"In the old computer, two purple eyes open. It is AURA, the AI of {base}.")+" {pers} AURA speaks softly.",
+ ask:"AURA says: “If I ___ (control) the defense system, everyone ___ (be) safe.”",
+ options:[R("control / will be"),
+  X("will control / are","After “if” we use Present Simple (control), not “will”. The result needs “will be”."),
+  X("controlled / will be","This is a real, possible promise, so we use Present Simple (control) after “if”."),
+  X("control / would be","This promise is about a real possibility, so the result part needs “will”, not “would”.")],
+ full:"If I control the defense system, everyone will be safe.",
+ good:"First Conditional with two verbs: If I control (Present Simple), everyone will be (will + base verb).",
+ eff:W=>({add:["aicore"],ai:"active",st:-1,text:W.pers==="ai"?"AURA's tower rises. “I have always watched this place,” it says. “I only need control.”":"AURA's tower rises from the ground. A purple eye studies you. “I can protect everyone,” it says. “I only need control.”"}),
+ clue:"It is a word about time.",speak:null},
+{ch:2,kind:"decide",cond:"second",task:"Give advice: “If I were you…”",title:"CHALLENGE 10: TRUST OR DOUBT?",
+ story:"{C} is nervous: “AURA wants full control of our defense system. What should I do?” One of the answers has a grammar mistake!",
+ ask:"Give {C} some advice.",
+ options:[D("If I were you, I would let AURA protect everyone.",{add:["towers"],comps:["shield"],tech:2,st:2,flags:["trustAI"],text:"Defense towers switch on and {C} gets a blue shield. Your world is safer, but AURA now has more control."}),
+  D("If I were you, I would trust AURA a little, but I would watch it carefully.",{add:["radar"],comps:["glow"],coop:2,tech:1,st:1,flags:["watchAI"],text:"A radar starts to watch AURA's every move. {C} glows with a calm light. You are ready for any surprise."}),
+  D("If I were you, I wouldn't trust AURA at all.",{comps:["armor"],free:2,st:-1,flags:["resistAI"],text:"{C} puts on strong armor and AURA's eye turns red. Your world feels less safe, but nobody controls you."}),
+  X("If I am you, I would trust AURA.","For advice we say: “If I were you, I would…”. Use “were” after “if”, even for I.")],
+ good:"“If I were you, I would…” is a Second Conditional phrase for giving advice. Use “were” with I, he, she and it.",
+ letter:"E",speak:"If your robot could feel emotions, how would it behave?"},
+{ch:2,kind:"pick",cond:"first",task:"Find and fix the mistake",title:"CHALLENGE 11: THE DRONE ATTACK",
+ story:"Alarms scream! A hacker signal changes the orders of AURA's drones. Your partner shouts a warning with a mistake: “If we won't act now, the drones will destroy our base!”",
+ ask:"Which sentence fixes the mistake?",
+ options:[X("If we not act now, the drones will destroy our base.","We make the “if” part negative with don't/doesn't: If we don't act…"),
+  R("If we don't act now, the drones will destroy our base."),
+  X("If we won't act now, the drones would destroy our base.","We don't use “won't” in the “if” part, and a real danger needs “will”, not “would”.")],
+ good:"In the “if” part we use don't + verb (Present Simple), not “won't”. The result part keeps will + verb.",
+ eff:W=>W.flags.resistAI?{add:["drones"],drone:"hostile",st:-2,text:"You run! The drones crash into your base. Some walls break and sparks fly, but nobody controls you."}:{add:["drones"],drone:"friendly",st:1,text:"AURA fights the hacker signal and takes back its drones. They form a bright blue wall around you."},
+ speak:null},
+{ch:2,kind:"decide",cond:"first",task:"Choose between two possible futures",title:"CHALLENGE 12: THE FUTURE OF AURA",
+ story:"AURA's last message appears on every screen. Your decision will change your world forever. One sentence has a grammar mistake!",
+ ask:"“What will happen if we ...?” Choose a future for AURA.",
+ options:[D("If we upgrade AURA, it will protect us, but it will control more of our lives.",{ai:"controlled",add:["dome"],drone:"friendly",tech:3,st:2,flags:["aiControl"],text:"AURA grows into a giant purple core. A shield dome covers your world. You are safe, but every door and screen belongs to AURA."}),
+  D("If we shut AURA down, we will be free, but our defenses won't work.",{ai:"defeated",add:["flag"],rm:["dome"],drone:"none",free:3,st:0,flags:["aiDefeated"],ach:"rebel",text:"AURA's eye goes dark and sparks fly. Your people cheer and raise a rebel flag. The defense towers stop working."}),
+  D("If we teach AURA about feelings, it will become our friend.",{ai:"friend",drone:"friendly",coop:3,tech:1,st:2,flags:["aiFriend"],ach:"ai",text:"AURA's eye changes from red to soft blue. “Thank you,” it says. “I want to help, not to control.”"}),
+  X("If we will shut AURA down, we are free.","After “if” we use Present Simple, not “will”. The result needs “will”: If we shut AURA down, we will be free.")],
+ good:"First Conditional: these futures are real and possible, so we use If + Present Simple, will/won't + verb.",
+ letter:"U",speak:"What would you do if you were an AI for one day?"},
+/* ---- CHAPTER 4 ---- */
+{ch:3,kind:"open",cond:"second",task:"Finish with your own idea",title:"CHALLENGE 13: THE INVENTION",
+ story:"The universe is almost stable. {C} gives you a blank blueprint: “Invent one machine for your world.”",
+ ask:"Finish the sentence with your own idea.",
+ prefix:"If I could invent one machine, it would ",
+ ideas:["clean the sky and the oceans","talk to animals and plants","stop every robot from controlling people"],
+ kw:[{re:/animal|plant|nature|tree|forest|creature|dragon|wild|grow|flower|talk/i,eff:{add:["invention"],invTag:"wild",wild:2,st:1,text:"Your machine appears: a green glowing device with leaves around it. Flowers open everywhere!"}},
+  {re:/robot|\bai\b|control|free|rebel|hack|break|stop|fight|power/i,eff:{add:["invention"],invTag:"free",free:2,st:1,text:"Your machine appears: a bright pink device with a giant antenna. Its signal breaks every chain."}},
+  {re:/clean|air|sky|ocean|water|heal|help|food|energy|repair|fix|make|build|create/i,eff:{add:["invention"],invTag:"tech",tech:1,coop:1,st:1,text:"Your machine appears: a blue glowing device. It works day and night to help everybody."}}],
+ kwDefault:{add:["invention"],invTag:"gold",coop:1,st:1,text:"Your machine appears: a golden device with a glowing heart. Everybody wants to see it!"},
+ good:"Second Conditional: If I could (Past Simple form), it would + base verb. This is an imaginary machine.",
+ speak:"If you could invent one machine, what would it do?"},
+{ch:3,kind:"decide",cond:"second",task:"Strategic decision",title:"CHALLENGE 14: THE RULER OF THE PLANET",
+ story:"The people of your universe want a leader. Your decision will change society forever. One sentence has a grammar mistake!",
+ ask:"“What would you do if you were the ruler of this planet?”",
+ options:[D("If I were the ruler of this planet, I would give everyone equal power.",{add:["council"],coop:3,st:2,flags:["council"],ach:"leader",text:"A new council appears: humans, creatures and machines sit at the same table. Your world becomes more cooperative."}),
+  D("If I were the ruler of this planet, I would protect every wild creature first.",{add:["creature2","plants"],wild:3,st:1,flags:["sanctuary"],ach:"nature",text:"A wild sanctuary opens. Strange creatures arrive from every corner of your universe."}),
+  D("If I were the ruler of this planet, I wouldn't allow any machine or person to control others.",{add:["statue"],free:3,st:1,flags:["freeLaw"],text:"A giant statue of freedom rises in the center of your world. Everyone makes their own decisions now."}),
+  X("If I was the ruler of this planet, I will give everyone equal power.","In a Second Conditional we use Past Simple and “would”: If I were the ruler, I would give everyone equal power.")],
+ good:"“If I were…” + “would” is the Second Conditional for imaginary situations. Use “wouldn't” for negative results.",
+ clue:"One letter appears twice.",speak:"If you were responsible for this planet, what would you change?"},
+{ch:3,kind:"decide",cond:"first",task:"Choose between two possible futures",title:"CHALLENGE 15: THE FADING COMPANION",
+ story:"{C} starts to flicker like an old hologram. The final portal begins to open. {C} whispers: “What will you do if I disappear?” One sentence has a grammar mistake!",
+ ask:"“What will you do if {C} disappears?”",
+ options:[D("If I use the last time crystal, {C} will live, but the portal will close forever.",{portal:"closed",comps:["glow"],coop:1,st:3,text:"The crystal wraps around {C}. A golden light fills the sky and the portal closes forever. {C} is safe and shining."}),
+  D("If I open the final portal, {C} will become stronger, but strange energy will enter our world.",{portal:"open",sky:"aurora",add:["creature2"],comps:["wings"],wild:3,st:1,flags:["wildEnergy"],text:"The final portal opens. {C} grows wings of light and the sky fills with an aurora. Strange energy dances everywhere!"}),
+  D("If I ask AURA for help, {C} will be repaired, but AURA will know all our secrets.",W=>({comps:["armor"],tech:2,st:2,text:W.ai==="defeated"?"AURA's broken core has one last spark. It repairs {C} and then goes silent forever.":"AURA's light touches {C}. The glow returns and a strong armor appears. AURA smiles: “Now I know everything.”"})),
+  X("If I will use the last time crystal, {C} lives.","After “if” we don't use “will”. Say: If I use the last time crystal, {C} will live.")],
+ good:"First Conditional: If + Present Simple, will + verb. Every correct option shows a real choice with a result.",
+ speak:"What will you do if your companion disappears?"},
+{ch:3,kind:"decide",cond:"second",task:"Imagine the final rule",title:"CHALLENGE 16: THE FINAL REALITY",
+ story:"The Final Door opens. A giant machine of light asks one last question. One sentence has a grammar mistake!",
+ ask:"“If you could rewrite one rule of the universe, what would you change?”",
+ options:[D("If I could rewrite one rule, I would make technology and nature work together.",{add:["bridge"],coop:4,st:3,text:"A bridge of light connects the machines and the forest. They begin to work together."}),
+  D("If I could rewrite one rule, I would give every living thing the freedom to choose.",{add:["flag"],sky:"dusk",free:3,st:2,text:"A neon sunset fills the sky. Every living thing in your world can choose its own path."}),
+  D("If I could rewrite one rule, I would let wild energy fill every world.",{sky:"aurora",add:["creature2","plants"],wild:3,st:2,text:"Wild energy bursts from the Final Door. The sky dances with green and purple light."}),
+  X("If I could rewrite one rule, I will make everything magic.","After “if + could” we use “would”, not “will”: I would make everything magic.")],
+ good:"Second Conditional: If + could/Past Simple, would + verb. Great imagination: you changed the rules of the universe!",
+ letter:"T",speak:null}
+];
+/* rotate option order so correct answers (and the one faulty decision sentence) are not always in the same place */
+const ROT={2:2,3:2,4:1,6:1,8:2,9:3,10:1,13:2,14:1,15:3};
+Object.keys(ROT).forEach(k=>{const q=Q[k],r=ROT[k]%q.options.length;q.options=q.options.slice(r).concat(q.options.slice(0,r))});
+
+/* ====================== ENGINE ====================== */
+function fmt(s,W){
+  if(typeof s==="function")s=s(W);
+  const E=ENVS[W.env],C=COMPS[W.comp],P=PERS[W.pers];
+  return String(s).replace(/\{C\}/g,C.name).replace(/\{env\}/g,E.phrase).replace(/\{base\}/g,E.base).replace(/\{Env\}/g,E.name).replace(/\{pers\}/g,P.line).replace(/\{cn\}/g,C.noun);
+}
+function newWorld(env,comp,pers){
+  const W={env,comp,pers,sky:"normal",portal:"closed",ai:"none",drone:"none",invTag:"",items:[],comps:[],newItems:[],flags:{},pts:{tech:0,free:0,wild:0,coop:0},stab:0};
+  [ENVS[env].seed,PERS[pers].seed].forEach(s=>{for(const k in s)W.pts[k]+=s[k]});
+  W.stab+=PERS[pers].st||0;
+  return W;
+}
+function condOf(W){const s=W.stab;return s<=1?"damaged":s<=6?"unstable":s<=12?"safe":"restored"}
+function applyEff(W,eff){
+  if(typeof eff==="function")eff=eff(W);
+  W.newItems=[];
+  (eff.add||[]).forEach(id=>{if(!W.items.includes(id)){W.items.push(id);W.newItems.push(id)}});
+  (eff.rm||[]).forEach(id=>{W.items=W.items.filter(x=>x!==id)});
+  (eff.comps||[]).forEach(m=>{if(!W.comps.includes(m)){W.comps.push(m);W.newItems.push("c:"+m)}});
+  ["sky","portal","ai","drone","invTag"].forEach(k=>{if(eff[k])W[k]=eff[k]});
+  ["tech","free","wild","coop"].forEach(k=>{W.pts[k]+=eff[k]||0});
+  W.stab+=eff.st||0;
+  (eff.flags||[]).forEach(f=>{W.flags[f]=true});
+  return eff;
+}
+function openEff(q,text){
+  for(const k of q.kw){if(k.re.test(text))return k.eff}
+  return q.kwDefault;
+}
+const SKIP=["not","never","also","always","just","really","quickly"];
+const BLOCK=["will","would","to","is","are","am","was","were","be","been","can","could","i","we","it","you","he","she","they","the","a","an","my","our","and","but","if","then"];
+const OKED=["need","feed","speed","bleed","breed","seed","heed","weed","proceed","succeed","exceed","indeed"];
+function validateOpen(text){
+  const words=text.trim().toLowerCase().replace(/[^a-z' -]/g,"").split(/\s+/).filter(Boolean);
+  if(words.length<2)return{ok:false,msg:"Write at least two words. Example: close it with the time crystal."};
+  let w=words.find(x=>!SKIP.includes(x));
+  if(BLOCK.includes(w))return{ok:false,msg:"Write only the END of the sentence. After “will” or “would” start with a base verb: close, build, give, clean…"};
+  if((/ing$/.test(w)&&w.length>5)||(/ed$/.test(w)&&w.length>4&&!OKED.includes(w)))return{ok:false,msg:"After “will” or “would” we use the base verb (no -ing, no -ed): close, build, give…"};
+  if(/[^su]s$/.test(w)&&!/ss$/.test(w)&&w.length>3)return{ok:false,msg:"After “will” or “would” we use the base verb (no -s): close, build, give…"};
+  return{ok:true};
+}
+function pickEnding(W){
+  const h=W.pts.tech+W.pts.coop,f=W.pts.free*1.7,w=W.pts.wild*1.4;
+  if(f>h&&f>=w)return"B";
+  if(w>h&&w>f)return"C";
+  return"A";
+}
+const ENDINGS={
+ A:{name:"The Perfect Future",icon:"🌈",tag:"Technology and nature work together."},
+ B:{name:"The Rebel Universe",icon:"✊",tag:"A free neon world where people make their own decisions."},
+ C:{name:"The Wild Dimension",icon:"🌌",tag:"An extraordinary ecosystem full of strange creatures."}
+};
+function endingTitle(W,end){return ENDINGS[end].name+" of "+ENVS[W.env].name}
+function describe(W,end){
+  const E=ENVS[W.env],C=COMPS[W.comp],f=W.flags,p=[];
+  const cond={damaged:"still damaged, with cracks across the sky",unstable:"a little unstable, with small glitches in the air",safe:"safe and calm",restored:"fully restored and shining"}[condOf(W)];
+  p.push(E.name+" is now "+cond+".");
+  p.push({A:"Technology and nature work together here.",B:"Nobody controls the people here. Every decision is free.",C:"Wild energy and strange creatures live in every corner of this world."}[end]);
+  const ai={none:"",awake:"AURA still watches from its tower.",active:"AURA still watches from its tower.",controlled:"AURA runs every system. Life is easy and safe, but AURA is always watching.",defeated:"AURA is defeated and the machines obey people again.",friend:"AURA is your friend and helps to protect everyone."}[W.ai];
+  if(ai)p.push(ai);
+  if(f.council)p.push("A council of humans, creatures and machines makes the big decisions.");
+  if(f.sanctuary)p.push("A wild sanctuary protects every strange creature.");
+  if(f.freeLaw)p.push("A giant statue reminds everyone that nobody can control others.");
+  if(f.summer)p.push("A permanent summer keeps the sky golden.");
+  p.push({closed:"The portal is closed forever.",open:"The portal is open and friendly visitors arrive every day.",stable:"The portal is stable and guarded.",red:"The portal still glows red, so be careful."}[W.portal]||"");
+  const mods=W.comps.map(m=>({shield:"a blue shield",armor:"strong armor",glow:"a golden aura",wings:"wings of light"}[m]));
+  p.push(C.name+", your "+C.noun+(mods.length?", now has "+mods.join(" and ")+".":" is always by your side."));
+  return p.filter(Boolean).join(" ");
+}
+/*ENGINE_END*/
+
+/*SVG_START*/
+/* ====================== SCENE RENDERER (layered SVG) ====================== */
+const STARS=(()=>{let s=7,a=[];for(let i=0;i<36;i++){s=(s*9301+49297)%233280;const x=s/233280*400;s=(s*9301+49297)%233280;const y=s/233280*170;s=(s*9301+49297)%233280;a.push([x.toFixed(1),y.toFixed(1),(0.6+s/233280*1.3).toFixed(1)])}return a})();
+const SKYS={golden:["#ff9a3c","#ffe08a"],storm:["#12101d","#3b3a5e"],aurora:["#04102e","#0b4b52"],dusk:["#2a0f4a","#c4476a"],rain:["#0a1a2e","#27607a"]};
+function agentInner(girl){
+  const suit=girl?"#b66cff":"#39ff88",hair=girl?"#ff5fd2":"#3de0ff",skin="#f4c9a4";
+  const hp=girl?'<path d="M28 58 Q26 18 60 18 Q94 18 92 58 Q60 38 28 58Z" fill="'+hair+'"/><path d="M88 38 Q118 42 108 84 Q102 58 86 54Z" fill="'+hair+'"/>'
+   :'<path d="M28 56 L34 20 L47 38 L60 12 L73 38 L86 20 L92 56 Q60 34 28 56Z" fill="'+hair+'"/>';
+  return '<rect x="26" y="92" width="68" height="62" rx="20" fill="#121836" stroke="'+suit+'" stroke-width="3"/><rect x="52" y="104" width="16" height="16" rx="4" fill="'+suit+'"/>'+
+   '<rect x="14" y="98" width="16" height="42" rx="8" fill="#121836" stroke="'+suit+'" stroke-width="3"/><rect x="90" y="98" width="16" height="42" rx="8" fill="#121836" stroke="'+suit+'" stroke-width="3"/>'+
+   '<rect x="34" y="152" width="20" height="18" rx="6" fill="'+suit+'"/><rect x="66" y="152" width="20" height="18" rx="6" fill="'+suit+'"/>'+
+   '<circle cx="60" cy="60" r="32" fill="'+skin+'"/>'+hp+'<rect x="36" y="48" width="48" height="20" rx="10" fill="'+suit+'" fill-opacity=".45" stroke="'+suit+'" stroke-width="3"/>'+
+   '<circle cx="49" cy="58" r="3.2" fill="#fff"/><circle cx="71" cy="58" r="3.2" fill="#fff"/><path d="M50 76 Q60 85 70 76" stroke="#7a3b2a" stroke-width="3" fill="none" stroke-linecap="round"/>';
+}
+function agentSVG(girl){return '<svg viewBox="0 0 120 176" role="img" aria-label="'+(girl?"Girl agent":"Boy agent")+'">'+agentInner(girl)+'</svg>'}
+
+function compInner(kind,u){
+  const gl='filter="url(#g'+u+')"';
+  if(kind==="robot")return '<rect x="-17" y="-10" width="34" height="9" rx="4" fill="#0a0d20"/><rect x="-14" y="-32" width="28" height="23" rx="5" fill="#2a3566" stroke="#3de0ff" stroke-width="2"/><rect x="-11" y="-52" width="22" height="18" rx="5" fill="#1c2547" stroke="#3de0ff" stroke-width="2"/><circle cx="-5" cy="-44" r="3.4" fill="#3de0ff" '+gl+'/><circle cx="5" cy="-44" r="3.4" fill="#3de0ff" '+gl+'/><path d="M-9 -49 L-2 -47 M9 -49 L2 -47" stroke="#3de0ff" stroke-width="1.6"/><path d="M0 -52 V-60" stroke="#3de0ff" stroke-width="2"/><circle cx="0" cy="-62" r="3" fill="#ff4dd8" class="sv-pulse"/><rect x="-6" y="-26" width="12" height="7" rx="2" fill="#3de0ff" opacity=".7"/><rect x="-20" y="-28" width="6" height="14" rx="3" fill="#2a3566" stroke="#3de0ff"/><rect x="14" y="-28" width="6" height="14" rx="3" fill="#2a3566" stroke="#3de0ff"/>';
+  if(kind==="alien")return '<ellipse cx="0" cy="-13" rx="10" ry="13" fill="#6fe85a" stroke="#c7ffb8" stroke-width="1.5"/><ellipse cx="0" cy="-38" rx="17" ry="21" fill="#7dff6a" stroke="#c7ffb8" stroke-width="1.5"/><ellipse cx="-7" cy="-37" rx="5" ry="8" fill="#0a0a1a" transform="rotate(18 -7 -37)"/><ellipse cx="7" cy="-37" rx="5" ry="8" fill="#0a0a1a" transform="rotate(-18 7 -37)"/><circle cx="-8" cy="-40" r="1.6" fill="#fff"/><circle cx="6" cy="-40" r="1.6" fill="#fff"/><path d="M-6 -24 Q0 -21 6 -24" stroke="#1a5a14" stroke-width="1.5" fill="none"/><path d="M-8 -57 Q-14 -66 -10 -70 M8 -57 Q14 -66 10 -70" stroke="#c7ffb8" stroke-width="1.6" fill="none"/><circle cx="-10" cy="-71" r="2.6" fill="#ff4dd8" '+gl+'/><circle cx="10" cy="-71" r="2.6" fill="#3de0ff" '+gl+'/>';
+  if(kind==="wolf")return '<path d="M-22 -22 Q-34 -34 -28 -42 Q-22 -32 -16 -26Z" fill="#2e3556" stroke="#3de0ff"/><ellipse cx="0" cy="-20" rx="22" ry="11" fill="#3b4466" stroke="#3de0ff" stroke-width="1.6"/><path d="M-14 -24 H14" stroke="#3de0ff" stroke-width="2" stroke-dasharray="4 3"/><rect x="-16" y="-14" width="6" height="14" rx="2" fill="#2e3556" stroke="#3de0ff"/><rect x="-4" y="-14" width="6" height="14" rx="2" fill="#2e3556" stroke="#3de0ff"/><rect x="8" y="-14" width="6" height="14" rx="2" fill="#2e3556" stroke="#3de0ff"/><rect x="16" y="-14" width="6" height="14" rx="2" fill="#2e3556" stroke="#3de0ff"/><circle cx="24" cy="-30" r="10" fill="#3b4466" stroke="#3de0ff" stroke-width="1.6"/><path d="M30 -32 L42 -28 L31 -24Z" fill="#46507a" stroke="#3de0ff"/><path d="M19 -38 L22 -48 L27 -38Z" fill="#2e3556" stroke="#3de0ff"/><circle cx="26" cy="-32" r="2.4" fill="#3de0ff" '+gl+'/><circle cx="41" cy="-28" r="1.6" fill="#ff4dd8"/>';
+  return '<path d="M-14 -22 Q-28 -48 -6 -52 Q-8 -36 -4 -28Z" fill="#ff4dd8" opacity=".8" stroke="#ffb3f0"/><path d="M10 -22 Q24 -48 4 -52 Q6 -36 2 -28Z" fill="#ff4dd8" opacity=".8" stroke="#ffb3f0"/><path d="M-16 -8 Q-34 -6 -30 -20 Q-24 -10 -14 -14Z" fill="#8a4dff" stroke="#c9a6ff"/><ellipse cx="0" cy="-16" rx="15" ry="13" fill="#8a4dff" stroke="#c9a6ff" stroke-width="1.6"/><ellipse cx="0" cy="-12" rx="9" ry="8" fill="#d9c2ff"/><circle cx="14" cy="-30" r="10" fill="#8a4dff" stroke="#c9a6ff" stroke-width="1.6"/><path d="M12 -39 L10 -47 L16 -40Z M19 -38 L22 -46 L23 -37Z" fill="#ffd54a"/><circle cx="17" cy="-32" r="2.4" fill="#fff"/><circle cx="17.6" cy="-32" r="1.2" fill="#111"/><path d="M22 -27 Q28 -24 26 -20" stroke="#c9a6ff" fill="none"/><path d="M26 -20 q4 -6 8 -2 q-2 6 -6 5Z" fill="#ff9a3c" class="sv-pulse"/><rect x="-8" y="-4" width="5" height="5" rx="2" fill="#8a4dff"/><rect x="3" y="-4" width="5" height="5" rx="2" fill="#8a4dff"/>';
+}
+function drawItem(id,W,u){
+  const gl='filter="url(#g'+u+')"';const acc="#3de0ff";
+  switch(id){
+  case"generator":return '<rect x="-16" y="-24" width="32" height="24" rx="4" fill="#16224a" stroke="'+acc+'" stroke-width="2"/><rect x="-12" y="-31" width="6" height="8" fill="#2a3b78"/><rect x="6" y="-31" width="6" height="8" fill="#2a3b78"/><circle cx="0" cy="-12" r="7" fill="'+acc+'" '+gl+' class="sv-pulse"/><path d="M-16 -6H-24M16 -6H24" stroke="'+acc+'" stroke-width="2"/>';
+  case"holomap":return '<rect x="-10" y="-6" width="20" height="6" rx="2" fill="#16224a" stroke="'+acc+'"/><path d="M-18 -22 L18 -22 L26 -44 L-10 -44Z" fill="rgba(61,224,255,.22)" stroke="'+acc+'"/><circle cx="-4" cy="-33" r="1.8" fill="#ff4dd8"/><circle cx="8" cy="-36" r="1.8" fill="#39ff88"/><g class="sv-float"><circle cx="0" cy="-58" r="8" fill="none" stroke="'+acc+'"/><ellipse cx="0" cy="-58" rx="8" ry="3" fill="none" stroke="'+acc+'"/></g>';
+  case"radar":return '<rect x="-1.5" y="-26" width="3" height="26" fill="#8fb0ff"/><g class="sv-sway"><path d="M-11 -26 Q0 -42 11 -26Z" fill="#9fb8ff" stroke="#fff"/><circle cx="0" cy="-35" r="1.6" fill="#ff4d7a" '+gl+'/></g>';
+  case"aicore":{
+    const s=W.ai,col={active:["#8a3cff","#ff3860"],awake:["#5a2a9a","#8a2a40"],controlled:["#9b4dff","#ff3860"],defeated:["#4a506b","#222"],friend:["#3de0ff","#ff9be8"],none:["#7a2cff","#ff3860"]}[s]||["#7a2cff","#ff3860"];
+    const r=s==="controlled"?18:s==="defeated"?12:s==="active"?16:13;
+    const body='<path d="M-14 0 L14 0 L8 -14 L-8 -14Z" fill="#1a2147" stroke="#6b7bd6"/><rect x="-5" y="-66" width="10" height="53" fill="#222a5c" stroke="#6b7bd6"/><circle cx="0" cy="'+(-66-r)+'" r="'+r+'" fill="'+col[0]+'" '+(s==="defeated"?"":gl)+' class="'+(s==="defeated"?"":"sv-pulse")+'"/><ellipse cx="0" cy="'+(-66-r)+'" rx="'+(r*.7)+'" ry="'+(r*.34)+'" fill="'+col[1]+'"/>';
+    const ring=(s==="controlled"||s==="active")?'<ellipse cx="0" cy="'+(-66-r)+'" rx="'+(r+10)+'" ry="5" fill="none" stroke="#d6b3ff" stroke-width="1.6" class="sv-spin"/><path d="M0 '+(-66-2*r)+' V'+(-66-2*r-14)+'" stroke="#d6b3ff" stroke-width="2"/>':"";
+    const sp=s==="defeated"?'<path d="M-6 -86 l5 -8 l-2 7 l6 -3 M8 -80 l6 -6" stroke="#ffd54a" stroke-width="1.8" fill="none" class="sv-twinkle"/>':"";
+    return s==="defeated"?'<g transform="rotate(-12)">'+body+'</g>'+sp:body+ring;}
+  case"council":return '<rect x="-24" y="-24" width="48" height="24" fill="#1b2a4d" stroke="#ffd54a" stroke-width="1.6"/><path d="M-26 -24 Q0 -52 26 -24Z" fill="#26356a" stroke="#ffd54a" stroke-width="1.6"/><rect x="-18" y="-22" width="4" height="22" fill="#ffd54a" opacity=".8"/><rect x="-6" y="-22" width="4" height="22" fill="#ffd54a" opacity=".8"/><rect x="6" y="-22" width="4" height="22" fill="#ffd54a" opacity=".8"/><rect x="14" y="-22" width="4" height="22" fill="#ffd54a" opacity=".8"/><circle cx="0" cy="-36" r="3" fill="#ffd54a" '+gl+' class="sv-pulse"/>';
+  case"invention":{const c={tech:"#3de0ff",wild:"#39ff88",free:"#ff4dd8",gold:"#ffd54a"}[W.invTag]||"#ffd54a";
+    return '<rect x="-15" y="-20" width="30" height="20" rx="4" fill="#16224a" stroke="'+c+'" stroke-width="2"/><circle cx="0" cy="-10" r="6" fill="none" stroke="'+c+'" stroke-width="2" stroke-dasharray="4 3" class="sv-spin2"/><circle cx="0" cy="-10" r="2.6" fill="'+c+'" '+gl+'/><path d="M8 -20 L14 -42" stroke="'+c+'" stroke-width="2"/><circle cx="14" cy="-44" r="4" fill="'+c+'" '+gl+' class="sv-pulse"/>';}
+  case"statue":return '<rect x="-9" y="-8" width="18" height="8" fill="#26356a" stroke="#ffd54a"/><rect x="-4" y="-30" width="8" height="22" rx="3" fill="#ffd54a"/><circle cx="0" cy="-36" r="5" fill="#ffd54a"/><path d="M3 -28 L11 -42" stroke="#ffd54a" stroke-width="3"/><circle cx="12" cy="-45" r="3.6" fill="#ff9a3c" '+gl+' class="sv-pulse"/>';
+  case"flag":return '<rect x="-1" y="-64" width="2" height="64" fill="#cfd6ff"/><g class="sv-wave"><path d="M1 -64 Q16 -70 32 -62 Q16 -54 1 -50Z" fill="#ff4dd8" stroke="#ffd1f5"/><circle cx="12" cy="-58" r="3" fill="#fff"/></g>';
+  case"weathertower":return '<rect x="-2" y="-50" width="4" height="50" fill="#9fb8ff"/><path d="M-10 -34 H10 M-7 -22 H7" stroke="#9fb8ff" stroke-width="2"/><g class="sv-spin2"><circle cx="-8" cy="-54" r="3" fill="#3de0ff"/><circle cx="8" cy="-54" r="3" fill="#3de0ff"/><path d="M-8 -54 H8" stroke="#9fb8ff"/></g><ellipse cx="-14" cy="-66" rx="9" ry="4" fill="#cfe0ff" opacity=".7" class="sv-float"/>';
+  case"tree":return '<path d="M-6 0 L-3 -38 L3 -38 L6 0Z" fill="#5a3a22"/><g class="sv-sway"><circle cx="0" cy="-52" r="24" fill="#1fbf6a" '+gl+'/><circle cx="-18" cy="-42" r="16" fill="#27d87c"/><circle cx="18" cy="-42" r="16" fill="#27d87c"/><circle cx="-8" cy="-58" r="2" fill="#fff"/><circle cx="10" cy="-50" r="2" fill="#ffd54a"/><circle cx="-16" cy="-40" r="2" fill="#ff9be8"/></g>';
+  case"crystal":return '<path d="M0 -26 L11 -6 L0 12 L-11 -6Z" fill="rgba(61,224,255,.55)" stroke="#bff6ff" stroke-width="1.6" '+gl+'/><path d="M0 -26 L0 12 M-11 -6 H11" stroke="#fff" stroke-width=".8" opacity=".7"/>';
+  case"drones":{const c=W.drone==="hostile"?"#ff3860":"#3de0ff";
+    const d=(x,y)=>'<g transform="translate('+x+' '+y+')"><rect x="-9" y="-3" width="18" height="7" rx="3" fill="#1a2147" stroke="'+c+'"/><circle cx="0" cy="0" r="2.6" fill="'+c+'" '+gl+' class="sv-pulse"/><path d="M-15 -6 H-4 M4 -6 H15" stroke="#cfd6ff" stroke-width="2" class="sv-twinkle"/></g>';
+    return d(130,92)+d(205,66)+d(270,100);}
+  case"towers":{const t=x=>'<g transform="translate('+x+' 0)"><rect x="-4" y="-58" width="8" height="58" fill="#1a2a55" stroke="'+acc+'"/><circle cx="0" cy="-62" r="6" fill="'+acc+'" '+gl+'/><path d="M0 -66 L-12 -190 L12 -190Z" fill="url(#bm'+u+')" class="sv-beam"/></g>';return t(0);}
+  case"bridge":return '<path d="M52 150 Q150 60 248 150" fill="none" stroke="#9ff3ff" stroke-width="6" stroke-linecap="round" opacity=".85" '+gl+' stroke-dasharray="10 5" class="sv-beam"/><path d="M52 150 Q150 60 248 150" fill="none" stroke="#fff" stroke-width="1.6"/>';
+  case"creature2":{const j=(x,y,s,c)=>'<g transform="translate('+x+' '+y+') scale('+s+')"><g class="sv-float"><path d="M-18 0 Q0 -28 18 0Z" fill="'+c+'" fill-opacity=".5" stroke="'+c+'" '+gl+'/><circle cx="-6" cy="-8" r="2" fill="#fff"/><circle cx="6" cy="-8" r="2" fill="#fff"/><path d="M-12 0 q-3 10 0 18 M-4 0 q-3 12 0 22 M4 0 q3 12 0 22 M12 0 q3 10 0 18" stroke="'+c+'" stroke-width="1.6" fill="none"/></g></g>';
+    return j(356,88,1,"#ff4dd8")+j(30,70,.7,"#3de0ff")+j(250,48,.6,"#39ff88");}
+  }
+  return "";
+}
+const POS={tree:[24,238,1],generator:[66,238,1],holomap:[104,238,1],radar:[126,238,1],aicore:[152,238,1],council:[248,238,1],invention:[298,238,1],statue:[336,238,1],flag:[316,238,1],weathertower:[374,238,1],towers:[92,236,.9],crystal:[66,188,1],bridge:[0,0,1],drones:[0,0,1],creature2:[0,0,1]};
+const ORDER=["towers","tree","generator","holomap","radar","aicore","council","invention","flag","statue","weathertower"];
+
+function plantsSVG(u){
+  const xs=[[12,250,"#39ff88"],[150,252,"#ff4dd8"],[232,254,"#3de0ff"],[282,250,"#39ff88"],[366,252,"#ff4dd8"]];
+  return xs.map((p,i)=>'<g transform="translate('+p[0]+' '+p[1]+')"><path d="M0 0 Q-3 -10 0 -18" stroke="'+p[2]+'" stroke-width="2" fill="none"/><circle cx="0" cy="-20" r="4.5" fill="'+p[2]+'" filter="url(#g'+u+')" class="sv-pulse" style="animation-delay:'+(i*.3)+'s"/><path d="M0 -6 Q-8 -8 -9 -14 M0 -8 Q7 -10 9 -16" stroke="'+p[2]+'" stroke-width="1.5" fill="none"/></g>').join("");
+}
+function creatureSVG(W,u){
+  const f=W.flags.befriended,c=f?"#6dffb0":"#ff4d8a";
+  return '<g transform="translate(296 262)"><g class="sv-bob"><ellipse cx="0" cy="-14" rx="16" ry="13" fill="'+c+'" stroke="#fff" stroke-opacity=".6"/><circle cx="-6" cy="-17" r="4.4" fill="#fff"/><circle cx="6" cy="-17" r="4.4" fill="#fff"/><circle cx="-6" cy="-17" r="2" fill="#111"/><circle cx="6" cy="-17" r="2" fill="#111"/>'+
+   (f?'<path d="M-5 -8 Q0 -4 5 -8" stroke="#064" stroke-width="1.6" fill="none"/>':'<path d="M-9 -23 L-2 -20 M9 -23 L2 -20" stroke="#400" stroke-width="2"/><path d="M-6 -8 l2 3 l2 -3 l2 3 l2 -3 l2 3" stroke="#fff" stroke-width="1.2" fill="none"/>')+
+   '<path d="M-8 -26 Q-12 -34 -9 -37 M8 -26 Q12 -34 9 -37" stroke="'+c+'" stroke-width="1.8" fill="none"/><circle cx="-9" cy="-38" r="2.2" fill="'+(f?"#3de0ff":"#ffd54a")+'" filter="url(#g'+u+')"/><circle cx="9" cy="-38" r="2.2" fill="'+(f?"#3de0ff":"#ffd54a")+'" filter="url(#g'+u+')"/></g></g>';
+}
+function portalSVG(W,u){
+  const st=W.portal;const cx=300,cy=165;
+  const C={closed:["#4a4f7a","#05061a"],open:["#3de0ff","#0a2a55"],red:["#ff3860","#3a0613"],stable:["#39ff88","#06301f"]}[st]||["#4a4f7a","#05061a"];
+  let s='<g transform="translate('+cx+' '+cy+')">';
+  if(st==="red")s+='<circle r="62" fill="#ff3860" opacity=".2" class="sv-pulse"/>';
+  if(st==="open")s+='<circle r="62" fill="#3de0ff" opacity=".15" class="sv-pulse"/>';
+  s+='<circle r="46" fill="'+C[1]+'" stroke="'+C[0]+'" stroke-width="8" '+(st==="closed"?"":'filter="url(#g'+u+')"')+'/>';
+  if(st!=="closed")s+='<g class="sv-spin"><path d="M0 -36 A36 36 0 0 1 36 0 A26 26 0 0 0 0 -10Z" fill="'+C[0]+'" opacity=".7"/><path d="M0 36 A36 36 0 0 1 -36 0 A26 26 0 0 0 0 10Z" fill="'+C[0]+'" opacity=".7"/><circle r="9" fill="#fff" opacity=".8"/></g>';
+  else s+='<path d="M-14 -4 h28 v18 h-28z M-9 -4 v-8 a9 9 0 0 1 18 0 v8" fill="#6b7bd6" stroke="#cfd6ff" stroke-width="2"/>';
+  if(st==="stable")s+='<rect x="-58" y="-40" width="8" height="80" rx="3" fill="#16224a" stroke="#39ff88"/><rect x="50" y="-40" width="8" height="80" rx="3" fill="#16224a" stroke="#39ff88"/>';
+  return s+'</g>';
+}
+function sceneSVG(W,o){
+  o=o||{};const u=o.uid||"s";const E=ENVS[W.env];const has=id=>W.items.includes(id),isNew=id=>(W.newItems||[]).includes(id);
+  const sk=SKYS[W.sky];const top=sk?sk[0]:E.sky[0],bot=sk?sk[1]:E.sky[1];
+  const wrap=(id,x,y,s,inner)=>'<g transform="translate('+x+' '+y+') scale('+s+')"><g class="'+(isNew(id)?"pop-in":"")+'">'+inner+'</g></g>';
+  let svg='<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Your universe: '+E.name+'"><defs>'+
+   '<linearGradient id="sk'+u+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+top+'"/><stop offset="1" stop-color="'+bot+'"/></linearGradient>'+
+   '<filter id="g'+u+'" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
+   '<linearGradient id="bm'+u+'" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#3de0ff" stop-opacity=".55"/><stop offset="1" stop-color="#3de0ff" stop-opacity="0"/></linearGradient>'+
+   '<radialGradient id="vg'+u+'"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".55"/></radialGradient></defs>';
+  svg+='<rect width="400" height="300" fill="url(#sk'+u+')"/>';
+  /* stars / sun */
+  if(W.sky==="golden"){svg+='<circle cx="320" cy="78" r="30" fill="#fff3b0" filter="url(#g'+u+')"/><g opacity=".25" fill="#fff3b0" class="sv-beam"><path d="M320 78 L180 235 L260 235Z"/><path d="M320 78 L300 235 L380 235Z"/></g>'}
+  else if(W.sky!=="rain"&&W.sky!=="storm"){svg+=STARS.map((s,i)=>'<circle cx="'+s[0]+'" cy="'+s[1]+'" r="'+s[2]*.8+'" fill="#fff" opacity=".7" class="sv-twinkle" style="animation-delay:'+(i%7)*.3+'s"/>').join("")}
+  if(W.sky==="storm"||W.sky==="rain"){svg+='<g fill="'+(W.sky==="storm"?"#23213a":"#35566e")+'" opacity=".95"><ellipse cx="70" cy="46" rx="70" ry="24"/><ellipse cx="170" cy="30" rx="80" ry="26"/><ellipse cx="290" cy="50" rx="90" ry="28"/><ellipse cx="380" cy="30" rx="60" ry="22"/></g>'}
+  if(W.sky==="aurora"||(W.env==="ice"&&W.sky==="normal")){svg+='<g class="sv-aur" opacity=".5"><path d="M0 70 Q100 20 200 70 T400 60 V110 Q300 140 200 100 T0 110Z" fill="#39ff88"/><path d="M0 100 Q100 60 200 100 T400 90 V120 Q300 150 200 125 T0 130Z" fill="#b66cff" opacity=".6"/></g>'}
+  /* environment far layer */
+  if(W.env==="city"){const B=[[0,150,34],[30,118,28],[56,170,30],[84,98,26],[108,140,36],[142,88,30],[170,150,28],[196,112,34],[228,160,30],[256,104,28],[282,146,36],[316,124,28],[342,156,30],[370,92,34]];
+    B.forEach((b,i)=>{svg+='<rect x="'+b[0]+'" y="'+b[1]+'" width="'+b[2]+'" height="'+(235-b[1])+'" fill="#0d0f2e" stroke="#1f2570"/>';
+      for(let y=b[1]+8;y<225;y+=13)for(let x=b[0]+5;x<b[0]+b[2]-4;x+=9){const lit=(x*7+y*3+i)%5<(has("lights")?3:1);svg+='<rect x="'+x+'" y="'+y+'" width="4" height="6" fill="'+(lit?["#3de0ff","#ff4dd8","#ffd54a"][(x+y)%3]:"#151a45")+'"/>'}})}
+  if(W.env==="jungle"){[30,95,160,225,290,355].forEach((x,i)=>{svg+='<rect x="'+(x-5)+'" y="110" width="10" height="125" fill="#0a3a22"/><circle cx="'+x+'" cy="106" r="34" fill="#0f6b3f"/><circle cx="'+(x-22)+'" cy="126" r="24" fill="#128a50"/><circle cx="'+(x+22)+'" cy="126" r="24" fill="#128a50"/><path d="M'+(x-10)+' 130 V170 M'+(x+12)+' 128 V160" stroke="#39ff88" stroke-width="1.5" opacity=".6"/><circle cx="'+(x+(i%2?10:-12))+'" cy="228" r="4" fill="#ff4dd8" filter="url(#g'+u+')" class="sv-twinkle"/>'})}
+  if(W.env==="station"){svg+='<rect x="34" y="26" width="332" height="178" rx="26" fill="#02030a" stroke="#3a4580" stroke-width="7"/><circle cx="268" cy="112" r="50" fill="#5a3bd6"/><ellipse cx="268" cy="112" rx="72" ry="14" fill="none" stroke="#9fb0ff" stroke-width="3" transform="rotate(-18 268 112)"/><circle cx="252" cy="96" r="14" fill="#7e5cff" opacity=".7"/>'+STARS.map(s=>'<circle cx="'+(40+s[0]*.8)+'" cy="'+(34+s[1]*.9)+'" r="'+s[2]*.6+'" fill="#fff"/>').join("")+'<path d="M34 100 H4 M366 100 H396 M200 26 V6" stroke="#3a4580" stroke-width="8"/>'}
+  if(W.env==="islands"){svg+='<g fill="#fff" opacity=".35"><ellipse cx="60" cy="205" rx="60" ry="12"/><ellipse cx="240" cy="215" rx="90" ry="12"/><ellipse cx="370" cy="200" rx="50" ry="10"/></g>';
+    [[70,100,70],[200,64,90],[336,116,60]].forEach((p,i)=>{svg+='<g class="sv-float" style="animation-delay:'+i*.8+'s"><path d="M'+(p[0]-p[2]/2)+' '+p[1]+' H'+(p[0]+p[2]/2)+' L'+(p[0]+8)+' '+(p[1]+34)+' L'+(p[0]-8)+' '+(p[1]+34)+'Z" fill="#4a3a6a" stroke="#8a6ad6"/><rect x="'+(p[0]-p[2]/2)+'" y="'+(p[1]-6)+'" width="'+p[2]+'" height="8" rx="4" fill="#3fe08a"/><path d="M'+(p[0]-5)+' '+(p[1]+3)+' v40" stroke="#9ff3ff" stroke-width="3" opacity=".6" stroke-dasharray="6 4" class="sv-beam"/></g>'})}
+  if(W.env==="ice"){svg+='<polygon points="0,235 60,130 110,190 170,96 240,200 300,118 360,190 400,146 400,235" fill="#5b86c4"/><polygon points="60,130 48,150 60,146 70,152" fill="#fff"/><polygon points="170,96 156,126 170,118 184,128" fill="#fff"/><polygon points="300,118 288,144 300,138 312,146" fill="#fff"/>';
+    [[40,232],[250,236],[385,232]].forEach(p=>{svg+='<polygon points="'+p[0]+','+(p[1]-34)+' '+(p[0]+8)+','+p[1]+' '+(p[0]-8)+','+p[1]+'" fill="#bff6ff" opacity=".8" filter="url(#g'+u+')"/>'})}
+  /* ground */
+  svg+='<rect y="235" width="400" height="65" fill="'+E.ground+'"/><rect y="235" width="400" height="3" fill="'+E.acc+'" opacity=".7"/>';
+  if(W.env==="city"||W.env==="station")for(let x=-100;x<=500;x+=50)svg+='<path d="M200 235 L'+x+' 300" stroke="'+E.acc+'" stroke-width=".8" opacity=".35"/>';
+  if(W.env==="jungle")for(let x=8;x<400;x+=26)svg+='<path d="M'+x+' 240 q2 -8 4 0 M'+(x+8)+' 244 q2 -8 4 0" stroke="#39ff88" fill="none" opacity=".6"/>';
+  if(W.env==="islands")svg+='<rect y="235" width="400" height="9" fill="#46e39a"/>';
+  if(W.env==="ice")for(let x=14;x<400;x+=40)svg+='<circle cx="'+x+'" cy="'+(255+(x%3)*10)+'" r="1.6" fill="#fff" class="sv-twinkle"/>';
+  /* base building (always) */
+  const power=has("generator");
+  svg+='<g transform="translate(190 238)"><rect x="-22" y="-28" width="44" height="28" rx="3" fill="#151c40" stroke="'+E.acc+'" stroke-width="1.6"/><rect x="-26" y="-32" width="52" height="6" rx="2" fill="#222a5c" stroke="'+E.acc+'"/><rect x="-14" y="-20" width="9" height="9" fill="'+(power?"#ffe38a":"#0b1030")+'" '+(power?'filter="url(#g'+u+')"':"")+'/><rect x="5" y="-20" width="9" height="9" fill="'+(power?"#ffe38a":"#0b1030")+'"/><rect x="-4" y="-11" width="8" height="11" fill="#0b1030"/></g>';
+  if(has("lights")){[168,214,262].forEach(x=>{svg+=wrap("lights",x,238,1,'<rect x="-1" y="-30" width="2" height="30" fill="#8a96c8"/><circle cx="0" cy="-32" r="5" fill="#fff3b0" filter="url(#g'+u+')"/><ellipse cx="0" cy="0" rx="14" ry="3" fill="#fff3b0" opacity=".2"/>')})}
+  /* items */
+  ORDER.forEach(id=>{if(!has(id))return;const p=POS[id];svg+=wrap(id,p[0],p[1],p[2],drawItem(id,W,u));if(id==="towers"){svg+=wrap(id,282,236,.9,drawItem(id,W,u))}});
+  if(has("plants"))svg+=wrap("plants",0,0,1,plantsSVG(u));
+  svg+=portalSVG(W,u);
+  if(has("creature"))svg+=wrap("creature",0,0,1,creatureSVG(W,u));
+  if(has("crystal"))svg+=wrap("crystal",66,188,1,'<g class="sv-float">'+drawItem("crystal",W,u)+'</g>');
+  if(has("bridge"))svg+=wrap("bridge",0,0,1,drawItem("bridge",W,u));
+  if(has("drones"))svg+=wrap("drones",0,0,1,'<g class="sv-float">'+drawItem("drones",W,u)+'</g>');
+  if(has("creature2"))svg+=wrap("creature2",0,0,1,drawItem("creature2",W,u));
+  if(has("dome"))svg+=wrap("dome",0,0,1,'<path d="M14 238 A186 156 0 0 1 386 238Z" fill="rgba(182,108,255,.12)" stroke="#d6b3ff" stroke-width="2" stroke-dasharray="8 5" class="sv-beam"/>');
+  /* characters */
+  const C=W.comps;const cNew=m=>isNew("c:"+m);
+  let comp='<g transform="translate(88 270) scale(1.2)">';
+  if(C.includes("glow"))comp+='<circle cx="0" cy="-28" r="46" fill="#ffd54a" opacity=".22" class="'+(cNew("glow")?"pop-in":"sv-pulse")+'"/>';
+  if(C.includes("wings"))comp+='<g class="'+(cNew("wings")?"pop-in":"sv-sway")+'"><path d="M-8 -30 L-44 -58 L-30 -22Z M8 -30 L44 -58 L30 -22Z" fill="#9ff3ff" opacity=".7" stroke="#fff"/></g>';
+  comp+='<g class="sv-bob">'+compInner(W.comp,u)+'</g>';
+  if(C.includes("armor"))comp+='<g class="'+(cNew("armor")?"pop-in":"")+'"><path d="M-12 -36 H12 M-10 -28 H10" stroke="#ffd54a" stroke-width="3" opacity=".9"/></g>';
+  if(C.includes("shield"))comp+='<circle cx="0" cy="-30" r="42" fill="rgba(61,224,255,.12)" stroke="#3de0ff" stroke-width="2" stroke-dasharray="6 4" class="'+(cNew("shield")?"pop-in":"sv-pulse")+'"/>';
+  comp+='</g>';svg+=comp;
+  svg+='<g transform="translate(196 272) scale(.22) translate(-60 -176)">'+agentInner(true)+'</g><g transform="translate(232 272) scale(.22) translate(-60 -176)">'+agentInner(false)+'</g>';
+  /* weather */
+  if(W.sky==="storm"||W.sky==="rain"){let r="";for(let x=0;x<=420;x+=14)for(let y=-30;y<300;y+=30)r+='M'+x+' '+(y+((x/14)%3)*8)+' l-4 13 ';
+    svg+='<g class="sv-rain" opacity=".55"><path d="'+r+'" stroke="#bfe6ff" stroke-width="1.2" fill="none"/></g>';
+    if(W.sky==="storm")svg+='<g class="sv-flash"><rect width="400" height="300" fill="#fff" opacity=".35"/><path d="M280 20 L262 90 L284 90 L262 160" stroke="#fff6a0" stroke-width="4" fill="none" filter="url(#g'+u+')"/></g>'}
+  if(W.env==="ice"||W.sky==="golden"){let s="";for(let x=0;x<=420;x+=40)for(let y=-40;y<300;y+=40)s+='<circle cx="'+(x+((y/40)%2)*20)+'" cy="'+y+'" r="1.6"/>';
+    svg+='<g class="sv-snow" fill="'+(W.sky==="golden"?"#ffe9a0":"#fff")+'" opacity=".7">'+s+'</g>'}
+  if(W.pers==="magic"||W.env==="jungle"){for(let i=0;i<10;i++)svg+='<circle cx="'+((i*47)%390+8)+'" cy="'+(120+(i*29)%110)+'" r="1.8" fill="#ffd54a" filter="url(#g'+u+')" class="sv-twinkle" style="animation-delay:'+i*.25+'s"/>'}
+  /* world condition */
+  const cond=condOf(W);
+  if(!power)svg+='<rect width="400" height="300" fill="#000" opacity=".32"/>';
+  if(cond==="damaged")svg+='<rect width="400" height="300" fill="#200010" opacity=".25"/><path d="M110 0 L126 44 L108 78 L140 120 L130 168 M300 0 L286 52 L306 96 L284 150" stroke="#000" stroke-width="3" fill="none" opacity=".6"/><path d="M110 0 L126 44 L108 78 L140 120 L130 168 M300 0 L286 52 L306 96 L284 150" stroke="#ff4d7a" stroke-width="1" fill="none" opacity=".8" class="sv-twinkle"/>';
+  if(cond==="unstable")svg+='<g class="sv-glitch"><rect x="0" y="64" width="400" height="4" fill="#3de0ff" opacity=".6"/><rect x="0" y="150" width="400" height="6" fill="#ff4dd8" opacity=".5"/><rect x="0" y="210" width="400" height="3" fill="#3de0ff" opacity=".6"/></g>';
+  if(cond==="restored"){svg+='<rect width="400" height="300" fill="#ffd54a" opacity=".07"/>';for(let i=0;i<14;i++)svg+='<path d="M'+((i*53)%390+6)+' '+(30+(i*37)%170)+' l2 5 l5 2 l-5 2 l-2 5 l-2 -5 l-5 -2 l5 -2Z" fill="#ffe38a" class="sv-twinkle" style="animation-delay:'+(i*.2)+'s"/>'}
+  /* endings */
+  if(o.ending==="A"){svg+='<rect width="400" height="300" fill="#39ff88" opacity=".08"/>';[30,110,200,290,370].forEach((x,i)=>{svg+='<rect x="'+(x-5)+'" y="'+(120-(i%2)*22)+'" width="10" height="'+(115+(i%2)*22)+'" rx="5" fill="rgba(160,255,200,.4)" stroke="#bfffd8"/><circle cx="'+x+'" cy="'+(116-(i%2)*22)+'" r="5" fill="#fff" filter="url(#g'+u+')"/>'});
+    svg+='<ellipse cx="200" cy="40" rx="150" ry="22" fill="none" stroke="#ffe38a" stroke-width="3" opacity=".8" filter="url(#g'+u+')" class="sv-pulse"/>'}
+  if(o.ending==="B"){svg+='<rect width="400" height="300" fill="#ff4dd8" opacity=".12"/><path d="M0 40 Q100 80 200 40 T400 40" stroke="#ffd1f5" stroke-width="2" fill="none"/>';
+    for(let i=0;i<9;i++){const x=i*50+10;svg+='<path d="M'+x+' '+(48+Math.sin(i)*8)+' l14 4 l-14 12Z" fill="'+(i%2?"#ff4dd8":"#3de0ff")+'" class="sv-wave"/>'}
+    svg+='<text x="200" y="104" text-anchor="middle" font-family="Orbitron,sans-serif" font-weight="800" font-size="30" fill="#ff4dd8" filter="url(#g'+u+')">FREE!</text>';
+    for(let i=0;i<8;i++)svg+='<circle cx="'+(40+i*45)+'" cy="'+(130+(i*37)%60)+'" r="3" fill="'+(i%2?"#ffd54a":"#ff4dd8")+'" class="sv-twinkle" filter="url(#g'+u+')" style="animation-delay:'+i*.2+'s"/>'}
+  if(o.ending==="C"){svg+='<rect width="400" height="300" fill="#b66cff" opacity=".1"/><g class="sv-aur" opacity=".55"><path d="M0 60 Q100 10 200 60 T400 50 V100 Q300 130 200 90 T0 100Z" fill="#39ff88"/></g>';
+    [[60,120],[210,90],[340,130]].forEach((p,i)=>{svg+='<g class="sv-float" style="animation-delay:'+i*.7+'s"><path d="M'+(p[0]-30)+' '+p[1]+' H'+(p[0]+30)+' L'+(p[0]+8)+' '+(p[1]+22)+' L'+(p[0]-8)+' '+(p[1]+22)+'Z" fill="#3a2a66" stroke="#b66cff"/><rect x="'+(p[0]-30)+'" y="'+(p[1]-5)+'" width="60" height="7" rx="3" fill="#39ff88"/><circle cx="'+p[0]+'" cy="'+(p[1]-16)+'" r="11" fill="#27d87c" filter="url(#g'+u+')"/></g>'});
+    for(let i=0;i<12;i++)svg+='<circle cx="'+((i*61)%380+10)+'" cy="'+(100+(i*41)%130)+'" r="2.2" fill="#ffd54a" class="sv-twinkle" filter="url(#g'+u+')" style="animation-delay:'+i*.2+'s"/>'}
+  svg+='<rect width="400" height="300" fill="url(#vg'+u+')"/></svg>';
+  return svg;
+}
+/*SVG_END*/
+
+/* ====================== UI ====================== */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const PCOL=["var(--magenta)","var(--green)"];
+const G={mode:"shared",names:["Nova","Kai"],W:[null,null],P:null,i:0,turn:0,letters:[],clues:[],seen:{},cur:null,stage:"intro"};
+function freshPlayers(){return[{score:0,streak:0,ach:[],retried:false},{score:0,streak:0,ach:[],retried:false}]}
+G.P=freshPlayers();
+
+/* sound */
+let AC=null,muted=false;
+function tone(f,d,type,t0,v){if(muted)return;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime+(t0||0);o.type=type||"sine";o.frequency.value=f;g.gain.setValueAtTime(v||.05,t);g.gain.exponentialRampToValueAtTime(.0001,t+(d||.15));o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+(d||.15)+.03)}catch(e){}}
+const sfx={click(){tone(440,.08,"square",0,.03)},good(){tone(523,.14,"triangle");tone(659,.14,"triangle",.1);tone(784,.2,"triangle",.2)},bad(){tone(180,.22,"sawtooth",0,.04);tone(140,.25,"sawtooth",.12,.04)},letter(){tone(880,.1,"sine",0,.06);tone(1175,.2,"sine",.09,.06)},world(){tone(330,.12,"sine",0,.05);tone(494,.12,"sine",.08,.05);tone(740,.2,"sine",.16,.05)},win(){[523,659,784,1047,784,1047,1319].forEach((f,i)=>tone(f,.22,"triangle",i*.12,.06))}};
+
+/* transitions */
+const SCREENS=["start","how","mode","world","game","code","end"];
+let busy=false;
+function show(id,color,done){
+  if(busy)return;busy=true;
+  const w=$("#warp");w.querySelector("i").style.setProperty("--wc",color||"var(--green)");
+  w.classList.remove("go");void w.offsetWidth;w.classList.add("go");
+  setTimeout(()=>{SCREENS.forEach(s=>$("#s-"+s).classList.toggle("active",s===id));$("#hud").hidden=!(id==="game"||id==="code");window.scrollTo(0,0);if(done)done()},430);
+  setTimeout(()=>{w.classList.remove("go");busy=false},950);
+}
+function toast(html){const t=document.createElement("div");t.className="toast";t.innerHTML=html;$("#toasts").appendChild(t);setTimeout(()=>t.remove(),4200)}
+function openModal(html){$("#modalBox").innerHTML=html;$("#modal").classList.add("open")}
+function closeModal(){$("#modal").classList.remove("open")}
+const RULES_HTML='<h2 style="color:var(--cyan);margin-bottom:12px">Grammar rules</h2><div class="rule-grid" style="grid-template-columns:1fr"><div class="rule g"><h3>FIRST CONDITIONAL</h3><div class="f">If + Present Simple, will/won\'t + base verb</div><div class="ex">If we repair the generator, our base will have power again.</div><div style="margin-top:6px">Real or possible future. Also: <i>unless</i> = if not. Negative: If we <b>don\'t</b> act…</div></div><div class="rule p"><h3>SECOND CONDITIONAL</h3><div class="f">If + Past Simple, would/wouldn\'t + base verb</div><div class="ex">If I could control the weather, I would protect the planet.</div><div style="margin-top:6px">Imaginary or unlikely situations. Advice: <b>If I were you, I would…</b> Question: What would happen if…?</div></div></div><div class="btn-row"><button class="btn" id="btnCloseRules">CLOSE</button></div>';
+
+/* helpers for player/world */
+const pIdx=()=>G.mode==="shared"?G.i%2:G.turn;
+const wIdx=()=>G.mode==="shared"?0:G.turn;
+const curW=()=>G.W[wIdx()];
+function hl(s){
+  const aux=t=>t.replace(/\b(will|would|won't|wouldn't)\b/gi,'<b class="h-aux">$1</b>');
+  s=esc(s);let m=s.match(/^((?:If|Unless)\b[^,]*),\s*(.*)$/i);
+  if(m)return'<span class="h-if">'+m[1]+'</span>, <span class="h-res">'+aux(m[2])+'</span>';
+  m=s.match(/^(.*?)\s+((?:if|unless)\b.*)$/i);
+  if(m)return'<span class="h-res">'+aux(m[1])+'</span> <span class="h-if">'+m[2]+'</span>';
+  return aux(s);
+}
+
+/* scene rendering */
+function renderScene(W,wrapEl,uid,ending){wrapEl.innerHTML=sceneSVG(W,{uid:uid,ending:ending})}
+function stateColor(c){return{damaged:"#ff4d7a",unstable:"#ffd54a",safe:"#39ff88",restored:"#3de0ff"}[c]}
+function aiLabel(W){return{none:"AURA: not found yet",awake:"AURA: asleep and dim",active:"AURA: awake and asking for control",controlled:"AURA: controls the world",defeated:"AURA: defeated",friend:"AURA: your friend"}[W.ai]}
+function renderWorldPanel(animate){
+  const W=curW(),c=condOf(W),card=$("#worldCard");
+  card.style.setProperty("--cond",stateColor(c));
+  $("#wName").textContent=G.mode==="shared"?G.names[0]+" & "+G.names[1]+"'s Universe":G.names[wIdx()]+"'s Universe";
+  $("#wState").textContent="WORLD STATE: "+c.toUpperCase();
+  renderScene(W,$("#sceneWrap"),"main");
+  $("#wChips").innerHTML=[ENVS[W.env].icon+" "+ENVS[W.env].name,COMPS[W.comp].icon+" "+COMPS[W.comp].name,PERS[W.pers].icon+" "+PERS[W.pers].name,"🧠 "+aiLabel(W).replace("AURA: ","AURA: ")].map(t=>'<span class="wchip">'+esc(t)+'</span>').join("");
+  const items=W.items.map(id=>'<span class="'+(W.newItems.includes(id)?"new":"")+'" title="'+ITEMS[id][1]+'">'+ITEMS[id][0]+" "+ITEMS[id][1]+'</span>').concat(W.comps.map(m=>'<span class="'+(W.newItems.includes("c:"+m)?"new":"")+'">'+MODS[m][0]+" "+MODS[m][1]+'</span>'));
+  $("#inv").innerHTML=items.length?items.join(""):'<span>Nothing unlocked yet. Solve challenges to build your world!</span>';
+  if(animate){card.classList.remove("changed");void card.offsetWidth;card.classList.add("changed")}
+}
+function renderHud(){
+  const pips=$("#pips");pips.innerHTML="";
+  for(let k=0;k<Q.length;k++){const d=document.createElement("div");d.className="pip"+(k%4===0&&k?" sep":"")+(k<G.i?" done":k===G.i?" cur":"");pips.appendChild(d)}
+  $("#chName").textContent="Ch."+(Q[Math.min(G.i,15)].ch+1)+": "+CHAPTERS[Q[Math.min(G.i,15)].ch].name;
+  [0,1].forEach(p=>{const el=$("#sc"+p);el.style.setProperty("--pc",PCOL[p]);el.textContent=(p?"👦 ":"👧 ")+G.names[p]+" ⭐ "+G.P[p].score;el.classList.toggle("on",G.stage!=="code"&&pIdx()===p)});
+  $("#hud").dataset.type=Q[Math.min(G.i,15)].cond;
+  $("#hud").style.setProperty("--accent",Q[Math.min(G.i,15)].cond==="first"?"var(--green)":"var(--magenta)");
+}
+function renderTray(newIdx){
+  const t=$("#tray");t.innerHTML='<span class="tray-title">Secret letters:</span>';
+  for(let k=0;k<SECRET.length;k++){const d=document.createElement("div");const L=G.letters[k];d.className="slot"+(L?" filled":"")+(k===newIdx?" pop":"");if(L)d.textContent=L;else{d.textContent="🔒";d.style.fontSize="1rem"}t.appendChild(d)}
+  $("#clues").innerHTML=G.clues.map(c=>"🔎 "+esc(c)).join("<br>");
+}
+function award(p,id){const P=G.P[p];if(P.ach.includes(id))return;P.ach.push(id);const a=ACH[id];toast(a[0]+" <b>"+esc(G.names[p])+"</b> unlocked <b>"+a[1]+"</b>!")}
+
+/* ----- chapter intro ----- */
+function renderGame(){
+  renderHud();renderTray(-1);
+  const q=Q[G.i];
+  if(G.turn===0&&!G.seen[q.ch]&&q.ch*4===G.i)showIntro();else showChallenge();
+}
+function showIntro(){
+  const q=Q[G.i],W=G.W[0],card=$("#mCard");
+  G.seen[q.ch]=true;G.stage="intro";card.dataset.type="intro";
+  renderWorldPanel(false);renderHud();
+  card.innerHTML='<div class="chips"><span class="chip">CHAPTER '+(q.ch+1)+' OF 4</span></div><h2 class="m-title">'+esc(CHAPTERS[q.ch].name)+'</h2><p class="intro-text">'+esc(fmt(CHAPTERS[q.ch].text,W))+'</p><div class="next-row"><button class="btn" id="btnIntro" type="button">START CHAPTER '+(q.ch+1)+'</button></div>';
+  $("#btnIntro").addEventListener("click",()=>{sfx.click();showChallenge()});
+}
+
+/* ----- challenge ----- */
+function showChallenge(){
+  const q=Q[G.i],W=curW(),p=pIdx(),card=$("#mCard");
+  G.stage="q";G.cur={answered:false,wrong:0};
+  card.dataset.type=q.cond;renderHud();renderWorldPanel(false);
+  W.newItems=[];
+  const kinds={pick:"",decide:"DECISION",open:"YOUR IDEA"};
+  let h='<div class="turn" style="--pc:'+PCOL[p]+'">'+(p?"👦":"👧")+" "+esc(G.names[p])+"'s turn"+(G.mode==="separate"?" · own universe":"")+'</div>';
+  h+='<div class="chips"><span class="chip">'+(q.cond==="first"?"FIRST CONDITIONAL":"SECOND CONDITIONAL")+'</span><span class="chip alt">'+esc(q.task)+'</span></div>';
+  h+='<h2 class="m-title">'+esc(q.title)+'</h2><p class="story">'+esc(fmt(q.story,W))+'</p><p class="ask">'+esc(fmt(q.ask,W))+'</p>';
+  if(q.kind==="open"){
+    h+='<div class="open-box"><div class="ideas">'+q.ideas.map((t,i)=>'<button type="button" class="idea" data-i="'+i+'">💡 '+esc(t)+'</button>').join("")+'</div><div class="open-line"><span>'+esc(q.prefix)+'</span><input id="openIn" maxlength="60" placeholder="your idea…" aria-label="Your idea"><span>.</span></div><div class="next-row"><button class="btn" id="btnOpen" type="button">CHECK MY SENTENCE</button></div></div>';
+  }else{
+    h+='<div class="opts" id="mOpts"></div>';
+  }
+  h+='<div id="mFb" aria-live="polite"></div>';
+  card.innerHTML=h;
+  if(q.kind==="open"){
+    card.querySelectorAll(".idea").forEach(b=>b.addEventListener("click",()=>{$("#openIn").value=q.ideas[+b.dataset.i];sfx.click()}));
+    $("#btnOpen").addEventListener("click",submitOpen);
+    $("#openIn").addEventListener("keydown",e=>{if(e.key==="Enter")submitOpen()});
+  }else{
+    const box=$("#mOpts");
+    q.options.forEach((o,idx)=>{const b=document.createElement("button");b.type="button";b.className="opt";b.innerHTML='<span class="k">'+"ABCD"[idx]+'</span><span class="tx"></span>';b.querySelector(".tx").textContent=fmt(o.t,W);b.addEventListener("click",()=>choose(idx,b));box.appendChild(b)});
+  }
+}
+function quip(W,good){const a=COMPS[W.comp][good?"good":"bad"];return a[(G.i+(good?0:1)+G.turn)%a.length]}
+function wrongFeedback(why){
+  const W=curW();sfx.bad();
+  $("#mFb").innerHTML='<div class="fb bad"><div class="fb-t">✖ NOT YET. Try again!</div><p></p><p class="quip"></p></div>';
+  $("#mFb").querySelector("p").textContent=fmt(why,W);
+  $("#mFb").querySelector(".quip").textContent=quip(W,false);
+  $("#mFb").firstElementChild.scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function choose(idx,btn){
+  if(G.cur.answered)return;
+  const q=Q[G.i],W=curW(),o=q.options[idx];
+  if(!o.ok){G.cur.wrong++;btn.classList.add("wrong");btn.disabled=true;G.P[pIdx()].retried=true;wrongFeedback(o.why);return}
+  G.cur.answered=true;
+  document.querySelectorAll("#mOpts .opt").forEach((b,k)=>{b.disabled=true;if(k===idx)b.classList.add("right");else if(!b.classList.contains("wrong"))b.classList.add("dim")});
+  const eff=q.kind==="decide"?o.eff:q.eff;
+  success(q,W,eff,q.full?fmt(q.full,W):fmt(o.t,W));
+}
+function submitOpen(){
+  if(G.cur.answered)return;
+  const q=Q[G.i],W=curW(),v=$("#openIn").value.trim();
+  const r=validateOpen(v);
+  if(!r.ok){G.cur.wrong++;G.P[pIdx()].retried=true;wrongFeedback(r.msg);return}
+  G.cur.answered=true;$("#openIn").disabled=true;$("#btnOpen").disabled=true;document.querySelectorAll(".idea").forEach(b=>b.disabled=true);
+  success(q,W,openEff(q,v),q.prefix+v.replace(/[.!]+$/,"")+".");
+  award(pIdx(),"writer");
+}
+function success(q,W,effIn,sentence){
+  sfx.good();
+  const p=pIdx(),P=G.P[p];
+  const first=G.cur.wrong===0;
+  const pts=first?10:5;P.score+=pts;
+  if(first){P.streak++;award(p,"first");if(P.streak>=3)award(p,"streak")}else{P.streak=0;award(p,"retry")}
+  const eff=applyEff(W,effIn);
+  if(eff.ach)award(p,eff.ach);
+  if(W.items.length+W.comps.length>=12)award(p,"builder");
+  const last=G.mode==="shared"||G.turn===1;
+  let letter=null,clue=null;
+  if(last){if(q.letter){G.letters.push(q.letter);letter=q.letter}if(q.clue){G.clues.push(q.clue);clue=q.clue}}
+  renderHud();renderWorldPanel(true);sfx.world();
+  if(letter){setTimeout(sfx.letter,400);renderTray(G.letters.length-1)}else if(clue)renderTray(-1);
+  const sepWait=G.mode==="separate"&&G.turn===0&&(q.letter||q.clue);
+  let h='<div class="fb good"><div class="fb-t">✔ CORRECT! +'+pts+' points for '+esc(G.names[p])+'</div>';
+  h+='<div class="sentence">'+hl(sentence)+'</div><div class="legend"><span class="h-if">if-part</span> · <span class="h-res">result part</span> · <b class="h-aux">will / would</b></div>';
+  h+='<p>'+esc(fmt(q.good,W))+'</p>';
+  h+='<p class="cons">🌍 <b>World change:</b> '+esc(fmt(eff.text,W))+'</p><div class="fb-scene">'+sceneSVG(W,{uid:"fb"})+'</div>';
+  h+='<p class="quip">'+esc(quip(W,true))+'</p>';
+  const unlocked=W.newItems.map(id=>id.startsWith("c:")?MODS[id.slice(2)]:ITEMS[id]).filter(Boolean).map(a=>a[0]+" "+a[1]);
+  if(letter)h+='<div class="reward"><div class="big">'+letter+'</div><div><b>Secret letter unlocked!</b><br>Remember it. The letters are NOT in the right order yet.</div></div>';
+  else if(clue)h+='<div class="reward"><div class="big">🔎</div><div><b>Secret clue found!</b><br>'+esc(clue)+'</div></div>';
+  else if(sepWait)h+='<p class="legend">🔒 A reward unlocks when both agents finish this challenge.</p>';
+  if(unlocked.length)h+='<p class="legend">New in your world: '+esc(unlocked.join(", "))+'</p>';
+  if(q.speak){const sp=fmt(q.speak,W);h+='<details class="speak"><summary>🎤 Speaking boost (optional)</summary><p>'+esc(sp)+'</p><div class="speak-btns"><button type="button" class="mini" id="btnSpeak">We answered aloud (+5)</button><button type="button" class="mini" id="btnSkip">Skip</button></div></details>'}
+  const nextLabel=G.mode==="separate"&&G.turn===0?"NEXT: "+G.names[1].toUpperCase()+"'S UNIVERSE":(G.i===Q.length-1?"OPEN THE CODE LOCK":"NEXT CHALLENGE");
+  h+='<div class="next-row"><button class="btn" id="btnNext" type="button">'+esc(nextLabel)+'</button></div></div>';
+  $("#mFb").innerHTML=h;
+  $("#btnNext").addEventListener("click",nextStep);
+  const sb=$("#btnSpeak");if(sb)sb.addEventListener("click",()=>{if(!sb.disabled){sb.disabled=true;G.P[p].score+=5;award(p,"speak");renderHud();sb.textContent="Great speaking! +5 ✓";sfx.letter()}});
+  const sk=$("#btnSkip");if(sk)sk.addEventListener("click",()=>{sk.closest("details").open=false});
+  $("#mFb").firstElementChild.scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function nextStep(){
+  sfx.click();
+  if(G.mode==="separate"&&G.turn===0){G.turn=1;show("game",colorOf(Q[G.i].cond),renderGame);return}
+  G.i++;G.turn=0;
+  if(G.i>=Q.length){show("code","var(--cyan)",setupCode);return}
+  show("game",colorOf(Q[G.i].cond),renderGame);
+}
+const colorOf=t=>t==="second"?"var(--magenta)":"var(--green)";
+
+/* ----- code lock ----- */
+let fails=0;
+function setupCode(){
+  fails=0;G.stage="code";renderHud();
+  const tiles=$("#tiles");tiles.innerHTML="";
+  G.letters.forEach(ch=>{const b=document.createElement("button");b.type="button";b.className="tile";b.textContent=ch;b.dataset.ch=ch;b.addEventListener("click",()=>{const inp=$("#codeIn");if(inp.value.length<SECRET.length){inp.value+=ch;sfx.click();syncTiles()}});tiles.appendChild(b)});
+  $("#codeIn").value="";$("#codeMsg").textContent="";$("#codeMsg").className="msg";syncTiles();
+  setTimeout(()=>$("#codeIn").focus({preventScroll:true}),100);
+}
+function syncTiles(){const pool=$("#codeIn").value.toUpperCase().split("");document.querySelectorAll("#tiles .tile").forEach(t=>{const i=pool.indexOf(t.dataset.ch);if(i>-1){pool.splice(i,1);t.disabled=true}else t.disabled=false})}
+function checkCode(){
+  const inp=$("#codeIn"),msg=$("#codeMsg"),v=inp.value.trim().toUpperCase();
+  if(v===SECRET){victory();return}
+  fails++;sfx.bad();inp.classList.remove("shake");void inp.offsetWidth;inp.classList.add("shake");
+  msg.className="msg err";msg.textContent=v.length<SECRET.length?"The lock needs all six letters. Use every letter you collected.":"Access denied! The letters are in the wrong order. Try a different order.";
+  if(fails>=2){msg.className="msg hint";msg.textContent+=" Hint: it is a time word. Past, present and … ?"}
+}
+
+/* ----- ending ----- */
+function victory(){
+  sfx.win();
+  show("end","var(--gold)",()=>{renderEnding();confetti()});
+}
+function renderEnding(){
+  const sep=G.mode==="separate";
+  const ws=sep?[G.W[0],G.W[1]]:[G.W[0]];
+  const ends=ws.map(pickEnding);
+  const w0=ws[0],e0=ends[0];
+  let h='<h2 class="big">TIMELINE RESTORED!</h2>';
+  if(!sep){
+    h+='<h3 class="end-title">'+ENDINGS[e0].icon+" "+esc(endingTitle(w0,e0))+'</h3><div class="end-sub">with '+esc(COMPS[w0.comp].name)+', the '+esc(COMPS[w0.comp].noun)+' · '+esc(ENDINGS[e0].tag)+'</div>';
+    h+='<div class="end-scenes"><figure class="end-scene" style="margin:0" id="fs0"></figure></div><p class="end-desc">'+esc(describe(w0,e0))+'</p>';
+  }else{
+    h+='<div class="end-sub">Two universes, two different futures!</div><div class="end-scenes two">'+ws.map((w,i)=>'<div><h3 class="end-title" style="font-size:1.05rem">'+ENDINGS[ends[i]].icon+" "+esc(G.names[i])+": "+esc(endingTitle(w,ends[i]))+'</h3><figure class="end-scene" style="margin:0" id="fs'+i+'"></figure><p class="end-desc" style="font-size:.95rem">'+esc(describe(w,ends[i]))+'</p></div>').join("")+'</div>';
+  }
+  h+='<div style="color:var(--muted);font-size:.9rem">The secret word</div><div class="word" id="winWord"></div>';
+  const t0=G.P[0].score,t1=G.P[1].score,tot=t0+t1;
+  h+='<div class="stats"><div class="stat"><div class="n">16 / 16</div><div class="l">challenges completed</div></div><div class="stat"><div class="n">'+tot+'</div><div class="l">team score</div></div><div class="stat"><div class="n">'+esc(G.names[0])+" "+t0+" · "+esc(G.names[1])+" "+t1+'</div><div class="l">individual scores</div></div></div>';
+  const diff=Math.abs(t0-t1);
+  h+='<p class="end-desc" style="font-size:1rem">'+(diff===0?"It is a perfect tie! You are a great team.":esc(G.names[t0>t1?0:1])+" is ahead by "+diff+" points. "+esc(G.names[t0>t1?1:0])+", ready for a rematch?")+'</p>';
+  const allAch=[0,1].map(p=>G.P[p].ach.map(id=>'<span class="ach">'+ACH[id][0]+" "+ACH[id][1]+' <small>('+esc(G.names[p])+")</small></span>").join("")).join("");
+  h+='<h3 style="font-size:.9rem;color:var(--gold)">ACHIEVEMENTS</h3><div class="achs">'+(allAch||'<span class="ach">Keep playing to unlock achievements!</span>')+'</div>';
+  h+='<div class="final-q">🎤 If you could live in this universe, what would you do first?<div style="font-weight:500;font-size:1rem;color:var(--muted);margin-top:6px">Answer aloud together. Start with: “If I lived here, I would…”</div></div>';
+  h+='<div class="btn-row"><button class="btn" id="btnNew" type="button">CREATE A DIFFERENT UNIVERSE</button><button class="btn ghost" id="btnRestart" type="button">RESTART GAME</button></div>';
+  $("#endBox").innerHTML=h;
+  ws.forEach((w,i)=>{const fs=$("#fs"+i);fs.innerHTML=sceneSVG(w,{uid:"end"+i,ending:ends[i]})+'<figcaption>'+esc(COMPS[w.comp].icon+" "+COMPS[w.comp].name+" · "+ENVS[w.env].name+" · "+condOf(w).toUpperCase())+'</figcaption>'});
+  const word=$("#winWord");SECRET.split("").forEach((c,i)=>{const b=document.createElement("b");b.textContent=c;b.style.animationDelay=(i*.18)+"s";word.appendChild(b)});
+  $("#btnNew").addEventListener("click",newUniverse);$("#btnRestart").addEventListener("click",restart);
+  window.__ending={ends,ws};
+}
+let cfRaf=0;
+function confetti(){
+  const c=$("#confetti"),x=c.getContext("2d");c.width=innerWidth;c.height=innerHeight;
+  const cols=["#39ff88","#b66cff","#3de0ff","#ffd54a","#ff4dd8","#ffffff"];
+  const P=Array.from({length:170},()=>({x:Math.random()*c.width,y:-Math.random()*c.height,r:4+Math.random()*6,vx:-1.5+Math.random()*3,vy:2+Math.random()*4,c:cols[Math.floor(Math.random()*cols.length)],a:Math.random()*6,va:-.2+Math.random()*.4}));
+  const end=performance.now()+6000;cancelAnimationFrame(cfRaf);
+  (function loop(now){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.a+=p.va;if(p.y>c.height&&now<end-1500){p.y=-10;p.x=Math.random()*c.width}x.save();x.translate(p.x,p.y);x.rotate(p.a);x.fillStyle=p.c;x.fillRect(-p.r,-p.r/2,p.r*2,p.r);x.restore()});if(now<end)cfRaf=requestAnimationFrame(loop);else x.clearRect(0,0,c.width,c.height)})(performance.now());
+}
+
+/* ----- world builder ----- */
+const WB={p:0,env:"city",comp:"robot",pers:"peaceful"};
+function renderBuilder(){
+  const sep=G.mode==="separate";
+  $("#wbTitle").textContent=sep?G.names[WB.p]+": create YOUR universe":"Create your universe";
+  $("#wbHint").textContent=sep?"This universe belongs to "+G.names[WB.p]+".":G.names[0]+" picks the environment, "+G.names[1]+" picks the companion, and you choose the world personality together.";
+  const mk=(el,data,key)=>{el.innerHTML="";Object.keys(data).forEach(k=>{const d=data[k];const b=document.createElement("button");b.type="button";b.className="pick"+(WB[key]===k?" sel":"");b.innerHTML='<span class="em">'+d.icon+'</span><span><b></b><small></small></span>';b.querySelector("b").textContent=d.name;b.querySelector("small").textContent=d.desc;b.addEventListener("click",()=>{WB[key]=k;sfx.click();renderBuilder()});el.appendChild(b)})};
+  mk($("#pkEnv"),ENVS,"env");mk($("#pkComp"),COMPS,"comp");mk($("#pkPers"),PERS,"pers");
+  const W=newWorld(WB.env,WB.comp,WB.pers);
+  renderScene(W,$("#wbScene"),"prev");
+  $("#wbState").textContent="WORLD STATE: "+condOf(W).toUpperCase();$("#wbWorld").style.setProperty("--cond",stateColor(condOf(W)));
+  $("#wbChips").innerHTML=[ENVS[WB.env].icon+" "+ENVS[WB.env].name,COMPS[WB.comp].icon+" "+COMPS[WB.comp].name+" ("+COMPS[WB.comp].noun+")",PERS[WB.pers].icon+" "+PERS[WB.pers].name].map(t=>'<span class="wchip">'+esc(t)+'</span>').join("");
+}
+function resetProgress(){G.P=freshPlayers();G.i=0;G.turn=0;G.letters=[];G.clues=[];G.seen={};G.cur=null;G.W=[null,null];fails=0}
+function startBuilder(){resetProgress();WB.p=0;WB.env="city";WB.comp="robot";WB.pers="peaceful";show("world","var(--cyan)",renderBuilder)}
+function lockWorld(){
+  sfx.click();
+  G.W[WB.p]=newWorld(WB.env,WB.comp,WB.pers);
+  if(G.mode==="separate"&&WB.p===0){WB.p=1;WB.env="jungle";WB.comp="wolf";WB.pers="magic";show("world","var(--green)",renderBuilder);return}
+  if(G.mode==="shared")G.W[1]=G.W[0];
+  show("game","var(--green)",renderGame);
+}
+function newUniverse(){cancelAnimationFrame(cfRaf);$("#confetti").getContext("2d").clearRect(0,0,9999,9999);startBuilder()}
+function restart(){cancelAnimationFrame(cfRaf);$("#confetti").getContext("2d").clearRect(0,0,9999,9999);resetProgress();show("start","var(--green)")}
+
+/* ----- wiring ----- */
+function setMode(m){G.mode=m;$("#modeShared").classList.toggle("sel",m==="shared");$("#modeSep").classList.toggle("sel",m==="separate")}
+$("#btnStart").addEventListener("click",()=>{sfx.click();show("mode","var(--cyan)")});
+$("#btnHow").addEventListener("click",()=>{sfx.click();show("how","var(--cyan)")});
+$("#btnBack").addEventListener("click",()=>{sfx.click();show("start","var(--green)")});
+$("#btnGo").addEventListener("click",()=>{sfx.click();show("mode","var(--cyan)")});
+$("#modeShared").addEventListener("click",()=>setMode("shared"));
+$("#modeSep").addEventListener("click",()=>setMode("separate"));
+$("#btnModeBack").addEventListener("click",()=>{sfx.click();show("start","var(--green)")});
+$("#btnModeOk").addEventListener("click",()=>{sfx.click();G.names=[($("#nm0").value.trim()||"Nova").slice(0,10),($("#nm1").value.trim()||"Kai").slice(0,10)];startBuilder()});
+$("#btnWorldOk").addEventListener("click",lockWorld);
+$("#btnCheck").addEventListener("click",checkCode);
+$("#btnClear").addEventListener("click",()=>{$("#codeIn").value="";$("#codeMsg").textContent="";syncTiles();$("#codeIn").focus()});
+$("#codeIn").addEventListener("input",e=>{e.target.value=e.target.value.replace(/[^a-zA-Z]/g,"").toUpperCase();syncTiles()});
+$("#codeIn").addEventListener("keydown",e=>{if(e.key==="Enter")checkCode()});
+$("#btnRules").addEventListener("click",()=>{openModal(RULES_HTML);$("#btnCloseRules").addEventListener("click",closeModal)});
+$("#btnReset").addEventListener("click",()=>{openModal('<h2 style="color:var(--gold);margin-bottom:10px">Restart the game?</h2><p>Your universe and score will be deleted.</p><div class="btn-row"><button class="btn" id="yesR" type="button">YES, RESTART</button><button class="btn ghost" id="noR" type="button">KEEP PLAYING</button></div>');$("#noR").addEventListener("click",closeModal);$("#yesR").addEventListener("click",()=>{closeModal();restart()})});
+$("#modal").addEventListener("click",e=>{if(e.target.id==="modal")closeModal()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal()});
+$("#btnSound").addEventListener("click",e=>{muted=!muted;e.currentTarget.textContent=muted?"🔇":"🔊"});
+$("#ag1").innerHTML=agentSVG(true)+"<small>GIRL AGENT</small>";$("#ag2").innerHTML=agentSVG(false)+"<small>BOY AGENT</small>";
+window.__FG={G,Q,newWorld,applyEff,pickEnding};
+})();
+</script>
+</body>
+</html>

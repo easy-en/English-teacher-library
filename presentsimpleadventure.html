@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Present Simple Adventure</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg1:#3B4BD8;--bg2:#7A4DE8;--ink:#1B1F4B;--card:#fff;--soft:#EEF1FF;--line:#D3D9F7;--s:#1C7ED6;--a:#E67700;--v:#2B8A3E;--x:#E03131;--ok:#2B8A3E;--okbg:#DFF7E4;--no:#6741D9;--nobg:#EDE7FF;--gold:#FFC53D;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg1:#222a9c;--bg2:#52299f}}
+:root[data-theme="dark"]{--bg1:#222a9c;--bg2:#52299f}
+*,*:before,*:after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+body{margin:0;height:100%;font-family:'Fredoka','Trebuchet MS','Comic Sans MS',system-ui,sans-serif;font-size:20px;color:var(--ink);background:#4B47DD;background:linear-gradient(160deg,var(--bg1),var(--bg2)) fixed}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:4px solid var(--gold);outline-offset:2px}
+#app{display:flex;flex-direction:column;height:100%}
+header.top{display:flex;align-items:center;gap:12px;padding:10px 16px;color:#fff;flex-wrap:wrap}
+.ib{border:0;background:rgba(255,255,255,.18);color:#fff;border-radius:16px;min-width:46px;height:46px;font-size:22px;padding:0 12px}
+.ib:hover{background:rgba(255,255,255,.3)}
+.prog{flex:1;min-width:150px}
+.prog small{display:block;font-size:15px;opacity:.9;margin-bottom:4px}
+.bar{height:12px;border-radius:8px;background:rgba(255,255,255,.25);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--gold);border-radius:8px;transition:width .3s}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{background:rgba(255,255,255,.2);border-radius:14px;padding:4px 10px;font-size:16px;white-space:nowrap}
+.chip.me{background:var(--gold);color:var(--ink);font-weight:600}
+main#stage{flex:1;overflow:auto;padding:6px 16px 16px;-webkit-overflow-scrolling:touch}
+.card{background:var(--card);border-radius:30px;padding:26px 30px;box-shadow:0 10px 0 rgba(20,20,80,.28);max-width:1180px;margin:0 auto}
+.two{display:grid;grid-template-columns:1.05fr 1fr;gap:26px;align-items:stretch}
+@media (max-width:860px){.two{grid-template-columns:1fr}.card{padding:18px}}
+h1{font-size:46px;line-height:1.1;margin:0 0 10px}
+h2{font-size:34px;line-height:1.15;margin:0 0 12px}
+h3{font-size:24px;margin:0 0 8px}
+p{margin:8px 0;line-height:1.35}
+.sub{opacity:.75;font-size:18px}
+.w-s{color:var(--s)}.w-a{color:var(--a)}.w-v{color:var(--v)}.w-x{color:var(--x);text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:4px}.w-o{color:var(--ink)}
+b{font-weight:600}
+.formula{background:var(--soft);border:3px dashed var(--line);border-radius:22px;padding:14px 18px;font-size:30px;font-weight:600;margin:10px 0;line-height:1.5}
+.formula.two2{display:grid;gap:8px}
+.rule{font-size:22px}
+.ex{list-style:none;padding:0;margin:10px 0}
+.ex li{font-size:32px;font-weight:500;margin:8px 0;display:flex;align-items:center;gap:10px}
+.spk{border:0;background:var(--soft);border-radius:50%;width:42px;height:42px;font-size:20px;flex:none}
+.instr{margin-top:12px;background:#FFF3BF;border-radius:18px;padding:10px 16px;font-size:21px}
+.note{margin-top:10px;background:var(--nobg);border-radius:16px;padding:8px 14px;font-size:17px}
+.morph{display:grid;gap:6px;margin:10px 0;font-size:32px}
+.morph div{background:var(--soft);border-radius:18px;padding:8px 16px}
+.morph .arr{background:none;text-align:center;font-size:26px;padding:0}
+.morph s{color:var(--x);text-decoration-thickness:4px}
+table.tb{border-collapse:separate;border-spacing:6px;font-size:28px;margin:8px 0}
+table.tb td{background:var(--soft);border-radius:14px;padding:6px 14px}
+.scene{position:relative;background:radial-gradient(circle at 50% 35%,#FFF7D6,#CFE3FF 75%);border-radius:26px;min-height:320px;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:18px;overflow:hidden}
+.chars{display:flex;align-items:flex-end;justify-content:center;gap:4px;min-height:130px}
+.ring{display:flex;gap:0;border:4px dashed var(--s);border-radius:60px;padding:6px 16px;background:rgba(255,255,255,.5)}
+.big{font-size:84px;line-height:1;position:relative;white-space:nowrap}
+.big .over{position:absolute;right:-30px;top:-14px;font-size:58px;font-style:normal}
+.bubble{background:#fff;border:4px solid var(--ink);border-radius:26px;padding:8px 18px;font-size:28px;font-weight:600;position:relative;max-width:100%;text-align:center}
+.cap{font-size:20px;font-weight:600}
+.kid{display:block}
+.opt{display:block;width:100%;font-size:28px;font-weight:500;text-align:left;padding:14px 20px;margin:10px 0;border-radius:20px;border:4px solid var(--line);background:#fff;transition:transform .08s}
+.opt:hover:not(:disabled){border-color:var(--s);transform:translateY(-2px)}
+.opt.ok{background:var(--okbg);border-color:var(--ok);color:#14532d}
+.opt.soft{background:var(--nobg);border-color:var(--no);color:#3b2a8c}
+.opt:disabled{cursor:default}
+.row{padding:12px 0;border-bottom:3px dotted var(--line)}
+.row:last-child{border:0}
+.row .prompt{font-size:28px;font-weight:500;margin-bottom:6px}
+.row .inl{display:flex;gap:10px;flex-wrap:wrap}
+.row .opt{width:auto;display:inline-block;margin:4px 0;font-size:24px;padding:10px 18px}
+.blank{display:inline-block;min-width:80px;border-bottom:5px solid var(--ink);text-align:center;color:var(--no)}
+.bad{color:var(--no);text-decoration:line-through;text-decoration-color:var(--x);text-decoration-thickness:3px}
+.fb{margin:8px 0;padding:10px 16px;border-radius:18px;font-size:22px}
+.fb.ok{background:var(--okbg);color:#14532d}
+.fb.no{background:var(--nobg);color:#3b2a8c}
+.fb.hint{background:#FFF3BF}
+.acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.btn{border:0;border-radius:18px;padding:10px 20px;font-size:22px;font-weight:600;background:var(--soft);color:var(--ink);box-shadow:0 5px 0 rgba(20,20,80,.18)}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(20,20,80,.18)}
+.btn.pri{background:var(--gold)}
+.btn.go{background:var(--ok);color:#fff}
+.btn.big2{font-size:30px;padding:14px 34px}
+.btn:disabled{opacity:.45;cursor:default}
+footer.nav{display:flex;align-items:center;gap:12px;padding:10px 16px;justify-content:space-between;flex-wrap:wrap}
+footer.nav .btn{min-width:130px}
+.turn{display:flex;align-items:center;gap:6px;color:#fff;font-size:17px;flex-wrap:wrap;justify-content:center}
+.turn button{border:0;border-radius:14px;padding:6px 12px;background:rgba(255,255,255,.2);color:#fff;font-size:17px}
+.turn button.on{background:var(--gold);color:var(--ink);font-weight:600}
+.slots{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0;align-items:center;font-size:30px}
+.slot{min-width:110px;min-height:62px;border:4px dashed var(--line);border-radius:18px;background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:28px;padding:0 10px}
+.slot.f{border-style:solid;border-color:var(--s);background:#fff;cursor:pointer}
+.slot.ok{border-color:var(--ok);background:var(--okbg)}
+.tray{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+.wc{border:4px solid var(--line);background:#fff;border-radius:18px;padding:10px 18px;font-size:28px;font-weight:600;box-shadow:0 5px 0 rgba(20,20,80,.15)}
+.wc.used{visibility:hidden}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px 36px;margin:10px 0}
+.mi{border:4px solid var(--line);border-radius:20px;background:#fff;padding:8px 14px;font-size:28px;min-height:70px;display:flex;align-items:center;justify-content:center;text-align:center}
+.mi.sel{border-color:var(--s);background:var(--soft)}
+.mi.ok{border-color:var(--ok);background:var(--okbg)}
+.mi .mb{font-size:46px}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
+.pcard{border:4px solid var(--line);border-radius:22px;background:#fff;padding:10px 6px;text-align:center;font-size:20px;line-height:1.15}
+.pcard .em{font-size:44px;display:block;margin-bottom:2px}
+.pcard.sel{border-color:var(--s);background:#E7F1FF}
+.pcard .tick{display:none}
+.pcard.sel .tick{display:inline}
+.pbtn{border:0;background:#fff;width:100%}
+.setup{max-width:1100px;margin:0 auto;padding:16px}
+.setup .card{margin-bottom:16px}
+.stu{border:4px solid var(--line);border-radius:24px;padding:12px 16px;margin:12px 0;background:#fff}
+.stu>summary{cursor:pointer;font-size:26px;font-weight:600;list-style:none;display:flex;align-items:center;gap:10px}
+.stu>summary::-webkit-details-marker{display:none}
+.nm{font:inherit;font-size:26px;padding:8px 14px;border-radius:16px;border:4px solid var(--line);width:240px;max-width:100%}
+.seg button{border:4px solid var(--line);background:#fff;border-radius:16px;padding:6px 14px;font-size:20px}
+.seg button.on{background:var(--gold);border-color:var(--gold);font-weight:600}
+.cnt button{width:56px;height:56px;border-radius:50%;border:4px solid var(--line);background:#fff;font-size:26px;font-weight:600}
+.cnt button.on{background:var(--gold);border-color:var(--gold)}
+.err{background:var(--nobg);color:#3b2a8c;border-radius:16px;padding:10px 16px;margin:10px 0;font-size:20px}
+.mini{font-size:17px}
+.mini input{font:inherit;font-size:19px;padding:6px 10px;border:3px solid var(--line);border-radius:12px;width:180px}
+.ovl{position:fixed;inset:0;background:rgba(20,20,70,.6);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
+.dlg{background:#fff;border-radius:28px;padding:22px 26px;max-width:900px;width:100%;max-height:92%;overflow:auto;box-shadow:0 10px 0 rgba(20,20,80,.3)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.tabs button{border:0;border-radius:14px;padding:8px 14px;font-size:18px;background:var(--soft)}
+.tabs button.on{background:var(--gold);font-weight:600}
+.dlg table{width:100%;border-collapse:collapse;font-size:17px}
+.dlg td,.dlg th{border-bottom:2px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+.list-btn{display:inline-block;margin:4px;border:0;background:var(--soft);border-radius:12px;padding:8px 12px;font-size:17px}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--ink);color:#fff;border-radius:20px;padding:10px 22px;font-size:22px;z-index:60;animation:pop .25s}
+@keyframes pop{from{transform:translate(-50%,16px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+.fall{position:fixed;top:-40px;font-size:34px;animation:fall 2.2s linear forwards;z-index:70;pointer-events:none}
+@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
+.stu-card{border:4px solid var(--line);border-radius:24px;padding:14px 18px;background:#fff}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.pill{display:inline-block;border-radius:12px;padding:3px 10px;margin:2px;font-size:17px;background:var(--soft)}
+.pill.g{background:var(--okbg)}.pill.p{background:var(--nobg)}
+.welc{text-align:center}
+.avrow{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin:14px 0}
+.avrow div{font-size:24px;font-weight:600}
+.pron-btns{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.pron-btns button{border:4px solid var(--line);background:#fff;border-radius:16px;padding:6px 16px;font-size:26px;font-weight:600;color:var(--s)}
+.pron-btns button.on{background:var(--s);color:#fff;border-color:var(--s)}
+.pron-btns button.seen{border-color:var(--ok)}
+.owner{font-size:17px;background:var(--soft);border-radius:12px;padding:2px 10px;display:inline-block;margin-right:8px}
+
+.avpick{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.av{border:4px solid var(--line);background:#fff;border-radius:18px;padding:4px 6px 0}
+.av.on{border-color:var(--gold);background:#FFF3BF}
+.brk .bk{position:relative;background:#fff;border-radius:30px;padding:20px 26px;max-width:620px;width:100%;text-align:center;box-shadow:0 10px 0 rgba(20,20,80,.3)}
+.bk-stage{height:270px;border-radius:24px;background:radial-gradient(circle at 50% 15%,#ffd6ff,#5b4bdc 72%);position:relative;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;padding-bottom:12px;margin-bottom:8px}
+.bk-stage .disco{position:absolute;top:4px;left:50%;margin-left:-24px;font-size:48px;animation:spin 3s linear infinite}
+.hero{font-size:150px;line-height:1;transform-origin:50% 100%}
+.drop{animation:drop .9s cubic-bezier(.2,1.3,.4,1) both}
+@keyframes drop{from{transform:translate(var(--from),-130%) rotate(360deg)}to{transform:none}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.mv-dance{animation:dance .5s ease-in-out infinite alternate}
+@keyframes dance{from{transform:rotate(-14deg) translateX(-30px)}to{transform:rotate(14deg) translateX(30px) translateY(-20px)}}
+.mv-balance{animation:bal 2s ease-in-out infinite alternate}
+@keyframes bal{from{transform:rotate(-9deg) translateY(0)}to{transform:rotate(9deg) translateY(-16px) skewX(8deg)}}
+.mv-jump{animation:jmp .5s ease-in infinite alternate}
+@keyframes jmp{from{transform:translateY(0) scaleY(.9)}to{transform:translateY(-100px)}}
+.mv-robot{animation:rob .5s steps(2) infinite}
+@keyframes rob{0%{transform:rotate(-12deg) scaleX(1)}50%{transform:rotate(12deg) scaleX(-1)}100%{transform:rotate(-12deg) scaleX(1)}}
+.mv-spin{animation:sp 2s ease-in-out infinite}
+@keyframes sp{0%{transform:rotate(0)}70%{transform:rotate(360deg)}100%{transform:rotate(360deg)}}
+.bk-stage{gap:14px}
+.coach{font-size:96px;animation:coachb .5s ease-in-out infinite alternate}
+@keyframes coachb{from{transform:translateY(0) rotate(-6deg)}to{transform:translateY(-18px) rotate(6deg)}}
+#bkfig{display:flex;align-items:flex-end}
+.dots{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;min-height:44px}
+.bd{width:38px;height:38px;border-radius:50%;background:#EEF1FF;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:600}
+.bd.on{background:var(--gold);transform:scale(1.2)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (max-width:640px){body{font-size:18px}h1{font-size:34px}h2{font-size:28px}.ex li{font-size:26px}.opt{font-size:23px}.mgrid{gap:10px}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* ================= DATA ================= */
+const INTERESTS=[
+ {k:'roblox',g:'games',l:'Roblox',e:'🎮',v:'play',o:'Roblox',like:'Roblox'},
+ {k:'minecraft',g:'games',l:'Minecraft',e:'⛏️',v:'play',o:'Minecraft',like:'Minecraft'},
+ {k:'brawl',g:'games',l:'Brawl Stars',e:'🌟',v:'play',o:'Brawl Stars',like:'Brawl Stars'},
+ {k:'lego',g:'games',l:'LEGO',e:'🧱',v:'play',o:'with LEGO',like:'LEGO'},
+ {k:'chess',g:'games',l:'Chess',e:'♟️',v:'play',o:'chess',like:'chess'},
+ {k:'drawing',g:'creative',l:'Drawing',e:'🖍️',v:'draw',o:'',like:'drawing'},
+ {k:'painting',g:'creative',l:'Painting',e:'🎨',v:'paint',o:'',like:'painting'},
+ {k:'reading',g:'other',l:'Reading',e:'📚',v:'read',o:'books',like:'reading'},
+ {k:'friends',g:'other',l:'Hanging out with friends',e:'🧑‍🤝‍🧑',v:'hang out',o:'with friends',like:'hanging out with friends'},
+ {k:'sports',g:'other',l:'Playing sports',e:'⚽',v:'play',o:'sports',like:'sports'},
+ {k:'swimming',g:'other',l:'Swimming',e:'🏊',v:'swim',o:'',like:'swimming'}
+];
+const GROUPS=[['games','Games and building'],['creative','Creative activities'],['other','Other hobbies and activities']];
+const ROUTINE=[
+ {k:'r_wake',l:'Wake up',e:'⏰',v:'wake up',o:''},
+ {k:'r_bfast',l:'Eat breakfast',e:'🥣',v:'eat',o:'breakfast'},
+ {k:'r_school',l:'Go to school',e:'🏫',v:'go',o:'to school'},
+ {k:'r_read',l:'Read books',e:'📖',v:'read',o:'books'},
+ {k:'r_games',l:'Play games',e:'🕹️',v:'play',o:'games'},
+ {k:'r_sports',l:'Play sports',e:'🏀',v:'play',o:'sports'},
+ {k:'r_swim',l:'Swim',e:'🏊',v:'swim',o:''},
+ {k:'r_draw',l:'Draw',e:'✏️',v:'draw',o:''},
+ {k:'r_friends',l:'Play with friends',e:'🤝',v:'play',o:'with friends'},
+ {k:'r_bed',l:'Go to bed',e:'🛏️',v:'go',o:'to bed'}
+];
+const FOODS=[['eggs','Eggs','🍳'],['toast','Bread and toast','🍞'],['cereal','Cereal','🥣'],['pancakes','Pancakes','🥞'],['sandwiches','Sandwiches','🥪'],['pizza','Pizza','🍕'],['pasta','Pasta','🍝'],['rice','Rice','🍚'],['chicken','Chicken','🍗'],['fish','Fish','🐟'],['soup','Soup','🍲'],['potatoes','Potatoes','🥔'],['apples','Apples','🍎'],['bananas','Bananas','🍌'],['strawberries','Strawberries','🍓'],['fruit','Other fruits','🍇'],['vegetables','Vegetables','🥕'],['yogurt','Yogurt','🥛'],['ice cream','Ice cream','🍨']].map(([n,l,e])=>({k:n,n,l,e}));
+const MEALS=[['breakfast','Breakfast','🌅'],['lunch','Lunch','☀️'],['dinner','Dinner','🌙']];
+const MEALE={breakfast:'🌅',lunch:'☀️',dinner:'🌙'};
+const mkAct=x=>({key:x.v+'|'+x.o,v:x.v,o:x.o,e:x.e,like:x.like||null});
+const IA=INTERESTS.map(mkAct),RA=ROUTINE.map(mkAct);
+const PET=[{v:'run',o:'',e:'💨'},{v:'jump',o:'',e:'🦘'},{v:'sleep',o:'',e:'😴'},{v:'swim',o:'',e:'🏊'},{v:'bark',o:'',e:'🔊'},{v:'play',o:'with a ball',e:'⚽'}].map(mkAct);
+const PRONS=['I','you','he','she','it','we','they'];
+const TOPICS={w:'Warm-up',t1:'Positive: I / you',t2:'Positive: he / she / it',t3:'Positive: we / they',t4:'Positive review',n1:"Negative: don't",n2:"Negative: doesn't",n3:'Negative review',q1:'Questions with Do',q2:'Questions with Does',q3:'Short answers',f:'Food sentences',m:'Mixed practice'};
+const TOPIC_ORDER=['t1','t2','t3','t4','n1','n2','n3','q1','q2','q3','f','m'];
+
+/* ================= RANDOM ================= */
+let _s=1;
+function seed(str){let h=2166136261;for(const c of str){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}_s=h>>>0}
+function rnd(){_s=(_s+0x6D2B79F5)>>>0;let t=_s;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296}
+const pick=a=>a[Math.floor(rnd()*a.length)];
+function shuf(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+
+/* ================= GRAMMAR ================= */
+const TH=p=>p==='he'||p==='she'||p==='it';
+function v3(v){const parts=v.split(' ');const w=parts[0];let stem=w,suf='s';
+ if(/[^aeiou]y$/.test(w)){stem=w.slice(0,-1);suf='ies'}else if(/(s|sh|ch|x|z|o)$/.test(w))suf='es';
+ return{stem,suf,rest:parts.slice(1).join(' ')}}
+function ing(v){const parts=v.split(' ');let w=parts[0];
+ if(['swim','run','sit'].includes(w))w+=w.slice(-1);else if(/[^e]e$/.test(w))w=w.slice(0,-1);
+ return[w+'ing'].concat(parts.slice(1)).join(' ')}
+function chH(c){
+ if(c.k==='v3')return`<b class="w-v">${esc(c.stem)}</b><b class="w-x">${esc(c.suf)}</b>`+(c.rest?` <b class="w-v">${esc(c.rest)}</b>`:'');
+ return`<b class="w-${c.k}">${esc(c.t)}</b>`}
+function mkS(p,form,a,name,bad){
+ const th=TH(p);const subjT=name||(p==='I'?'I':p);
+ const auxTh=bad==='aux'?!th:th;
+ let useS=form==='pos'?th:false;if(bad==='verb')useS=!useS;
+ let vc;
+ if(bad==='ing'&&form==='pos')vc={k:'v',t:ing(a.v)};
+ else if(useS){vc=Object.assign({k:'v3'},v3(a.v));vc.t=vc.stem+vc.suf+(vc.rest?' '+vc.rest:'')}
+ else vc={k:'v',t:a.v};
+ let ch;
+ if(form==='pos')ch=[{k:'s',t:subjT},vc];
+ else if(form==='neg')ch=[{k:'s',t:subjT},{k:'a',t:auxTh?"doesn't":"don't"},vc];
+ else ch=bad==='order'?[{k:'s',t:subjT},{k:'a',t:auxTh?'does':'do'},vc]:[{k:'a',t:auxTh?'Does':'Do'},{k:'s',t:subjT},vc];
+ if(a.o){if(a.food&&a.meal)ch.push({k:'o',t:a.food.n},{k:'o',t:'for'},{k:'o',t:a.meal});else ch.push({k:'o',t:a.o})}
+ ch[0].t=cap(ch[0].t);
+ const punct=form==='q'?'?':'.';
+ return{p,form,a,name:name||null,ch,punct,plain:ch.map(c=>c.t).join(' ')+punct,html:ch.map(chH).join(' ')+punct}}
+function wrongs(p,form,a,nm){
+ const L=form==='pos'?['verb','ing']:form==='neg'?['verb','aux']:['order','verb','aux'];
+ return L.map(b=>mkS(p,form,a,nm,b))}
+function whyOf(S){const th=TH(S.p),f=S.form;
+ if(f==='pos')return th?'After he / she / it we add <b class="w-x">-s</b> to the verb: <b>she plays</b>.':'After I / you / we / they we use the plain verb. No -s! Example: <b>we play</b>.';
+ if(f==='neg')return th?`He / she / it + <b class="w-a">doesn't</b> + verb. The <b class="w-x">-s</b> disappears!`:`I / you / we / they + <b class="w-a">don't</b> + verb.`;
+ return th?`<b class="w-a">Does</b> + he / she / it + verb? The <b class="w-x">-s</b> disappears!`:`<b class="w-a">Do</b> + I / you / we / they + verb?`}
+function hintOf(S){const th=TH(S.p),f=S.form;
+ return`Look at the subject: <b class="w-s">${S.p}</b>. `+(f==='pos'?(th?'It needs <b class="w-x">-s</b>!':'No -s.'):f==='neg'?(th?`Use <b class="w-a">doesn't</b>.`:`Use <b class="w-a">don't</b>.`):(th?'Use <b class="w-a">Does</b>.':'Use <b class="w-a">Do</b>.'))}
+const F=(k,t)=>`<b class="w-${k}">${t}</b>`;
+
+/* ================= PICTURES ================= */
+const SK=['#FFD7B5','#F1C27D','#C68642','#E8B48A'],HR=['#2b1b10','#7a4a21','#d9a441','#151515','#b5472b'],SH=['#FF6B6B','#4DABF7','#51CF66','#FFD43B','#B197FC','#FF922B'];
+function kid(g,sd,pose,w){w=w||120;sd=Math.abs(sd|0);const sk=SK[sd%4],hr=HR[(sd*3+1)%5],sh=SH[(sd*5+2)%6];
+ const arm=(x1,y1,x2,y2)=>`<path d="M${x1} ${y1}L${x2} ${y2}" stroke="${sk}" stroke-width="9" stroke-linecap="round"/>`;
+ const hand=(x,y,r)=>`<circle cx="${x}" cy="${y}" r="${r||5}" fill="${sk}"/>`;
+ let a=arm(33,76,20,98)+hand(20,98);
+ if(pose==='self')a+=arm(67,76,52,88)+hand(52,88,6);
+ else if(pose==='forward')a+=arm(67,76,92,66)+hand(94,64,8);
+ else if(pose==='wave')a+=arm(67,76,84,52)+hand(85,48,6);
+ else a+=arm(67,76,80,98)+hand(80,98);
+ const back=g==='girl'?`<ellipse cx="50" cy="40" rx="27" ry="27" fill="${hr}"/>`:'';
+ const top=g==='boy'?`<path d="M27 34A23 23 0 0 1 73 34Q50 22 27 34Z" fill="${hr}"/>`:`<path d="M27 34A23 23 0 0 1 73 34Q50 20 27 34Z" fill="${hr}"/><circle cx="22" cy="50" r="8" fill="${hr}"/><circle cx="78" cy="50" r="8" fill="${hr}"/>`;
+ return`<svg class="kid" viewBox="0 0 100 130" width="${w}" aria-hidden="true">${back}<rect x="36" y="100" width="12" height="24" rx="5" fill="#364FC7"/><rect x="52" y="100" width="12" height="24" rx="5" fill="#364FC7"/><rect x="30" y="58" width="40" height="46" rx="15" fill="${sh}"/>${a}<circle cx="50" cy="36" r="23" fill="${sk}"/>${top}<circle cx="41" cy="38" r="3" fill="#1B1F4B"/><circle cx="59" cy="38" r="3" fill="#1B1F4B"/><path d="M42 47Q50 55 58 47" stroke="#1B1F4B" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`}
+function pet(w){return`<svg class="kid" viewBox="0 0 130 100" width="${w||130}" aria-hidden="true"><path d="M28 54Q8 40 18 26" stroke="#7C93F5" stroke-width="6" fill="none" stroke-linecap="round"/><rect x="26" y="44" width="66" height="32" rx="14" fill="#9BB1FF"/><rect x="34" y="70" width="10" height="24" rx="4" fill="#5C7CFA"/><rect x="74" y="70" width="10" height="24" rx="4" fill="#5C7CFA"/><rect x="78" y="24" width="38" height="34" rx="11" fill="#BAC8FF"/><path d="M82 26l-2-14 10 8z" fill="#5C7CFA"/><path d="M110 26l4-12-12 6z" fill="#5C7CFA"/><circle cx="96" cy="38" r="4" fill="#1B1F4B"/><circle cx="112" cy="46" r="4" fill="#1B1F4B"/><circle cx="48" cy="60" r="5" fill="#FFD43B"/></svg>`}
+let P=[];
+const AV=i=>P[i]&&P[i].av!==undefined?P[i].av:i;
+function pronChars(p,ow,pers,sm){
+ const g0=P[ow]?P[ow].g:'boy',w=sm||120;
+ if(p==='I')return[kid(g0,AV(ow),'self',w)];
+ if(p==='you')return[kid(g0==='boy'?'girl':'boy',ow+2,'forward',w)];
+ if(p==='he'||p==='she'){const ix=pers&&pers.idx>=0?AV(pers.idx):(p==='he'?5:6);return[kid(p==='he'?'boy':'girl',ix,'down',w)]}
+ if(p==='it')return[pet(w*1.1)];
+ if(p==='we')return[`<div class="ring">${kid(g0,AV(ow),'wave',w*.8)}${kid('girl',ow+1,'down',w*.8)}${kid('boy',ow+4,'down',w*.8)}</div>`];
+ return[kid('boy',ow+3,'down',w*.8),kid('girl',ow+5,'down',w*.8)]}
+function pic(S,ow,o){o=o||{};
+ const over=o.over!==undefined?o.over:(S.form==='neg'?'🚫':S.form==='q'?'❓':'');
+ const bub=o.bubble===false?'':`<div class="bubble">${S.html}</div>`;
+ const cap=o.cap||(S.name&&(S.p==='he'||S.p==='she')?esc(S.name):'');
+ return`<div class="scene">${bub}<div class="chars">${pronChars(S.p,ow,S.pers).join('')}</div><div class="big">${o.emoji||S.a.e}${over?`<i class="over">${over}</i>`:''}</div>${cap?`<div class="cap">${cap}</div>`:''}</div>`}
+const scene=(chars,emoji,bub)=>`<div class="scene">${bub?`<div class="bubble">${bub}</div>`:''}<div class="chars">${chars.join('')}</div><div class="big">${emoji}</div></div>`;
+
+/* ================= PROFILE HELPERS ================= */
+function actsOf(s){const out=[],seen={};
+ (s.interests||[]).forEach(k=>{const i=INTERESTS.findIndex(x=>x.k===k);if(i>=0&&!seen[IA[i].key]){seen[IA[i].key]=1;out.push(IA[i])}});
+ (s.routine||[]).forEach(k=>{const i=ROUTINE.findIndex(x=>x.k===k);if(i>=0&&!seen[RA[i].key]){seen[RA[i].key]=1;out.push(RA[i])}});
+ return out.length?out:[IA[4]]}
+function foodsOf(s){const out=[];(s.foods||[]).forEach(k=>{const f=FOODS.find(x=>x.k===k);if(f)out.push(f)});(s.customFoods||[]).forEach(f=>out.push(f));
+ return out.length?out:['pizza','eggs','rice'].map(k=>FOODS.find(f=>f.k===k))}
+const mealsOf=s=>(s.meals&&s.meals.length)?s.meals:MEALS.map(m=>m[0]);
+function unionActs(){const o=[],seen={};P.forEach(s=>actsOf(s).forEach(a=>{if(!seen[a.key]){seen[a.key]=1;o.push(a)}}));return o}
+function unionFoods(){const o=[],seen={};P.forEach(s=>foodsOf(s).forEach(f=>{if(!seen[f.n]){seen[f.n]=1;o.push(f)}}));return o}
+function personFor(p,k,ow){const g=p==='he'?'boy':'girl';
+ let c=P.map((s,i)=>({s,i})).filter(x=>x.s.g===g&&x.i!==ow);
+ if(!c.length)return{name:g==='boy'?'Max':'Mia',idx:-1};
+ const x=c[k%c.length];return{name:x.s.name,idx:x.i}}
+const fAct=(foods,meals)=>{const f=pick(foods),m=pick(meals);return{key:'eat|'+f.n+'|'+m,v:'eat',o:`${f.n} for ${m}`,e:`${f.e} ${MEALE[m]}`,food:f,meal:m}};
+const likeOf=a=>({key:'like|'+a.like,v:'like',o:a.like,e:a.e});
+function likeAct(ow){const pool=actsOf(P[ow]).filter(a=>a.like);return likeOf(pool.length?pick(pool):pick(IA.filter(x=>x.like)))}
+let KK=0;
+function ctx(p,ow,food){let a,pr=null;
+ if(p==='he'||p==='she'){pr=personFor(p,KK++,ow);
+  a=food?fAct(pr.idx>=0?foodsOf(P[pr.idx]):unionFoods(),pr.idx>=0?mealsOf(P[pr.idx]):MEALS.map(m=>m[0])):pick(pr.idx>=0?actsOf(P[pr.idx]):unionActs())}
+ else if(p==='it')a=food?fAct([FOODS.find(f=>f.k==='fish')],MEALS.map(m=>m[0])):pick(PET);
+ else a=food?fAct(foodsOf(P[ow]),mealsOf(P[ow])):pick(actsOf(P[ow]));
+ return{a,pr,nm:pr?pr.name:null}}
+function S1(p,form,ow,o){o=o||{};const c=ctx(p,ow,o.food);let a=c.a;if(o.like&&p!=='it')a=likeAct(ow);
+ const S=mkS(p,form,a,o.nameOK&&c.nm?c.nm:null);S.pers=c.pr;S.ow=ow;return S}
+
+/* ================= ITEMS ================= */
+function SA(p,form,ow,i,o){o=o||{};let a,pr=null;
+ if(p==='he'||p==='she'){pr=personFor(p,i,ow);const pl=pr.idx>=0?actsOf(P[pr.idx]):unionActs();a=pl[i%pl.length]}
+ else if(p==='it')a=PET[i%PET.length];
+ else{const pl=actsOf(P[ow]);a=pl[i%pl.length]}
+ if(o.like&&p!=='it')a=likeOf(a.like?a:IA[i%IA.length]);
+ const S=mkS(p,form,a,o.name&&pr?pr.name:null);S.pers=pr;S.ow=ow;return S}
+function SAF(p,form,ow,i,o){o=o||{};let pr=null,idx=ow;
+ if(p==='he'||p==='she'){pr=personFor(p,i,ow);idx=pr.idx}
+ const foods=p==='it'?[FOODS.find(f=>f.k==='fish')]:(idx>=0?foodsOf(P[idx]):unionFoods());
+ const meals=p==='it'?MEALS.map(m=>m[0]):(idx>=0?mealsOf(P[idx]):MEALS.map(m=>m[0]));
+ const f=foods[i%foods.length],m=meals[(i+(o.mi||0))%meals.length];
+ const a={key:'eat|'+f.n+'|'+m,v:'eat',o:`${f.n} for ${m}`,e:`${f.e} ${MEALE[m]}`,food:f,meal:m};
+ const S=mkS(p,form,a,o.name&&pr?pr.name:null);S.pers=pr;S.ow=ow;return S}
+function itSent(p,form,ow,tp,o){o=o||{};const S=S1(p,form,ow,o);let ws=o.wrongs?o.wrongs(S):wrongs(p,form,S.a,S.name);
+ const all=shuf([S].concat(ws.slice(0,2)));
+ return{pic:pic(S,ow,{bubble:false}),prompt:o.prompt||'Choose the correct sentence.',opts:all.map(x=>x.plain),ans:all.indexOf(S),why:whyOf(S),hint:hintOf(S),owner:ow,topic:tp,key:S.plain}}
+function itGap(p,form,ow,tp,blank,o){o=o||{};const S=S1(p,form,ow,o);const bd=mkS(p,form,S.a,S.name,blank==='aux'?'aux':'verb');
+ const bi=S.ch.findIndex(x=>blank==='aux'?x.k==='a':(x.k==='v'||x.k==='v3'));
+ const html=S.ch.map((x,i)=>i===bi?'<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;</span>':chH(x)).join(' ')+S.punct;
+ const rt=S.ch[bi].t,wt=bd.ch[bi].t;const opts=shuf([rt,wt]);
+ return{pic:pic(S,ow,{bubble:false}),prompt:html,opts,ans:opts.indexOf(rt),why:whyOf(S),hint:hintOf(S),owner:ow,topic:tp,key:S.plain}}
+function itEnd(p,ow,tp,o){let S,k=0;do{S=S1(p,'pos',ow,o);k++}while(v3(S.a.v).suf!=='s'&&k<40);
+ const t=v3(S.a.v),last=S.a.o?' '+chH(S.ch[S.ch.length-1]):'';
+ const html=`${chH(S.ch[0])} <b class="w-v">${esc(t.stem)}</b><span class="blank">&nbsp;&nbsp;&nbsp;</span>${t.rest?' <b class="w-v">'+esc(t.rest)+'</b>':''}${last}.`;
+ const lab='-'+t.suf,opts=shuf([lab,'-ing','nothing']);
+ return{pic:pic(S,ow,{bubble:false}),prompt:html+'<div class="sub">Pick the missing ending.</div>',opts,ans:opts.indexOf(lab),why:whyOf(S),hint:hintOf(S),owner:ow,topic:'t2',key:S.plain}}
+function itFix(p,form,ow,tp,o){o=o||{};const S=S1(p,form,ow,o);const sh=mkS(p,form,S.a,S.name,'verb');const c=[];
+ if(form==='pos')c.push(mkS(p,'pos',S.a,S.name,'ing').plain,mkS(p,'neg',S.a,S.name,'verb').plain);
+ else if(form==='neg')c.push(mkS(p,'neg',S.a,S.name,'aux').plain,S.plain.replace(/(doesn't|don't)/,'not'));
+ else c.push(mkS(p,'q',S.a,S.name,'order').plain,mkS(p,'q',S.a,S.name,'aux').plain);
+ const opts=shuf([S.plain].concat(c.filter(t=>t!==sh.plain&&t!==S.plain)).slice(0,3));
+ return{pic:pic(S,ow,{bubble:false}),prompt:`Find the mistake: <span class="bad">${esc(sh.plain)}</span><div class="sub">Choose the correct sentence.</div>`,opts,ans:opts.indexOf(S.plain),why:whyOf(S),hint:hintOf(S),owner:ow,topic:tp,key:S.plain}}
+function itShort(p,ow,tp,o){o=o||{};const S=S1(p,'q',ow,Object.assign({nameOK:1},o));const yes=rnd()<.5,th=TH(p),ap=p;
+ const aux=th?'does':'do',neg=th?"doesn't":"don't";
+ const r=yes?`Yes, ${ap} ${aux}.`:`No, ${ap} ${neg}.`;
+ const ws=yes?[`No, ${ap} ${aux}.`,`Yes, ${ap} ${th?'do':'does'}.`]:[`Yes, ${ap} ${neg}.`,`No, ${ap} ${th?"don't":"doesn't"}.`];
+ const opts=shuf([r].concat(ws));
+ return{pic:pic(S,ow,{bubble:false,over:yes?'✅':'❌'}),prompt:`${S.html}<div class="sub">Look at the picture. Choose the short answer.</div>`,opts,ans:opts.indexOf(r),why:`Short answers: <b>Yes, ${ap} <span class="w-a">${aux}</span>.</b> / <b>No, ${ap} <span class="w-a">${neg}</span>.</b>`,hint:'✅ means yes. ❌ means no.',owner:ow,topic:'q3',key:r}}
+function itSelf(ow,tp,o){o=o||{};const a=o.food?fAct(foodsOf(P[ow]),mealsOf(P[ow])):likeAct(ow);const Q=mkS('you','q',a,null);
+ const opts=shuf(['Yes, I do.',"No, I don't.",'Yes, I does.',"No, I doesn't."]);
+ return{pic:pic(Q,ow,{bubble:false}),prompt:`${Q.html}<div class="sub">Answer for you! Click an answer or say it out loud.</div>`,opts,ans:[opts.indexOf('Yes, I do.'),opts.indexOf("No, I don't.")],why:'Short answers with I: <b>Yes, I <span class="w-a">do</span>.</b> / <b>No, I <span class="w-a">don\'t</span>.</b>',hint:'Say yes or no, then use do / don\'t.',owner:ow,topic:'q3',key:'Yes, I do. / No, I don\'t.',say:1,yn:1}}
+function itPersonal(ow){const mine=foodsOf(P[ow]).map(f=>f.n);const others=FOODS.filter(f=>!mine.includes(f.n));
+ const f=pick(others),m=pick(MEALS)[0];const a={v:'eat',o:`${f.n} for ${m}`,e:f.e+' '+MEALE[m]};const S=mkS('I','neg',a,null);
+ return{pic:pic(S,ow,{bubble:false,over:''}),prompt:`${S.html}<div class="sub">Is it true for you? There is no wrong answer!</div>`,opts:['True for me','Not true for me'],ans:[0,1],personal:1,owner:ow,topic:'f',key:S.plain+' (personal)'}}
+function bld(o){const T=S1(o.p,o.to,o.ow,o);let G=null;if(o.from){G=mkS(o.p,o.from,T.a,T.name);G.pers=T.pers}
+ const tt=T.ch.map(c=>c.t.toLowerCase()),extra=[];
+ wrongs(o.p,o.to,T.a,T.name).forEach(w=>w.ch.forEach(c=>{if((c.k==='v'||c.k==='v3'||c.k==='a')&&!tt.includes(c.t.toLowerCase())&&!extra.some(e=>e.t===c.t))extra.push(c)}));
+ const cards=shuf(T.ch.concat(extra.slice(0,2))).map((c,i)=>Object.assign({},c,{id:i}));
+ return{t:'build',practice:1,topic:o.tp,title:o.title,owner:o.ow,given:G?G.html:'',target:T.ch.map(c=>c.t),punct:T.punct,cards,m:T.ch.length,pic:pic(T,o.ow,{bubble:false}),why:whyOf(T),hint:hintOf(T),key:T.plain,instr:o.instr||''}}
+function cardsFor(S,ow){return null}
+
+/* ================= SLIDES ================= */
+function buildSlides(){
+ SL.length=0;KK=0;
+ seed(JSON.stringify(P.map(x=>[x.name,x.g,x.interests,x.foods,x.meals,x.routine,(x.customFoods||[]).map(f=>f.n)])));
+ const n=P.length;let oc=0,SEC='',UN='';
+ const add=o=>{o.id='s'+SL.length;o.sec=SEC;o.unit=UN;SL.push(o);return o};
+ const own=()=>(oc++)%n;
+ const sec=s=>{SEC=s},unit=u=>{UN=u},end=()=>{SL[SL.length-1].endUnit=UN};
+ const teach=o=>add(Object.assign({t:'teach'},o));
+ const multi=(title,items,topic)=>add({t:'choice',practice:1,title,items,topic});
+ const single=(title,it)=>add({t:'choice',practice:1,title,items:[it],topic:it.topic,single:1});
+ const NEGNOTE='These are grammar practice sentences. They might not be true for you!';
+ const morph=(a,b)=>[a,b];
+ const q=(p,ow,tp,o)=>itSent(p,'q',ow,tp,o);
+
+ /* A */
+ sec('A. Welcome');unit('Welcome');
+ add({t:'welcome'});add({t:'interests'});
+ const warm=[{v:'play',o:'games',e:'🎮'},{v:'read',o:'books',e:'📚'},{v:'like',o:'pizza',e:'🍕'}].map(mkAct);
+ teach({title:'What is Present Simple?',rule:'We use Present Simple to talk about things we do, things we do often, and things we like!',ex:warm.map(a=>mkS('I','pos',a)),pic:scene([kid(P[0].g,0,'self')],'🎮 📚 🍕'),instr:'Read the sentences. Tap 🔊 to hear them!',note:'We will learn the grammar step by step. First we play, then we learn more!'});
+ {const seen={},pairs=[];for(let i=0;i<12&&pairs.length<3;i++){const ow=i%n,a=actsOf(P[ow])[Math.floor(i/n)%actsOf(P[ow]).length];if(seen[a.key])continue;seen[a.key]=1;pairs.push({l:`<span class="mb">${a.e}</span>`,r:mkS('I','pos',a).plain})}
+  add({t:'match',practice:1,topic:'w',title:'Match the picture to the sentence',pairs,order:shuf(pairs.map((_,i)=>i)),owner:own()});end()}
+
+ /* B */
+ sec('B. Pronouns');unit('Pronouns');
+ const PD={I:'I = me. I point to myself.',you:'You = the person I talk to.',he:'He = a boy.',she:'She = a girl.',it:'It = an animal or a thing.',we:'We = me + other people.',they:'They = two or more other people, animals or things.'};
+ add({t:'pron',title:'I, you, he, she, it, we, they',items:PRONS.map((p,i)=>{const a=p==='it'?mkAct({v:'run',o:'',e:'💨'}):mkAct({v:'play',o:'',e:'🎲'});const S=mkS(p,'pos',a,null);S.ow=0;return{p,desc:PD[p],plain:S.plain,html:S.html,pic:pic(S,i%n)}})});
+ {const pairs=PRONS.map((p,i)=>({l:`<span style="display:flex;justify-content:center">${pronChars(p,i%n,null,64).join('')}</span>`,r:cap(p)}));
+  add({t:'match',practice:1,topic:'w',title:'Match each picture to the right word',pairs,order:shuf(pairs.map((_,i)=>i)),owner:own()});end()}
+
+ /* C. Positive */
+ sec('C. Positive sentences');unit('Positive: I / you');
+ {const e=[SA('I','pos',0,0),SA('you','pos',n>1?1:0,0),SA('I','pos',0,1),SA('you','pos',0,2)];
+  teach({title:'I / You',formula:`${F('s','I / You')} + ${F('v','verb')}`,rule:'With I and you, the verb stays the same.',ex:e,pic:pic(e[0],0),instr:'Say each sentence. Blue = who. Green = what we do.'})}
+ single('Try it together',itSent('I','pos',own(),'t1',{prompt:'Choose the correct sentence.',wrongs:S=>[mkS('I','pos',S.a,null,'verb'),mkS('I','pos',S.a,null,'ing')]}));
+ single('Try it together',itGap('you','pos',own(),'t1','verb'));
+ add(Object.assign(bld({p:'I',to:'pos',ow:own(),tp:'t1',title:'Build the sentence'}),{instr:'Tap the word cards in the right order.'}));end();
+
+ unit('Positive: he / she / it');
+ {const e=[SA('he','pos',0,0,{name:1}),SA('she','pos',0,0,{name:1}),SA('it','pos',0,0),SA('he','pos',0,1)];
+  teach({title:'He / She / It',formula:`${F('s','He / She / It')} + ${F('v','verb')}${F('x','-s')}`,rule:'With he, she and it, add -s to the verb!',ex:e,pic:pic(e[1],0),instr:'Find the red -s in each sentence.'})}
+ teach({title:'The -s ending',rule:'Most verbs just add -s. A few verbs add -es.',table:`<table class="tb">${[['play','plays'],['like','likes'],['draw','draws'],['swim','swims'],['eat','eats']].map(([a,b])=>`<tr><td>${F('v',a)}</td><td>→</td><td>${F('v',a)}${F('x',b.slice(a.length))}</td></tr>`).join('')}</table><p class="sub">A few verbs add <b class="w-x">-es</b>:</p><table class="tb">${[['go','goes','es'],['watch','watches','es']].map(([a,b])=>`<tr><td>${F('v',a)}</td><td>→</td><td>${F('v',a)}${F('x',b.slice(a.length))}</td></tr>`).join('')}</table>`,pic:scene([pet()],'💨',mkS('it','pos',PET[0],null).html),instr:'Say it with me: she plays, he likes, it runs!'});
+ multi('Choose the correct form',['he','she','it'].map(p=>itGap(p,'pos',own(),'t2','verb')),'t2');
+ single('Complete the sentence',itEnd(pick(['he','she']),own()));
+ single('Find the mistake',itFix(pick(['he','she']),'pos',own(),'t2'));end();
+
+ unit('Positive: we / they');
+ {const e=[SA('we','pos',0,0),SA('they','pos',n>1?1:0,0),SA('we','pos',0,1),SA('they','pos',0,2)];
+  teach({title:'We / They',formula:`${F('s','We / They')} + ${F('v','verb')}`,rule:'We = me and other people. They = other people. No -s!',ex:e,pic:pic(e[0],0),instr:'Look at the group in the picture!'})}
+ {const ps=['we','they','you'],pairs=ps.map((p,i)=>{const S=SA(p,'pos',i%n,i);return{l:`<span style="display:flex;justify-content:center">${pronChars(p,i%n,null,60).join('')}</span>`,r:S.plain}});
+  add({t:'match',practice:1,topic:'t3',title:'Match the group to the sentence',pairs,order:shuf(pairs.map((_,i)=>i)),owner:own()})}
+ multi('Choose the correct verb form',[itGap('they','pos',own(),'t3','verb'),itGap('we','pos',own(),'t3','verb',{food:1})],'t3');
+ add(Object.assign(bld({p:pick(['we','they']),to:'pos',ow:own(),tp:'t3',title:'Build the sentence'})));end();
+
+ unit('Positive review');
+ teach({title:'Positive sentences: review',formulas:[`${F('s','I / You / We / They')} + ${F('v','verb')}`,`${F('s','He / She / It')} + ${F('v','verb')}${F('x','-s')}`],rule:'Two patterns. Which one has the red -s?',ex:[SA('I','pos',0,0),SA('they','pos',0,1),SA('she','pos',0,0,{name:1}),SA('it','pos',0,1)],pic:scene([pronChars('I',0)[0],pronChars('she',0)[0],pronChars('it',0)[0]],'⭐'),instr:'Ready for a quick quiz?'});
+ multi('Mixed quiz: all seven pronouns',PRONS.map(p=>itGap(p,'pos',own(),'t4','verb')),'t4');
+ add(bld({p:pick(['he','she']),to:'pos',ow:own(),tp:'t4',title:'Build the sentence'}));end();
+
+ /* D. Negative */
+ sec('D. Negative sentences');unit("Negative: don't");
+ {const a=actsOf(P[0])[0];const e=[SA('I','neg',0,0),SA('you','neg',n>1?1:0,0),SA('we','neg',0,1),SA('they','neg',0,2)];
+  teach({title:"Say NO with don't",formula:`${F('s','I / You / We / They')} + ${F('a',"don't")} + ${F('v','verb')}`,rule:"We use don't to say NO.",morph:morph(mkS('I','pos',a,null),mkS('I','neg',a,null)),ex:e,pic:pic(e[0],0),note:NEGNOTE,instr:'The verb does not change after don\'t.'})}
+ multi("Choose don't or doesn't",['I','they','we'].map(p=>itGap(p,'neg',own(),'n1','aux')),'n1');
+ single('Choose the correct negative sentence',itSent(pick(['I','you','we','they']),'neg',own(),'n1'));
+ add(bld({p:pick(['I','we','they']),from:'pos',to:'neg',ow:own(),tp:'n1',title:'Make it negative',instr:'Change the sentence. Use the word cards.'}));end();
+
+ unit("Negative: doesn't");
+ {const a=actsOf(P[0])[0];const e=[SA('he','neg',0,0,{name:1}),SA('she','neg',0,1),SA('it','neg',0,0),SA('he','neg',0,2)];
+  teach({title:"He / She / It + doesn't",formula:`${F('s','He / She / It')} + ${F('a',"doesn't")} + ${F('v','verb')}`,rule:"After doesn't the verb has NO -s!",morph:morph(mkS('she','pos',a,null),mkS('she','neg',a,null)),ex:e,pic:pic(e[1],0),note:NEGNOTE,instr:"Look: plays → play. The -s goes away because of doesn't."})}
+ multi('Choose the correct sentence',['he','she'].map(p=>itSent(p,'neg',own(),'n2')),'n2');
+ multi('Fill in the gap',['she','it','he'].map(p=>itGap(p,'neg',own(),'n2','aux',{food:p==='he'})),'n2');
+ single('Correct the mistake',itFix(pick(['he','she']),'neg',own(),'n2',{like:1}));end();
+
+ unit('Negative review');
+ teach({title:'Negative sentences: review',formulas:[`${F('s','I / You / We / They')} + ${F('a',"don't")} + ${F('v','verb')}`,`${F('s','He / She / It')} + ${F('a',"doesn't")} + ${F('v','verb')}`],rule:"don't or doesn't? Check the subject!",ex:[SA('I','neg',0,0),SA('we','neg',0,1),SA('she','neg',0,0,{name:1}),SAF('he','neg',0,0)],pic:scene([pronChars('they',0)[0],pronChars('he',0)[0]],'🚫'),note:NEGNOTE,instr:'Now a mixed negative quiz!'});
+ multi('Mixed negative quiz',[itGap('I','neg',own(),'n3','aux'),itGap('he','neg',own(),'n3','aux',{food:1}),itGap('they','neg',own(),'n3','aux'),itSent('she','neg',own(),'n3'),itSent('we','neg',own(),'n3',{food:1})],'n3');
+ add(bld({p:pick(['he','she']),from:'pos',to:'neg',ow:own(),tp:'n3',title:'Make it negative',food:1}));end();
+
+ /* E. Questions */
+ sec('E. Questions');unit('Questions with Do');
+ {const e=[SA('you','q',0,0,{like:1}),SA('you','q',n>1?1:0,1),SA('they','q',0,2),SAF('you','q',0,0)];
+  teach({title:'Questions with Do',formula:`${F('a','Do')} + ${F('s','I / you / we / they')} + ${F('v','verb')}?`,rule:'We ask questions to learn something.',ex:e,pic:pic(e[0],0),instr:'The question starts with Do!'})}
+ single('Choose the correct question',itSent('you','q',own(),'q1',{prompt:'Choose the correct question.'}));
+ add(bld({p:pick(['you','they']),to:'q',ow:own(),tp:'q1',title:'Build the question',instr:'Put the cards in order. Start with Do!'}));
+ single('Answer the question',itSelf(own()));end();
+
+ unit('Questions with Does');
+ {const a=actsOf(P[0])[0];const e=[SA('he','q',0,0,{name:1}),SA('she','q',0,1),SA('it','q',0,0),SAF('she','q',0,0)];
+  teach({title:'Questions with Does',formula:`${F('a','Does')} + ${F('s','he / she / it')} + ${F('v','verb')}?`,rule:'After Does the verb has NO -s!',morph:morph(mkS('she','pos',a,null),mkS('she','q',a,null)),ex:e,pic:pic(e[1],0),instr:'She draws → Does she draw?'})}
+ multi('Choose the correct question',['he','she'].map(p=>itSent(p,'q',own(),'q2',{prompt:'Choose the correct question.'})),'q2');
+ multi('Complete the question',['she','he','it'].map(p=>itGap(p,'q',own(),'q2','aux')),'q2');
+ single('Short answers: he / she',itShort(pick(['he','she']),own()));
+ single('Short answers: it',itShort('it',own()));end();
+
+ unit('Ask your friend');
+ add({t:'ask',kind:'hobby',practice:1,topic:'q3',title:'Ask your friend: hobbies'});
+ add({t:'ask',kind:'food',practice:1,topic:'q3',title:'Ask your friend: food'});end();
+
+ /* F. Food */
+ sec('F. Food and meals');unit('Food and meals');
+ add({t:'vocab',title:'Food and meals'});
+ {const e=[SAF('I','pos',0,0),SAF('I','pos',n>1?1:0,1,{mi:1}),SAF('he','pos',0,0,{name:1}),SAF('they','pos',0,0)];
+  teach({title:'Food sentences',formula:`${F('s','Subject')} + ${F('v','eat')} / ${F('v','eat')}${F('x','s')} + food + for + meal.`,rule:'We say WHEN we eat with <b>for breakfast</b>, <b>for lunch</b>, <b>for dinner</b>.',ex:e,pic:pic(e[0],0),instr:'Blue = who. Green = eat. Red = -s.'})}
+ multi('Choose the correct verb',['I','he','they'].map(p=>itGap(p,'pos',own(),'f','verb',{food:1})),'f');
+ add({t:'foodbuild',practice:1,topic:'f',title:'Make your own food sentence',owner:own()});end();
+
+ unit('Food: negatives and questions');
+ {const e=[SAF('I','neg',0,0,{mi:1}),SAF('he','neg',0,0,{name:1}),SAF('they','neg',n>1?1:0,1,{mi:2}),SAF('she','neg',0,0)];
+  teach({title:"Food: don't / doesn't",formula:`${F('s','Subject')} + ${F('a',"don't / doesn't")} + ${F('v','eat')} + food + for + meal.`,rule:"After don't and doesn't, eat stays eat. No -s!",ex:e,pic:pic(e[1],0),note:NEGNOTE,instr:'Is it true for you? We will ask in a moment!'})}
+ add(bld({p:pick(['he','she']),from:'pos',to:'neg',ow:own(),tp:'f',title:'Make it negative',food:1}));
+ single('True or pretend?',itPersonal(own()));
+ {const e=[SAF('you','q',0,0),SAF('they','q',0,1),SAF('he','q',0,0),SAF('she','q',n>1?1:0,0,{name:1})];
+  teach({title:'Food questions',formulas:[`${F('a','Do')} + ${F('s','I / you / we / they')} + ${F('v','eat')} + food + for + meal?`,`${F('a','Does')} + ${F('s','he / she / it')} + ${F('v','eat')} + food + for + meal?`],rule:'Short answers: Yes, I do. / No, I don\'t. / Yes, she does. / No, she doesn\'t.',ex:e,pic:pic(e[2],0),instr:'Ask and answer!'})}
+ single('Choose the correct question',itSent(pick(['he','she']),'q',own(),'f',{food:1,prompt:'Choose the correct question.'}));
+ single('Short answer',Object.assign(itShort(pick(['he','she','they']),own(),'f',{food:1}),{topic:'f'}));end();
+
+ /* G. Mixed */
+ sec('G. Challenges and Final mission');unit('Challenges');
+ single('Challenge 1: Choose the correct sentence',itSent('she','pos',own(),'m',{wrongs:S=>[mkS('she','pos',S.a,null,'verb'),mkS('she','neg',S.a,null,'verb')]}));
+ add(bld({p:'he',from:'pos',to:'neg',ow:own(),tp:'m',title:'Challenge 2: Make it negative'}));
+ add(bld({p:'she',from:'pos',to:'q',like:1,ow:own(),tp:'m',title:'Challenge 3: Make a question'}));
+ add({t:'foodbuild',practice:1,topic:'m',title:'Challenge 4: Build a food sentence',owner:own()});
+ multi('Challenge 5: Find the mistake',[itFix('he','pos',own(),'m'),itFix('she','neg',own(),'m'),itFix('he','q',own(),'m'),itFix('he','neg',own(),'m',{food:1})],'m');
+ single('Challenge 6: Ask and answer',itSelf(own()));end();
+
+ unit('Final mission');
+ single('Final mission 1/6: A positive sentence',itSent(pick(PRONS.filter(p=>p!=='it')),'pos',own(),'m'));
+ add(bld({p:pick(['I','they','we']),from:'pos',to:'neg',ow:own(),tp:'m',title:'Final mission 2/6: A negative sentence'}));
+ add(bld({p:pick(['he','she']),from:'pos',to:'q',ow:own(),tp:'m',title:'Final mission 3/6: A question'}));
+ single('Final mission 4/6: A short answer',Object.assign(itShort(pick(['he','she','they']),own()),{topic:'m'}));
+ add({t:'foodbuild',practice:1,topic:'m',title:'Final mission 5/6: Your food sentence',owner:own()});
+ single('Final mission 6/6: Find the mistake',itFix(pick(['he','she']),pick(['pos','neg','q']),own(),'m'));end();
+ add({t:'summary',sec:'Finish',unit:'Finish'});
+ SL.forEach((s,i)=>{s.idx=i});
+ return SL;
+}
+const SL=[];
+
+/* ================= STATE ================= */
+const SAVE='ps_session_v1',KEEP='ps_setup_v1';
+const ALLM=MEALS.map(m=>m[0]);
+const blankStu=i=>({name:'',av:i,g:i%2?'girl':'boy',interests:[],foods:[],customFoods:[],meals:ALLM.slice(),routine:[]});
+const DEF=()=>({n:2,reward:'⭐',students:[
+ {name:'Sasha',av:0,g:'boy',interests:['roblox','chess','swimming'],foods:['eggs','pizza','chicken'],customFoods:[],meals:ALLM.slice(),routine:[]},
+ {name:'Dasha',av:1,g:'girl',interests:['minecraft','drawing','reading'],foods:['pancakes','pasta','apples'],customFoods:[],meals:ALLM.slice(),routine:[]},
+ blankStu(2),blankStu(3),blankStu(4),blankStu(5)]});
+let ST={view:'setup',edit:false,cfg:DEF(),i:0,prog:{},stats:[],log:[],ov:{},sound:true,free:false,open:false,tab:'nav',err:[],chests:0,unitDone:{},os:0,brk:{},hero:0,lastMove:''};
+let RT={};
+const $=s=>document.querySelector(s);
+const strip=h=>String(h).replace(/<[^>]+>/g,'').replace(/&nbsp;/g,'_').replace(/&amp;/g,'&');
+function save(){try{sessionStorage.setItem(SAVE,JSON.stringify({view:ST.view,cfg:ST.cfg,i:ST.i,prog:ST.prog,stats:ST.stats,log:ST.log.slice(-200),ov:ST.ov,sound:ST.sound,free:ST.free,chests:ST.chests,unitDone:ST.unitDone,brk:ST.brk,hero:ST.hero,lastMove:ST.lastMove}))}catch(e){}}
+function load(){try{const d=JSON.parse(sessionStorage.getItem(SAVE)||'null');if(d&&d.cfg&&d.cfg.students){Object.assign(ST,d)}}catch(e){}}
+function applyCfg(){P=ST.cfg.students.slice(0,ST.cfg.n).map(s=>Object.assign({},s,{name:cap(s.name.trim())}))}
+const N=i=>esc(P[i]?P[i].name:'Robo');
+const joinNames=a=>a.length<2?a.join(''):a.slice(0,-1).join(', ')+' and '+a[a.length-1];
+function validate(){const e=[];ST.cfg.students.slice(0,ST.cfg.n).forEach((s,i)=>{const nm=s.name.trim()||'Student '+(i+1);if(!s.name.trim())e.push(nm+': add a name.');if(!s.interests.length&&!s.routine.length)e.push(nm+': choose at least one interest or activity.')});return e}
+function startLesson(){const e=validate();ST.err=e;if(e.length){render();return}
+ applyCfg();buildSlides();
+ if(!ST.edit){ST.i=0;ST.prog={};ST.stats=[];ST.log=[];ST.ov={};ST.chests=0;ST.brk={};ST.unitDone={}}else ST.i=Math.min(ST.i,SL.length-1);
+ ST.view='lesson';ST.edit=false;ST.open=false;initRT();save();render()}
+function resetAll(){ST.cfg=DEF();ST.view='setup';ST.edit=false;ST.i=0;ST.prog={};ST.stats=[];ST.log=[];ST.ov={};ST.chests=0;ST.brk={};ST.unitDone={};ST.open=false;ST.err=[];ST.os=0;try{sessionStorage.removeItem(SAVE)}catch(e){}render()}
+
+/* ================= SOUND / SPEECH ================= */
+let AC;
+function beep(f,d,t){if(!ST.sound)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain();o.type=t||'sine';o.frequency.value=f;g.gain.value=.05;o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+d)}catch(e){}}
+const sfx={ok(){beep(660,.12);setTimeout(()=>beep(880,.18),110)},no(){beep(300,.2,'triangle')},win(){[523,659,784,1046].forEach((f,i)=>setTimeout(()=>beep(f,.18),i*120))}};
+function say(t){if(!ST.sound)return;try{const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.85;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
+function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2200)}
+function confetti(){const em=['⭐','🎉','✨','🌟','🎈'];for(let i=0;i<16;i++){const d=document.createElement('div');d.className='fall';d.textContent=em[i%5];d.style.left=(Math.random()*95)+'vw';d.style.animationDelay=(Math.random()*.6)+'s';document.body.appendChild(d);setTimeout(()=>d.remove(),3200)}}
+const PRAISE=['Great job!','Perfect!','You did it!','Fantastic!','Super!'];
+let pi=0;const praise=()=>PRAISE[pi++%PRAISE.length];
+
+/* ================= STATS ================= */
+const stu=i=>ST.stats[i]||(ST.stats[i]={stars:0,ok:0,bad:0,first:0,help:0,topics:{}});
+const trec=(st,t)=>st.topics[t]||(st.topics[t]={ok:0,bad:0});
+function ownerOf(s,it){const b=ST.ov[s.id]!==undefined&&(!it||s.items===undefined||s.items.length===1)?ST.ov[s.id]:(it&&it.owner!==undefined?it.owner:(s.owner||0));return Math.max(0,Math.min(b,P.length-1))}
+function grant(ow,n){stu(ow).stars+=n}
+function result(s,it,ow,ok,first,chosen){const st=stu(ow),t=trec(st,it.topic||s.topic||'m');
+ if(ok){st.ok++;t.ok++;if(first)st.first++}else{st.bad++;t.bad++;ST.log.push({who:P[ow].name,n:s.idx+1,q:strip(it.prompt||s.title||''),chose:chosen||'',right:it.key||''})}}
+const isDone=s=>!s.practice||!!(ST.prog[s.id]&&ST.prog[s.id].done);
+function markDone(s,skipped){if(!ST.prog[s.id]||!ST.prog[s.id].done){ST.prog[s.id]={done:1,skipped:skipped?1:0};
+ if(s.endUnit&&!ST.unitDone[s.endUnit]){const all=SL.filter(x=>x.unit===s.endUnit&&x.practice).every(x=>ST.prog[x.id]&&ST.prog[x.id].done);
+  if(all){ST.unitDone[s.endUnit]=1;ST.chests++;sfx.win();confetti();toast('🎁 Treasure unlocked! Unit complete: '+s.endUnit)}}}save()}
+function initRT(){const s=SL[ST.i];RT={};if(!s)return;
+ if(s.t==='choice')RT.items=s.items.map(()=>({done:false,wrong:0,tries:0,soft:[],hint:false,msg:null,right:null}));
+ if(s.t==='build')RT.b={slots:Array(s.m).fill(null),wrong:0,done:false,hint:false,msg:null};
+ if(s.t==='match')RT.m={sel:null,done:{},wrong:0,msg:null,fin:false};
+ if(s.t==='pron')RT.pr={cur:0,seen:{0:1}};
+ if(s.t==='foodbuild')RT.fb={subj:null,food:null,meal:null,b:null,bo:null,count:0};
+ if(s.t==='ask'){const n=P.length;RT.ask={k:0,asker:n>1?0:-1,ans:n>1?1:0,count:0,msg:null,q:null,answered:false};askQ()}}
+
+/* ================= CHOICE ================= */
+function pickOpt(ii,oi){const s=SL[ST.i],it=s.items[ii],r=RT.items[ii];if(r.done)return;r.tries++;
+ const okk=[].concat(it.ans).includes(oi),ow=ownerOf(s,it);
+ if(okk){r.done=true;r.right=oi;const first=r.wrong===0&&!r.hint;
+  if(it.personal){grant(ow,1);r.msg={k:'ok',t:'Thank you for telling us! ⭐'}}
+  else{result(s,it,ow,true,first);grant(ow,first?2:1);r.msg={k:'ok',t:it.yn?'Perfect answer!':praise()}}
+  sfx.ok()}
+ else{r.wrong++;r.soft.push(oi);result(s,it,ow,false,false,it.opts[oi]);r.msg={k:'no',t:'Almost! Try again. '+(it.why||'')};sfx.no()}
+ if(RT.items.every(x=>x.done))markDone(s);keep()}
+function revealItem(ii){const s=SL[ST.i],it=s.items[ii],r=RT.items[ii];r.done=true;r.right=[].concat(it.ans)[0];r.msg={k:'ok',t:'Here is the answer. Let\'s remember it! '+(it.why||'')};stu(ownerOf(s,it)).help++;
+ if(RT.items.every(x=>x.done))markDone(s);keep()}
+
+/* ================= BUILD (shared) ================= */
+function bPlace(bo,bs,id){if(bs.done||bs.slots.includes(id))return;const j=bs.slots.indexOf(null);if(j>=0)bs.slots[j]=id}
+function bCheck(s,bo,bs,onWin){if(bs.slots.includes(null)||bs.done)return;
+ const ow=ownerOf(s),seq=bs.slots.map(id=>bo.cards[id].t),okk=seq.join('|')===bo.target.join('|');
+ const it={topic:s.topic,prompt:s.title+': '+(bo.given?strip(bo.given):''),key:bo.key};
+ if(okk){bs.done=true;const first=bs.wrong===0&&!bs.hint;result(s,it,ow,true,first);grant(ow,first?2:1);bs.msg={k:'ok',t:praise()};sfx.ok();onWin()}
+ else{bs.wrong++;result(s,it,ow,false,false,seq.join(' ')+bo.punct);bs.msg={k:'no',t:'Almost! Try again. '+bo.why};sfx.no()}
+ keep()}
+function bHint(bo,bs){if(bs.done)return;bs.hint=true;
+ for(let j=0;j<bo.target.length;j++){const cur=bs.slots[j];if(cur!==null&&bo.cards[cur].t===bo.target[j])continue;
+  const id=bo.cards.find(c=>c.t===bo.target[j]&&(!bs.slots.includes(c.id)||bs.slots[j]===c.id)).id;
+  const o=bs.slots.indexOf(id);if(o>=0)bs.slots[o]=null;bs.slots[j]=id;break}
+ bs.msg={k:'hint',t:'💡 One word is in the right place now.'};keep()}
+function bReveal(s,bo,bs,onWin){const used=[];bs.slots=bo.target.map(t=>{const c=bo.cards.find(c=>c.t===t&&!used.includes(c.id));used.push(c.id);return c.id});
+ bs.done=true;bs.msg={k:'ok',t:'Here is the sentence. Say it with me! '+bo.why};stu(ownerOf(s)).help++;onWin();keep()}
+function buildBlock(bo,bs,s){
+ const slots=bs.slots.map((id,j)=>id===null?`<div class="slot">&nbsp;</div>`:`<button class="slot f ${bs.done?'ok':''}" data-a="slot" data-j="${j}" ${bs.done?'disabled':''}>${chH(bo.cards[id])}</button>`).join('');
+ const tray=bo.cards.map(c=>`<button class="wc ${bs.slots.includes(c.id)?'used':''}" data-a="card" data-id="${c.id}" ${bs.done?'disabled':''}>${chH(c)}</button>`).join('');
+ const full=!bs.slots.includes(null);
+ return`<div class="slots">${slots}<b style="font-size:34px">${bo.punct}</b></div><div class="tray">${tray}</div>
+ ${bs.msg?`<div class="fb ${bs.msg.k}">${bs.msg.t}</div>`:''}
+ <div class="acts">${bs.done?'':`<button class="btn go" data-a="chk" ${full?'':'disabled'}>Check ✓</button><button class="btn" data-a="clr">Clear</button><button class="btn" data-a="bhint">💡 Hint</button>${bs.wrong>=2?'<button class="btn" data-a="bshow">Show me ✨</button>':''}`}</div>`}
+
+/* ================= FOOD BUILD ================= */
+function fbMake(){const f=RT.fb;if(!(f.subj&&f.food&&f.meal)){f.bo=null;f.b=null;return}
+ const fo=f.food,a={v:'eat',o:`${fo.n} for ${f.meal}`,e:`${fo.e} ${MEALE[f.meal]}`,food:fo,meal:f.meal};
+ const T=mkS(f.subj,'pos',a,null),w=mkS(f.subj,'pos',a,null,'verb'),tt=T.ch.map(c=>c.t);
+ const extra=w.ch.filter(c=>c.k.startsWith('v')&&!tt.includes(c.t));
+ const cards=shuf(T.ch.concat(extra)).map((c,i)=>Object.assign({},c,{id:i}));
+ f.bo={cards,target:T.ch.map(c=>c.t),punct:T.punct,why:whyOf(T),key:T.plain,given:'',pic:pic(T,ownerOf(SL[ST.i]),{bubble:false})};
+ f.b={slots:Array(T.ch.length).fill(null),wrong:0,done:false,hint:false,msg:null}}
+
+/* ================= ASK ================= */
+function askQ(){const A=RT.ask,s=SL[ST.i],ow=A.ans;let Q,a;
+ if(s.kind==='food'){a=fAct(foodsOf(P[ow]),mealsOf(P[ow]))}
+ else a=(A.k%2===0)?likeAct(ow):pick(actsOf(P[ow]));
+ Q=mkS('you','q',a,null);A.q=Q;A.msg=null;A.answered=false}
+function askAnswer(yes){const A=RT.ask,s=SL[ST.i];if(A.answered)return;A.answered=true;A.count++;const ow=A.ans;
+ const st=stu(ow);st.ok++;trec(st,'q3').ok++;st.first++;grant(ow,1);
+ A.msg={k:'ok',t:(yes?'Yes, I do!':'No, I don\'t!')+' — '+praise()};sfx.ok();if(A.count>=2)markDone(s);keep()}
+
+/* ================= RENDER ================= */
+let scrollKeep=0;
+function keep(){const m=$('#stage');scrollKeep=m?m.scrollTop:0;render(true)}
+function render(k){const app=$('#app');
+ if(ST.view==='setup'){const o=$('#setupMain'),y=o?o.scrollTop:0;app.innerHTML=setupHTML();const n2=$('#setupMain');if(n2)n2.scrollTop=y;return}
+ const s=SL[ST.i];app.innerHTML=head(s)+`<main id="stage">${stageHTML(s)}</main>`+foot(s)+(ST.open?drawer():'');
+ const m=$('#stage');if(m)m.scrollTop=k?scrollKeep:0;save()}
+function head(s){const pct=Math.round((ST.i+1)/SL.length*100),r=ST.cfg.reward;
+ const chips=P.map((p,i)=>`<span class="chip">${esc(p.name)} ${r} ${(ST.stats[i]||{stars:0}).stars}</span>`).join('');
+ return`<header class="top"><button class="ib" data-a="home" title="Home">🏠</button><div class="prog"><small>Slide ${ST.i+1} of ${SL.length}</small><div class="bar"><i style="width:${pct}%"></i></div></div><div class="chips">${chips}${ST.chests?`<span class="chip">🎁 ${ST.chests}</span>`:''}</div><button class="ib" data-a="sound" title="Sound">${ST.sound?'🔊':'🔇'}</button><button class="ib" data-a="menu" title="Teacher menu">⚙️</button></header>`}
+function foot(s){const locked=!isDone(s)&&!ST.free,last=ST.i===SL.length-1;
+ const single=s.practice&&(s.t!=='choice'||s.items.length===1)&&P.length>1&&s.t!=='ask';
+ const turn=single?`<div class="turn">Who is answering? ${P.map((p,i)=>`<button class="${ownerOf(s)===i?'on':''}" data-a="ov" data-i="${i}">${esc(p.name)}</button>`).join('')}</div>`:'<div></div>';
+ return`<footer class="nav"><button class="btn" data-a="back" ${ST.i===0?'disabled':''}>◀ Back</button>${turn}<button class="btn ${locked?'':'pri'}" data-a="next" ${locked||last?'disabled':''}>${locked?'🔒 Answer first':'Next ▶'}</button></footer>`}
+function ownTag(s){return P.length>1&&s.practice?`<span class="owner">${esc(P[ownerOf(s)].name)}'s turn</span>`:''}
+function ttl(s){return`<h2>${ownTag(s)}${s.title||''}</h2>`}
+function stageHTML(s){switch(s.t){
+ case'welcome':return welcomeH();case'interests':return interestsH();case'teach':return teachH(s);case'pron':return pronH(s);
+ case'choice':return choiceH(s);case'build':return buildH(s);case'match':return matchH(s);case'foodbuild':return foodbuildH(s);
+ case'vocab':return vocabH(s);case'ask':return askH(s);case'summary':return summaryH();}return''}
+function welcomeH(){const names=joinNames(P.map(p=>esc(p.name)));
+ return`<div class="card welc"><h1>Hello, ${names}! 👋</h1><p style="font-size:26px">Let's go on a Present Simple adventure!</p><div class="avrow">${P.map((p,i)=>`<div>${kid(p.g,AV(i),'wave',130)}${esc(p.name)}</div>`).join('')}</div><button class="btn pri big2" data-a="next">Let's start!</button></div>`}
+function interestsH(){return`<div class="card"><h2>Meet our interests</h2><div class="sgrid">${P.map((p,i)=>{const ac=actsOf(p).slice(0,4);const lk=ac.find(a=>a.like);
+ return`<div class="stu-card"><div style="display:flex;gap:12px;align-items:center">${kid(p.g,AV(i),'self',80)}<h3>${esc(p.name)}</h3></div>${ac.map(a=>`<div style="font-size:28px;margin:6px 0">${a.e} ${mkS('I','pos',a,null).html}</div>`).join('')}${lk?`<div style="font-size:28px">❤️ ${mkS('I','pos',likeOf(lk),null).html}</div>`:''}</div>`}).join('')}</div><p class="instr">Tap 🔊 on the next slides to hear sentences. Blue = who, green = what we do!</p></div>`}
+function teachH(s){
+ const ex=(s.ex||[]).map(S=>`<li><button class="spk" data-a="say" data-t="${esc(S.plain)}" title="Listen">🔊</button><span>${S.html}</span></li>`).join('');
+ const fm=s.formulas?`<div class="formula two2">${s.formulas.map(f=>`<div>${f}</div>`).join('')}</div>`:(s.formula?`<div class="formula">${s.formula}</div>`:'');
+ const mo=s.morph?`<div class="morph"><div>${s.morph[0].html}</div><div class="arr">⬇</div><div>${s.morph[1].html}</div></div>`:'';
+ return`<div class="card two"><div><h2>${s.title}</h2>${s.rule?`<p class="rule">${s.rule}</p>`:''}${fm}${mo}${s.table||''}<ul class="ex">${ex}</ul>${s.note?`<div class="note">${s.note}</div>`:''}${s.instr?`<div class="instr">👉 ${s.instr}</div>`:''}</div><div>${s.pic||''}</div></div>`}
+function pronH(s){const c=RT.pr.cur,it=s.items[c];
+ const btns=s.items.map((x,i)=>`<button class="${i===c?'on':''} ${RT.pr.seen[i]?'seen':''}" data-a="pp" data-i="${i}">${cap(x.p)}</button>`).join('');
+ const all=Object.keys(RT.pr.seen).length===s.items.length;
+ return`<div class="card two"><div><h2>${s.title}</h2><div class="pron-btns">${btns}</div><div class="formula" style="font-size:36px">${esc(it.desc)}</div><ul class="ex"><li><button class="spk" data-a="say" data-t="${esc(it.plain)}">🔊</button><span>${it.html}</span></li></ul>${it.p==='it'?'<div class="note">It can be an animal or a thing: it runs, it works.</div>':''}${it.p==='we'?'<div class="note">We includes ME. Look at the circle!</div>':''}${it.p==='they'?'<div class="note">They does NOT include me. It is two or more others.</div>':''}<div class="instr">${all?'✅ You met all seven! Go on.':'👉 Tap each pronoun to meet it.'}</div></div><div>${it.pic}</div></div>`}
+function fbBox(r,it){return(r.msg?`<div class="fb ${r.msg.k}">${r.msg.t}</div>`:'')+(r.hint&&it.hint&&!r.done?`<div class="fb hint">💡 ${it.hint}</div>`:'')}
+function itActs(it,r,ii){if(r.done)return'';return`<div class="acts">${it.hint&&!r.hint?`<button class="btn" data-a="hint" data-i="${ii}">💡 Hint</button>`:''}${it.say?`<button class="btn" data-a="said" data-i="${ii}">🎤 I said it!</button>`:''}${r.wrong>=2&&!it.personal?`<button class="btn" data-a="show" data-i="${ii}">Show me ✨</button>`:''}</div>`}
+function optsH(it,r,ii){return it.opts.map((o,oi)=>{let c='opt';if(r.right===oi)c+=' ok';else if(r.soft.includes(oi))c+=' soft';return`<button class="${c}" data-a="opt" data-i="${ii}" data-o="${oi}" ${r.done?'disabled':''}>${esc(o)}</button>`}).join('')}
+function choiceH(s){const sg=s.items.length===1;
+ if(sg){const it=s.items[0],r=RT.items[0];
+  return`<div class="card two"><div>${ttl(s)}<div style="font-size:34px;font-weight:500;margin:6px 0 10px">${it.prompt}</div>${optsH(it,r,0)}${fbBox(r,it)}${itActs(it,r,0)}</div><div>${it.pic||''}</div></div>`}
+ return`<div class="card">${ttl(s)}${s.items.map((it,ii)=>{const r=RT.items[ii];return`<div class="row"><div class="prompt">${P.length>1?`<span class="owner">${N(ownerOf(s,it))}</span>`:''}${it.prompt}</div><div class="inl">${optsH(it,r,ii)}</div>${fbBox(r,it)}${itActs(it,r,ii)}</div>`}).join('')}</div>`}
+function buildH(s){return`<div class="card two"><div>${ttl(s)}${s.given?`<p class="sub">Change this sentence:</p><div class="formula">${s.given}</div>`:'<p class="sub">Put the words in the right order.</p>'}${s.instr?`<div class="instr">👉 ${s.instr}</div>`:''}${buildBlock(s,RT.b,s)}</div><div>${s.pic}</div></div>`}
+function matchH(s){const m=RT.m;
+ const L=s.pairs.map((p,i)=>`<button class="mi ${m.sel===i?'sel':''} ${m.done[i]?'ok':''}" data-a="ml" data-i="${i}" ${m.done[i]?'disabled':''}>${p.l}</button>`).join('');
+ const R=s.order.map(i=>`<button class="mi ${m.done[i]?'ok':''}" data-a="mr" data-i="${i}" ${m.done[i]?'disabled':''}>${esc(s.pairs[i].r)}</button>`).join('');
+ return`<div class="card">${ttl(s)}<p class="sub">Tap a card on the left, then tap its match on the right.</p><div class="mgrid"><div style="display:grid;gap:12px">${L}</div><div style="display:grid;gap:12px">${R}</div></div>${m.msg?`<div class="fb ${m.msg.k}">${m.msg.t}</div>`:''}</div>`}
+function foodbuildH(s){const f=RT.fb,ow=ownerOf(s),foods=foodsOf(P[ow]),meals=mealsOf(P[ow]);
+ const chip=(a,v,txt,on)=>`<button class="pcard ${on?'sel':''}" style="padding:6px 14px;font-size:24px" data-a="${a}" data-v="${esc(v)}">${txt}</button>`;
+ const subs=PRONS.map(p=>chip('fbS',p,cap(p),f.subj===p)).join(''),fs=foods.map(x=>chip('fbF',x.n,x.e+' '+esc(x.n),f.food&&f.food.n===x.n)).join(''),ms=meals.map(m=>chip('fbM',m,MEALE[m]+' '+m,f.meal===m)).join('');
+ const sent=f.b?`<div style="margin-top:14px">${buildBlock(f.bo,f.b,s)}${f.b.done?`<div class="acts"><button class="btn pri" data-a="fbAgain">Make another sentence 🔁</button></div>`:''}</div>`:'<div class="instr">👉 Pick a subject, a food and a meal.</div>';
+ return`<div class="card two"><div>${ttl(s)}<h3>1. Who?</h3><div class="tray">${subs}</div><h3>2. What food?</h3><div class="tray">${fs}</div><h3>3. Which meal?</h3><div class="tray">${ms}</div>${sent}</div><div>${f.bo?f.bo.pic:scene([pronChars('I',ow)[0]],'🍽️')}</div></div>`}
+function vocabH(s){const fo=unionFoods();
+ return`<div class="card"><h2>${s.title}</h2><p class="sub">Tap a card to hear the word.</p><div class="pgrid">${fo.map(f=>`<button class="pcard" data-a="say" data-t="${esc(f.n)}"><span class="em">${f.e}</span>${esc(f.l)}</button>`).join('')}</div><h3 style="margin-top:18px">Meals</h3><div class="pgrid">${MEALS.map(m=>`<button class="pcard" data-a="say" data-t="for ${m[0]}"><span class="em">${m[2]}</span>for <b class="w-o">${m[0]}</b></button>`).join('')}</div><div class="instr">👉 We say: I eat eggs <b>for breakfast</b>. I eat pizza <b>for lunch</b>. I eat chicken <b>for dinner</b>.</div></div>`}
+function askH(s){const A=RT.ask,n=P.length,Q=A.q;
+ const asker=A.asker<0?'🤖 Robo':esc(P[A.asker].name),chip=(a,i,t,on)=>`<button class="${on?'on':''}" data-a="${a}" data-i="${i}">${t}</button>`;
+ const aks=(n>0?P.map((p,i)=>chip('askA',i,esc(p.name),A.asker===i)).join(''):'')+chip('askA',-1,'🤖 Robo',A.asker<0);
+ const ans=P.map((p,i)=>chip('askR',i,esc(p.name),A.ans===i)).join('');
+ const bubble=`<div class="bubble" style="font-size:34px">${Q.html}</div>`;
+ return`<div class="card two"><div><h2>${s.title}</h2><div class="turn" style="color:var(--ink)">Asks: ${aks}</div><div class="turn" style="color:var(--ink)">Answers: ${ans}</div><p style="font-size:24px"><b>${asker}</b> asks <b>${esc(P[A.ans].name)}</b>:</p>${bubble}<div class="acts"><button class="btn" data-a="say" data-t="${esc(Q.plain)}">🔊 Hear it</button></div>
+ ${A.answered?'':`<div class="acts" style="margin-top:14px"><button class="btn go big2" data-a="askAns" data-v="1">Yes, I do!</button><button class="btn big2" data-a="askAns" data-v="0">No, I don't!</button></div>`}
+ ${A.msg?`<div class="fb ${A.msg.k}">${A.msg.t}</div><div class="acts"><button class="btn pri" data-a="askNext">Ask again 🔁</button></div>`:''}
+ <div class="instr">👉 Ask out loud, then answer. Answered: ${A.count}/2</div></div><div>${scene([pronChars('you',A.ans)[0],A.asker<0?pet():kid(P[A.asker].g,AV(A.asker),'down',110)],Q.a.e,'')}</div></div>`}
+function topicSummary(i){const st=ST.stats[i]||{topics:{},stars:0,ok:0,bad:0};
+ const tried=TOPIC_ORDER.filter(t=>st.topics[t]&&st.topics[t].ok+st.topics[t].bad>0);
+ const weak=tried.filter(t=>{const x=st.topics[t];return x.bad>x.ok||(x.bad>=2&&x.bad/(x.ok+x.bad)>=.4)});
+ const strong=tried.filter(t=>!weak.includes(t));
+ const none=TOPIC_ORDER.filter(t=>!tried.includes(t));return{st,tried,weak,strong,none}}
+function sumCard(i,compact){const T=topicSummary(i),st=T.st,tot=st.ok+st.bad;
+ const pill=(t,c)=>`<span class="pill ${c}">${TOPICS[t]}</span>`;
+ return`<div class="stu-card"><div style="display:flex;gap:10px;align-items:center">${compact?'':kid(P[i].g,AV(i),'wave',70)}<h3>${esc(P[i].name)}</h3></div>
+ <p>${ST.cfg.reward} ${st.stars} · ${tot?`${st.ok} correct answers, ${st.bad} tries to fix`:'No answers yet'}${st.help?` · ${st.help} with help`:''}</p>
+ ${T.strong.length?`<p class="mini"><b>Practised well:</b> ${T.strong.map(t=>pill(t,'g')).join('')}</p>`:''}
+ ${T.weak.length?`<p class="mini"><b>Needs more practice:</b> ${T.weak.map(t=>`<button class="list-btn" data-a="jumpTopic" data-t="${t}">${TOPICS[t]} ▶</button>`).join('')}</p>`:''}
+ ${T.none.length&&tot?`<p class="mini"><b>Not tried yet:</b> ${T.none.map(t=>pill(t,'p')).join('')}</p>`:''}</div>`}
+function summaryH(){const names=joinNames(P.map(p=>esc(p.name)));
+ return`<div class="card welc"><h1>Fantastic work, ${names}! 🎉</h1><p style="font-size:24px">You practised Present Simple: positive, negative and questions.</p><div class="sgrid" style="text-align:left;margin-top:14px">${P.map((p,i)=>sumCard(i)).join('')}</div><p class="sub" style="margin-top:14px">This summary only shows answers that were really given. Repeat the patterns above to make them stronger!</p><div class="acts" style="justify-content:center"><button class="btn pri" data-a="restartLesson">Play again 🔁</button><button class="btn" data-a="newGroup">New group</button></div></div>`}
+
+/* ================= SETUP ================= */
+function pickCard(f,i,k,e,l,on){return`<button class="pcard ${on?'sel':''}" data-a="tg" data-f="${f}" data-i="${i}" data-k="${esc(k)}"><span class="em">${e}</span>${esc(l)} <span class="tick">✓</span></button>`}
+function setupHTML(){const c=ST.cfg;
+ const stus=c.students.slice(0,c.n).map((s,i)=>{const open=ST.os===i;
+  const ok=s.name.trim()&&(s.interests.length||s.routine.length);
+  return`<div class="stu"><button class="btn" style="width:100%;text-align:left;font-size:26px;background:#fff;box-shadow:none" data-a="os" data-i="${i}">${ok?'✅':'📝'} Student ${i+1}: ${esc(s.name.trim()||'(name needed)')} <span class="sub">· ${s.interests.length} interests, ${s.foods.length+s.customFoods.length} foods</span></button>${open?`<div style="padding-top:10px">
+  <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap"><input class="nm" data-a="name" data-i="${i}" value="${esc(s.name)}" placeholder="Student ${i+1} name" maxlength="20" aria-label="Student name">
+  <span class="seg">Avatar: <button class="${s.g==='boy'?'on':''}" data-a="g" data-i="${i}" data-v="boy">Boy</button><button class="${s.g==='girl'?'on':''}" data-a="g" data-i="${i}" data-v="girl">Girl</button></span>
+  </div><div style="margin-top:10px"><b>Choose avatar:</b> <div class="avpick">${[0,1,2,3,4,5,6,7].map(v=>`<button class="av ${(s.av!==undefined?s.av:i)===v?'on':''}" data-a="av" data-i="${i}" data-v="${v}" aria-label="Avatar ${v+1}">${kid(s.g,v,'down',54)}</button>`).join('')}</div></div><div style="margin-top:8px">${i>0?`<button class="btn mini" data-a="copy1" data-i="${i}">Copy choices from Student 1</button>`:''}</div>
+  ${GROUPS.map(([g,l])=>`<h3 style="margin-top:14px">${l}</h3><div class="pgrid">${INTERESTS.filter(x=>x.g===g).map(x=>pickCard('interests',i,x.k,x.e,x.l,s.interests.includes(x.k))).join('')}</div>`).join('')}
+  <h3 style="margin-top:14px">Favourite foods</h3><div class="pgrid">${FOODS.map(x=>pickCard('foods',i,x.k,x.e,x.l,s.foods.includes(x.k))).join('')}${s.customFoods.map((x,j)=>`<button class="pcard sel" data-a="rmF" data-i="${i}" data-j="${j}"><span class="em">${x.e}</span>${esc(x.l)} <span class="tick">✓ remove</span></button>`).join('')}</div>
+  <div class="mini" style="margin-top:8px">Add another food: <input id="cf${i}" placeholder="e.g. dumplings" maxlength="20"> <button class="btn mini" data-a="addF" data-i="${i}">Add</button></div>
+  <h3 style="margin-top:14px">Meals to practise</h3><div class="pgrid">${MEALS.map(m=>pickCard('meals',i,m[0],m[2],m[1],s.meals.includes(m[0]))).join('')}</div>
+  <h3 style="margin-top:14px">Daily routine <span class="sub">(optional)</span></h3><div class="pgrid">${ROUTINE.map(x=>pickCard('routine',i,x.k,x.e,x.l,s.routine.includes(x.k))).join('')}</div></div>`:''}</div>`}).join('');
+ return`<main id="setupMain" style="overflow:auto;flex:1"><div class="setup"><div class="card"><h1>🧑‍🏫 Teacher setup</h1><p class="sub">Students don't see this screen. Choose who is playing and what they like. The whole lesson will use these choices.</p>
+ <h3>How many students?</h3><div class="cnt" style="display:flex;gap:10px">${[1,2,3,4,5,6].map(n=>`<button class="${c.n===n?'on':''}" data-a="n" data-v="${n}">${n}</button>`).join('')}</div>
+ <h3 style="margin-top:14px">Reward theme</h3><div class="seg">${['⭐','💎','🪙','🍪'].map(r=>`<button class="${c.reward===r?'on':''}" data-a="reward" data-v="${r}">${r}</button>`).join('')}</div></div>
+ <div class="card"><h2>Students</h2>${stus}</div>
+ ${ST.err.length?`<div class="err"><b>Almost ready:</b><br>${ST.err.map(esc).join('<br>')}</div>`:''}
+ <div class="card"><div class="acts"><button class="btn pri big2" data-a="start">${ST.edit?'Save and continue lesson':'Start Lesson ▶'}</button>${ST.edit?'<button class="btn" data-a="cancelEdit">Cancel</button>':''}<button class="btn" data-a="saveSetup">💾 Save setup for next time</button><button class="btn" data-a="loadSetup">📂 Load saved setup</button></div></div></div></main>`}
+
+/* ================= TEACHER DRAWER ================= */
+function drawer(){const tabs=[['nav','Navigate'],['prog','Progress'],['mist','Mistakes'],['key','Answer key'],['sess','Lesson & profiles']];
+ let b='';const s=SL[ST.i];
+ if(ST.tab==='nav'){const secs=[];SL.forEach(x=>{if(!secs.some(y=>y.sec===x.sec))secs.push(x)});
+  b=`<h3>Jump to a section</h3>${secs.map(x=>`<button class="list-btn" data-a="jump" data-i="${x.idx}">${esc(x.sec)}</button>`).join('')}
+  <h3 style="margin-top:14px">This slide</h3><div class="acts"><button class="btn" data-a="restartAct">↺ Restart activity</button><button class="btn" data-a="skipAct">⏭ Skip activity</button></div>
+  <h3 style="margin-top:14px">Navigation</h3><label style="font-size:20px"><input type="checkbox" data-a="free" ${ST.free?'checked':''}> Free navigation (Next is always unlocked)</label>`}
+ if(ST.tab==='prog'){const pr=SL.filter(x=>x.practice),dn=pr.filter(x=>ST.prog[x.id]&&ST.prog[x.id].done).length;
+  b=`<p>Practice activities finished: <b>${dn} of ${pr.length}</b> · Treasure chests: ${ST.chests}</p><div class="sgrid">${P.map((p,i)=>sumCard(i,true)).join('')}</div><p class="sub">Answers are credited to the student whose turn it was.</p>`}
+ if(ST.tab==='mist'){b=ST.log.length?`<table><tr><th>Student</th><th>Slide</th><th>Question</th><th>Chose</th><th>Correct</th></tr>${ST.log.slice().reverse().slice(0,80).map(l=>`<tr><td>${esc(l.who)}</td><td>${l.n}</td><td>${esc(l.q)}</td><td>${esc(l.chose)}</td><td>${esc(l.right)}</td></tr>`).join('')}</table>`:'<p>No mistakes recorded yet.</p>'}
+ if(ST.tab==='key'){const rows=[];SL.forEach(x=>{if(x.t==='choice')x.items.forEach(it=>rows.push([x.idx+1,strip(it.prompt),[].concat(it.ans).map(a=>it.opts[a]).join(' / ')]));
+   else if(x.t==='build')rows.push([x.idx+1,(x.given?strip(x.given)+' → ':'')+x.title,x.key]);
+   else if(x.t==='match')rows.push([x.idx+1,x.title,x.pairs.map(p=>strip(p.r)).join(', ')]);
+   else if(x.t==='foodbuild')rows.push([x.idx+1,x.title,'Any subject + eat/eats + food + for + meal']);});
+  b=`<table><tr><th>Slide</th><th>Question</th><th>Answer</th></tr>${rows.map(r=>`<tr><td>${r[0]}</td><td>${esc(r[1])}</td><td><b>${esc(r[2])}</b></td></tr>`).join('')}</table>`}
+ if(ST.tab==='sess'){b=`<div class="acts"><button class="btn" data-a="editProf">✏️ Edit names, interests and foods</button><button class="btn" data-a="restartLesson">↺ Restart lesson</button><button class="btn" data-a="newGroup">👥 New group</button><button class="btn" data-a="resetAll">🧹 Reset everything</button></div>
+  <p class="sub">Edits keep your place in the lesson. Restart clears progress but keeps the profiles. Reset everything also clears the profiles.</p>
+  <div class="acts"><button class="btn" data-a="saveSetup">💾 Save setup for next time</button><button class="btn" data-a="sound">${ST.sound?'🔊 Sound on':'🔇 Sound off'}</button></div>`}
+ return`<div class="ovl"><div class="dlg"><div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0">⚙️ Teacher menu</h2><button class="btn" data-a="close">Close ✕</button></div><div class="tabs" style="margin-top:10px">${tabs.map(t=>`<button class="${ST.tab===t[0]?'on':''}" data-a="tab" data-v="${t[0]}">${t[1]}</button>`).join('')}</div>${b}</div></div>`}
+
+/* ================= EVENTS ================= */
+function go(i){ST.i=Math.max(0,Math.min(SL.length-1,i));initRT();ST.open=false;render()}
+document.addEventListener('input',e=>{const t=e.target;if(t.dataset&&t.dataset.a==='name'){ST.cfg.students[+t.dataset.i].name=t.value}});
+document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t||t.tagName==='INPUT'&&t.type!=='checkbox')return;const a=t.dataset.a,d=t.dataset,I=+d.i;const s=SL[ST.i];
+ const c=ST.cfg,sd=c.students[I];
+ switch(a){
+ case'n':c.n=+d.v;while(c.students.length<c.n)c.students.push(blankStu(c.students.length));if(ST.os>=c.n)ST.os=0;render();break;
+ case'reward':c.reward=d.v;render();break;
+ case'os':ST.os=ST.os===I?-1:I;render();break;
+ case'g':sd.g=d.v;render();break;
+ case'av':sd.av=+d.v;render();break;
+ case'tg':{const arr=sd[d.f],k=d.k,j=arr.indexOf(k);if(j>=0)arr.splice(j,1);else arr.push(k);render();break}
+ case'addF':{const v=($('#cf'+I).value||'').trim();if(v){sd.customFoods.push({k:'c_'+v,n:v.toLowerCase(),l:cap(v),e:'🍽️'});render()}break}
+ case'rmF':sd.customFoods.splice(+d.j,1);render();break;
+ case'copy1':{const f=c.students[0];['interests','foods','meals','routine'].forEach(k=>sd[k]=f[k].slice());sd.customFoods=f.customFoods.map(x=>Object.assign({},x));render();break}
+ case'start':startLesson();break;
+ case'cancelEdit':ST.view='lesson';ST.edit=false;render();break;
+ case'saveSetup':try{localStorage.setItem(KEEP,JSON.stringify(c));toast('Setup saved on this device ✔')}catch(er){toast('Saving is not available here')}break;
+ case'loadSetup':try{const v=JSON.parse(localStorage.getItem(KEEP)||'null');if(v&&v.students){ST.cfg=v;render();toast('Saved setup loaded')}else toast('No saved setup yet')}catch(er){toast('Loading is not available here')}break;
+ /* lesson nav */
+ case'next':goNext();break;
+ case'back':go(ST.i-1);break;
+ case'home':go(0);break;
+ case'sound':ST.sound=!ST.sound;if(!ST.sound){try{speechSynthesis.cancel()}catch(e){}stopMusic()}render();break;
+ case'menu':ST.open=true;ST.tab='nav';render();break;
+ case'close':ST.open=false;render();break;
+ case'tab':ST.tab=d.v;render();break;
+ case'jump':go(I);break;
+ case'jumpTopic':{const x=SL.find(y=>y.practice&&(y.topic===d.t||(y.items&&y.items.some(it=>it.topic===d.t))));if(x)go(x.idx);break}
+ case'free':ST.free=t.checked;render();break;
+ case'skipAct':markDone(s,true);go(ST.i+1);break;
+ case'restartAct':delete ST.prog[s.id];delete ST.ov[s.id];initRT();render();break;
+ case'editProf':ST.view='setup';ST.edit=true;ST.open=false;ST.err=[];render();break;
+ case'restartLesson':ST.i=0;ST.prog={};ST.stats=[];ST.log=[];ST.ov={};ST.chests=0;ST.brk={};ST.unitDone={};ST.open=false;initRT();render();break;
+ case'newGroup':ST.cfg=DEF();ST.cfg.students=ST.cfg.students.map((x,k)=>blankStu(k));ST.view='setup';ST.edit=false;ST.i=0;ST.prog={};ST.stats=[];ST.log=[];ST.ov={};ST.chests=0;ST.brk={};ST.unitDone={};ST.open=false;ST.err=[];ST.os=0;render();break;
+ case'resetAll':resetAll();break;
+ case'ov':ST.ov[s.id]=I;render();break;
+ case'say':say(d.t);break;
+ case'pp':RT.pr.cur=I;RT.pr.seen[I]=1;render();say(s.items[I].plain);break;
+ /* choice */
+ case'opt':pickOpt(I,+d.o);break;
+ case'hint':RT.items[I].hint=true;keep();break;
+ case'show':revealItem(I);break;
+ case'said':{const r=RT.items[I];r.done=true;r.msg={k:'ok',t:'Great speaking! ⭐'};grant(ownerOf(s,s.items[I]),1);if(RT.items.every(x=>x.done))markDone(s);keep();break}
+ /* build */
+ case'card':{const bs=s.t==='foodbuild'?RT.fb.b:RT.b,bo=s.t==='foodbuild'?RT.fb.bo:s;bPlace(bo,bs,+d.id);keep();break}
+ case'slot':{const bs=s.t==='foodbuild'?RT.fb.b:RT.b;if(!bs.done){bs.slots[+d.j]=null;bs.msg=null}keep();break}
+ case'clr':{const bs=s.t==='foodbuild'?RT.fb.b:RT.b;bs.slots=bs.slots.map(()=>null);bs.msg=null;keep();break}
+ case'bhint':{const bs=s.t==='foodbuild'?RT.fb.b:RT.b,bo=s.t==='foodbuild'?RT.fb.bo:s;bHint(bo,bs);break}
+ case'chk':{const fb=s.t==='foodbuild';bCheck(s,fb?RT.fb.bo:s,fb?RT.fb.b:RT.b,()=>markDone(s));break}
+ case'bshow':{const fb=s.t==='foodbuild';bReveal(s,fb?RT.fb.bo:s,fb?RT.fb.b:RT.b,()=>markDone(s));break}
+ /* foodbuild */
+ case'fbS':RT.fb.subj=d.v;fbMake();keep();break;
+ case'fbF':RT.fb.food=foodsOf(P[ownerOf(s)]).find(x=>x.n===d.v);fbMake();keep();break;
+ case'fbM':RT.fb.meal=d.v;fbMake();keep();break;
+ case'fbAgain':RT.fb.subj=RT.fb.food=RT.fb.meal=null;RT.fb.b=RT.fb.bo=null;keep();break;
+ /* match */
+ case'ml':RT.m.sel=RT.m.sel===I?null:I;RT.m.msg=null;keep();break;
+ case'mr':{const m=RT.m;if(m.sel===null){m.msg={k:'hint',t:'Tap a card on the left first.'};keep();break}
+  const ow=ownerOf(s),it={topic:s.topic,prompt:s.title,key:strip(s.pairs[m.sel].r)};
+  if(m.sel===I){m.done[I]=1;m.msg={k:'ok',t:praise()};result(s,it,ow,true,m.wrong===0);sfx.ok();
+   if(Object.keys(m.done).length===s.pairs.length){m.fin=true;grant(ow,m.wrong===0?2:1);markDone(s)}}
+  else{m.wrong++;m.msg={k:'no',t:'Almost! Try again. Look carefully.'};result(s,it,ow,false,false,strip(s.pairs[I].r));sfx.no()}
+  m.sel=null;keep();break}
+ /* ask */
+ case'askA':RT.ask.asker=I;keep();break;
+ case'askR':RT.ask.ans=I;askQ();keep();break;
+ case'askAns':askAnswer(d.v==='1');break;
+ case'askNext':{const A=RT.ask,n=P.length;A.k++;if(n>1){A.asker=A.ans;A.ans=(A.ans+1)%n}askQ();keep();break}
+ }});
+document.addEventListener('keydown',e=>{if(ST.view!=='lesson'||ST.open)return;if(e.target.tagName==='INPUT')return;
+ if(e.key==='ArrowRight')goNext();if(e.key==='ArrowLeft')go(ST.i-1)});
+
+/* ================= MOVEMENT BREAK ================= */
+const HEROES=[['🦊','Rocky'],['🐼','Pandi'],['🤖','Robo'],['🦖','Dino'],['🐱','Luna'],['🦩','Flo']];
+let MUS=null,NB=null;
+function stopMusic(){if(MUS){clearInterval(MUS);MUS=null}}
+const PROGS={pop:[[57,60,64],[53,57,60],[48,52,55],[55,59,62]],house:[[50,53,57],[58,62,65],[53,57,60],[48,52,55]],funk:[[52,55,59],[48,52,55],[45,48,52],[47,51,54]],latin:[[57,60,64],[50,53,57],[52,56,59],[57,60,64]],trap:[[45,48,52],[41,45,48],[43,47,50],[40,44,47]],chill:[[48,52,55],[45,48,52],[53,57,60],[55,59,62]]};
+function startMusic(bpm,style){stopMusic();if(!ST.sound)return;
+ try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.resume)AC.resume();
+  if(!NB){NB=AC.createBuffer(1,Math.floor(AC.sampleRate*.3),AC.sampleRate);const dd=NB.getChannelData(0);for(let i=0;i<dd.length;i++)dd[i]=Math.random()*2-1}
+  const step=60/bpm/4,prog=PROGS[style]||PROGS.pop,mf=m=>440*Math.pow(2,(m-69)/12);
+  const tone=(f,t,d,ty,g)=>{const o=AC.createOscillator(),v=AC.createGain();o.type=ty;o.frequency.value=f;v.gain.setValueAtTime(g,t);v.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(v);v.connect(AC.destination);o.start(t);o.stop(t+d+.02)};
+  const kick=t=>{const o=AC.createOscillator(),v=AC.createGain();o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(40,t+.15);v.gain.setValueAtTime(.4,t);v.gain.exponentialRampToValueAtTime(.001,t+.2);o.connect(v);v.connect(AC.destination);o.start(t);o.stop(t+.22)};
+  const noise=(t,d,g,hp)=>{const s=AC.createBufferSource(),f=AC.createBiquadFilter(),v=AC.createGain();s.buffer=NB;f.type='highpass';f.frequency.value=hp;v.gain.setValueAtTime(g,t);v.gain.exponentialRampToValueAtTime(.0001,t+d);s.connect(f);f.connect(v);v.connect(AC.destination);s.start(t);s.stop(t+d+.02)};
+  const SC={
+   pop:(s,t,ch)=>{if(s%4===0)kick(t);if(s===4||s===12)noise(t,.12,.14,1500);if(s%2===1)noise(t,.04,.05,7000);if(s%4===0||s===10)tone(mf(ch[0]-12),t,step*3,'sawtooth',.07);if(s%2===0)tone(mf(ch[(s/2)%3]+12),t,step*1.6,'square',.02);if(s===14)tone(mf(ch[2]+24),t,.2,'triangle',.05)},
+   house:(s,t,ch)=>{if(s%4===0)kick(t);if(s%4===2)noise(t,.09,.08,8000);if(s%2===1)tone(mf(ch[0]-12),t,step*1.5,'sawtooth',.07);if(s===3||s===11)ch.forEach(m=>tone(mf(m),t,.12,'square',.025))},
+   funk:(s,t,ch)=>{if([0,3,6,10].includes(s))kick(t);if(s===4||s===12)noise(t,.15,.16,1200);if(s%2===0)noise(t,.03,.04,8000);if([0,3,6,10,14].includes(s))tone(mf(ch[s===6?2:0]-12),t,step*1.5,'sawtooth',.08);if([2,5,9,13].includes(s))ch.forEach(m=>tone(mf(m),t,.09,'square',.015))},
+   latin:(s,t,ch)=>{if([0,3,6,10,12].includes(s))noise(t,.04,.1,3000);if(s===0||s===8)kick(t);if(s%4===2)tone(220,t,.12,'sine',.12);if(s===0||s===6||s===10)tone(mf(ch[0]-12),t,step*2,'triangle',.12);if(s%2===0)tone(mf(ch[(s/2)%3]+12),t,.15,'sine',.05)},
+   trap:(s,t,ch)=>{if(s===0||s===10)tone(mf(ch[0]-24),t,step*5,'sine',.3);if(s===8)noise(t,.15,.16,1500);noise(t,.03,.04,8000);if(s>=12)noise(t+step/2,.02,.03,9000);if(s%4===0)tone(mf(ch[2]+12),t,.3,'sine',.04)},
+   chill:(s,t,ch)=>{if(s===0||s===8)kick(t);if(s%4===2)noise(t,.05,.03,9000);if(s===0)ch.forEach(m=>tone(mf(m),t,step*14,'sine',.04));if(s%4===0)tone(mf(ch[(s/4)%3]+12),t,.4,'triangle',.04)}};
+  const fn=SC[style]||SC.pop;let n=0,next=AC.currentTime+.1;
+  MUS=setInterval(()=>{while(next<AC.currentTime+.3){fn(n%16,next,prog[Math.floor(n/16)%4]);next+=step;n++}},80)}catch(e){}}
+
+/* ---- figure that shows the pose ---- */
+const B0={la:-12,lf:-12,ra:12,rf:12,lt:-8,ls:-8,rt:8,rs:8,dy:0,tilt:0,tx:0,sx:1,y:0};
+const PZ={base:{},rUp:{rt:48,rs:12},lUp:{lt:-48,ls:-12},clap:{la:-40,lf:100,ra:40,rf:-100},open:{la:-70,lf:-100,ra:70,rf:100},
+ up:{la:-165,lf:-170,ra:165,rf:170},star:{la:-140,lf:-150,ra:140,rf:150,lt:-25,ls:-25,rt:25,rs:25},
+ jump:{la:-165,lf:-170,ra:165,rf:170,y:-28,lt:-5,ls:-5,rt:5,rs:5},squat:{dy:20,lt:-52,ls:-8,rt:52,rs:8},
+ toes:{dy:20,lt:-52,ls:-8,rt:52,rs:8,la:-25,lf:-12,ra:25,rf:12},
+ bendR:{tilt:22,ra:150,rf:165,la:-35,lf:25},bendL:{tilt:-22,la:-150,lf:-165,ra:35,rf:-25},out:{la:-90,lf:-90,ra:90,rf:90},
+ roboA:{la:-90,lf:-180,ra:90,rf:0},roboB:{la:-90,lf:0,ra:90,rf:180},trex1:{la:-30,lf:35,ra:30,rf:-35},trex2:{la:-30,lf:75,ra:30,rf:-75},
+ hipsR:{tx:16,tilt:-6,la:-35,lf:25,ra:35,rf:-25},hipsL:{tx:-16,tilt:6,la:-35,lf:25,ra:35,rf:-25},
+ oneR:{rt:60,rs:-20,la:-90,lf:-90,ra:90,rf:90},oneL:{lt:-60,ls:20,la:-90,lf:-90,ra:90,rf:90},
+ stepR:{rt:32,rs:32,tx:12},stepL:{lt:-32,ls:-32,tx:-12},turn:{sx:.25}};
+function fig(pz){const o=Object.assign({},B0,pz),rad=a=>a*Math.PI/180,f1=n=>n.toFixed(1);
+ const pt=(x,y,a,L)=>[x+L*Math.sin(rad(a)),y+L*Math.cos(rad(a))],hy=104+o.dy,sy=62+o.dy;
+ const leg=(t,s)=>{const k=pt(60,hy,t,30),f=pt(k[0],k[1],s,30);return`<path d="M60 ${hy}L${f1(k[0])} ${f1(k[1])}L${f1(f[0])} ${f1(f[1])}" stroke="#364FC7" stroke-width="12" fill="none" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="${f1(f[0])}" cy="${f1(f[1]+3)}" rx="9" ry="5" fill="#1B1F4B"/>`};
+ const arm=(x0,u,f)=>{const e=pt(x0,sy,u,30),h=pt(e[0],e[1],f,28);return`<path d="M${x0} ${sy}L${f1(e[0])} ${f1(e[1])}L${f1(h[0])} ${f1(h[1])}" stroke="#F1C27D" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${f1(h[0])}" cy="${f1(h[1])}" r="6" fill="#F1C27D"/>`};
+ const hd=34+o.dy;
+ return`<svg viewBox="0 0 120 180" width="190" height="250" aria-hidden="true"><ellipse cx="60" cy="172" rx="40" ry="5" fill="rgba(0,0,0,.2)"/><g transform="translate(${o.tx} ${o.y}) translate(60 0) scale(${o.sx} 1) translate(-60 0)">${leg(o.lt,o.ls)}${leg(o.rt,o.rs)}<g transform="rotate(${o.tilt} 60 ${hy})"><path d="M60 ${sy-2}L60 ${hy-4}" stroke="#7A4DE8" stroke-width="32" stroke-linecap="round"/>${arm(48,o.la,o.lf)}${arm(72,o.ra,o.rf)}<circle cx="60" cy="${hd}" r="20" fill="#F1C27D"/><path d="M40 ${hd-2}A20 20 0 0 1 80 ${hd-2}Q60 ${hd-14} 40 ${hd-2}Z" fill="#2b1b10"/><circle cx="52" cy="${hd+2}" r="2.8" fill="#1B1F4B"/><circle cx="68" cy="${hd+2}" r="2.8" fill="#1B1F4B"/><path d="M52 ${hd+10}Q60 ${hd+17} 68 ${hd+10}" stroke="#1B1F4B" stroke-width="3" fill="none" stroke-linecap="round"/></g></g></svg>`}
+
+/* ---- routines (original, one per hero) ---- */
+const R_=t=>`<b class="w-s">${t}</b>`,L_=t=>`<b class="w-a">${t}</b>`;
+function routineFor(i){const S=(t,seq,beats)=>({t,seq:seq.map(k=>PZ[k]),beats});
+ switch(i%6){
+ case 0:return{name:'Stomp & Clap',style:'pop',bpm:112,k:1,steps:[S(`Stomp your ${R_('RIGHT')} foot ×2`,['rUp','base'],4),S(`Stomp your ${L_('LEFT')} foot ×2`,['lUp','base'],4),S('Clap clap clap clap! 👏',['clap','open'],8),S(`${R_('Right')}, ${R_('right')}, ${L_('left')}, ${L_('left')}!`,['rUp','base','rUp','base','lUp','base','lUp','base'],8),S('Jump! Hands up! ⬆️',['jump','base'],4),S('Freeze like a star ⭐',['star'],4)]};
+ case 1:return{name:'Stretch & Reach',style:'chill',bpm:90,k:1,steps:[S('Reach UP high ✋',['up','base'],4),S('Touch your toes 🦶',['toes','base'],4),S(`Bend ${R_('RIGHT')} ➡️`,['bendR','base'],4),S(`Bend ${L_('LEFT')} ⬅️`,['bendL','base'],4),S('Big arm circles ⭕',['out','up'],8),S('Deep breath: arms up… and down',['up','base'],4)]};
+ case 2:return{name:'Robot Dance',style:'house',bpm:120,k:1,steps:[S('Robot arms! 🤖',['roboA','roboB'],8),S('Robot steps: stomp, stomp',['stepR','stepL'],8),S('Beep beep: arms up, arms down',['up','base'],4),S('Robot jump!',['jump','base'],4),S('Power off: freeze! ⏸️',['out'],4)]};
+ case 3:return{name:'Dino Stomp',style:'funk',bpm:108,k:1,steps:[S('Tiny T-rex arms 🦖',['trex1','trex2'],8),S('Big dino stomps!',['rUp','base','lUp','base'],8),S('Wiggle your tail!',['hipsR','hipsL'],8),S('ROAR and jump! 🦖',['jump','base'],4)]};
+ case 4:{const st=[S('Get ready: arms out like a cat 🐱',['out'],4)];
+  P.forEach((p,j)=>st.push(S(`<b>${esc(p.name)}</b>: ONE leg! Hold…${P.length>1?'<div style="font-size:20px;font-weight:400">Everyone else: clap the beat 👏</div>':''}`,[j%2?'oneL':'oneR'],8)));
+  st.push(S('Everyone: land softly and bow 🙇',['squat','base'],4));return{name:'Cat Balance',style:'latin',bpm:100,k:1,steps:st}}
+ default:return{name:'Hip & Step',style:'trap',bpm:140,k:2,steps:[S(`Step ${R_('RIGHT')}, step ${L_('LEFT')}`,['stepR','stepL'],8),S(`Hips ${R_('right')}, ${L_('left')}`,['hipsR','hipsL'],8),S('Turn around! 🔄',['base','turn'],4),S('Clap! 👏',['clap','open'],4),S('Pose! ⭐',['star'],4)]}}}
+
+function goNext(){const s=SL[ST.i];if(!(isDone(s)||ST.free))return;
+ if(ST.i%10===9&&!ST.brk[ST.i]&&ST.i<SL.length-2){ST.brk[ST.i]=1;save();startBreak(ST.i+1)}else go(ST.i+1)}
+function startBreak(next){
+ const hi=ST.hero%HEROES.length,hero=HEROES[hi];ST.hero++;save();
+ const R=routineFor(hi),beatMs=60/R.bpm*R.k*1000,side=Math.random()<.5?'-60vw':'60vw';
+ const total=R.steps.reduce((a,s)=>a+s.beats,0);
+ const d=document.createElement('div');d.id='brk';d.className='ovl brk';document.body.appendChild(d);
+ let tm=null;
+ const close=()=>{clearInterval(tm);stopMusic();d.remove();go(next)};
+ const mute=()=>`<button class="ib" id="bkm" style="background:#EEF1FF;color:#1B1F4B;position:absolute;top:10px;right:10px">${ST.sound?'🔊':'🔇'}</button>`;
+ const bindMute=()=>{const b=d.querySelector('#bkm');if(b)b.onclick=()=>{ST.sound=!ST.sound;if(ST.sound)startMusic(R.bpm,R.style);else stopMusic();b.textContent=ST.sound?'🔊':'🔇';save()}};
+ const intro=()=>{d.innerHTML=`<div class="bk">${mute()}<div class="bk-stage"><div class="disco">🪩</div><div class="hero drop" style="--from:${side}">${hero[0]}</div></div><h2>🎵 Movement break!</h2><p style="font-size:24px">Hi! I'm <b>${hero[1]}</b>. Today: <b>${R.name}</b>.<br>Copy my moves! Mirror me 🪞</p><div class="acts" style="justify-content:center"><button class="btn pri big2" id="bkgo">Let's move! 🎶</button><button class="btn" id="bkskip">Skip</button></div></div>`;
+  d.querySelector('#bkgo').onclick=play;d.querySelector('#bkskip').onclick=close;bindMute()};
+ const play=()=>{
+  d.innerHTML=`<div class="bk">${mute()}<div class="bk-stage"><div class="disco">🪩</div><div class="hero coach" style="animation-duration:${(beatMs/1000).toFixed(2)}s">${hero[0]}</div><div id="bkfig"></div></div><div class="sub" id="bkn"></div><h2 id="bkt" style="min-height:70px"></h2><div class="dots" id="bkd"></div><div class="bar" style="background:#E3E8FF;margin-top:8px"><i id="bkbar" style="width:0;background:#7A4DE8"></i></div><div class="acts" style="justify-content:center"><button class="btn" id="bkskip">Skip</button></div></div>`;
+  d.querySelector('#bkskip').onclick=close;bindMute();startMusic(R.bpm,R.style);
+  let si=0,bi=0,done=0;const fg=d.querySelector('#bkfig');
+  const showStep=()=>{const s=R.steps[si];d.querySelector('#bkn').textContent=`Move ${si+1} of ${R.steps.length}`;d.querySelector('#bkt').innerHTML=s.t;
+   d.querySelector('#bkd').innerHTML=Array.from({length:s.beats},(_,k)=>`<b class="bd" data-k="${k}">${k+1}</b>`).join('')};
+  const tick=()=>{const s=R.steps[si];fg.innerHTML=fig(s.seq[bi%s.seq.length]);
+   d.querySelectorAll('.bd').forEach((e,k)=>e.classList.toggle('on',k===bi));
+   d.querySelector('#bkbar').style.width=Math.min(100,(done+bi+1)/total*100)+'%';
+   bi++;if(bi>=s.beats){done+=s.beats;bi=0;si++;if(si>=R.steps.length){clearInterval(tm);setTimeout(()=>{stopMusic();outro()},beatMs);return}showStep()}};
+  showStep();tick();tm=setInterval(tick,beatMs)};
+ const outro=()=>{confetti();sfx.win();d.innerHTML=`<div class="bk"><div class="bk-stage"><div class="hero mv-jump" style="animation-duration:.5s">${hero[0]}</div></div><h2>Great moving! ⭐</h2><p style="font-size:24px">Now back to English!</p><button class="btn pri big2" id="bkgo">Continue ▶</button></div>`;d.querySelector('#bkgo').onclick=close};
+ intro()}
+
+/* ================= BOOT ================= */
+load();
+if(ST.view==='lesson'){try{applyCfg();buildSlides();ST.i=Math.min(ST.i,SL.length-1);initRT()}catch(e){ST.view='setup'}}
+render();
+
+</script>
+</body>
+</html>
