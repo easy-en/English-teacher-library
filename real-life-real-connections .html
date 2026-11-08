@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Real Life, Real Connections — B1 Vocabulary Practice</title>
+<style>
+:root{--bg:#faf7f2;--ink:#1f2a44;--ac:#5b6fd6;--lav:#ece9fb;--ok:#2f8f5b;--bad:#c0463d;--mut:#6b7285;--line:#e4dfd5}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:920px;margin:auto;padding:20px 16px 60px}
+header{text-align:center;padding:26px 0 10px}h1{font:800 clamp(26px,5vw,40px)/1.1 Georgia,serif;letter-spacing:.5px;margin:0}
+.sub{color:var(--mut);margin:8px 0 0}
+#nav{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:18px 0 8px}
+#nav button{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:99px;padding:7px 14px;font:inherit;font-size:14px;cursor:pointer}
+#nav button.on{background:var(--ink);color:#fff;border-color:var(--ink)}#nav button:disabled{opacity:.4;cursor:not-allowed}
+#bar{height:8px;background:var(--lav);border-radius:9px;overflow:hidden}#bar i{display:block;height:100%;width:0;background:var(--ac);transition:width .4s}
+#pt{font-size:13px;color:var(--mut);text-align:right;margin:4px 2px 0}
+.view{display:none}.view.on{display:block}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 2px 14px #1f2a440f;padding:22px;margin:18px 0}
+h2{font:700 22px Georgia,serif;margin:0 0 4px}h3{margin:0 0 4px;font-size:18px}.hint{color:var(--mut);font-size:15px;margin:2px 0 14px}
+.bank{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.vc{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 14px;display:flex;flex-direction:column}
+.vc b{font-size:18px}.vc span{font-size:14px;color:var(--mut)}.vc em{font-style:normal;color:var(--ac);margin-right:6px;font-size:13px}
+label{display:block;font-weight:600;margin:10px 0 4px}
+input[type=text],input[type=date],textarea{width:100%;font:inherit;padding:11px 13px;border:1.5px solid var(--line);border-radius:12px;background:#fff;color:var(--ink)}
+input:focus,textarea:focus{outline:none;border-color:var(--ac);box-shadow:0 0 0 3px var(--lav)}
+textarea{min-height:130px;resize:vertical}
+.btn{background:var(--ac);color:#fff;border:0;border-radius:12px;padding:13px 24px;font:inherit;font-weight:700;cursor:pointer;margin-top:14px}
+.btn:disabled{background:#b9bdd0;cursor:not-allowed}.btn.alt{background:#fff;color:var(--ink);border:1.5px solid var(--ink)}
+.err{color:var(--bad);font-size:15px;min-height:22px;margin-top:6px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.chip{display:block;width:100%;text-align:left;font:inherit;font-size:16px;background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;cursor:pointer;color:var(--ink)}
+.chip:hover:not(:disabled){border-color:var(--ac)}.chip.sel{border-color:var(--ac);background:var(--lav)}.chip.paired{background:#f1f2fb;border-color:#aab3ea}
+.chip b{display:inline-block;min-width:24px;color:var(--ac)}.bd{display:inline-block;background:var(--ac);color:#fff;border-radius:99px;min-width:24px;height:24px;line-height:24px;text-align:center;font-weight:700;font-size:13px;margin-right:8px}
+.chip.good{border-color:var(--ok);background:#e8f5ee}.chip.wrong{border-color:var(--bad);background:#fbebe9}
+.q p{margin:4px 0}.q .stem{color:var(--mut)}.opt{display:block;width:100%;text-align:left;font:inherit;background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:10px 14px;margin:7px 0;cursor:pointer;color:var(--ink)}
+.opt:hover:not(:disabled){border-color:var(--ac)}.opt.good{border-color:var(--ok);background:#e8f5ee}.opt.wrong{border-color:var(--bad);background:#fbebe9}
+.fb{font-size:15px;margin-top:6px}.fb.g{color:var(--ok)}.fb.b{color:var(--bad)}
+.req{display:inline-block;background:var(--lav);border-radius:99px;padding:2px 12px;font-size:14px;font-weight:700}
+.cnt{display:flex;justify-content:space-between;font-size:14px;color:var(--mut);margin-top:4px;gap:10px;flex-wrap:wrap}
+.warn{color:var(--bad);font-size:14px;min-height:20px;font-weight:600}.ok{color:var(--ok)}.no{color:var(--bad)}
+.chk{list-style:none;padding:0;margin:10px 0 0;font-size:15px}.chk li{margin:3px 0;color:var(--mut)}.chk li.ok{color:var(--ok)}
+.res{font-weight:700;color:var(--ac);margin-top:10px}
+table{width:100%;border-collapse:collapse;margin:8px 0 18px}td,th{border:1px solid var(--line);padding:8px 10px;text-align:left;font-size:15px;vertical-align:top}th{background:var(--lav);width:34%}
+.ans{white-space:pre-wrap;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:12px;margin:6px 0;user-select:text}
+.rbtn{display:flex;gap:10px;flex-wrap:wrap}
+@media(max-width:700px){.bank,.two{grid-template-columns:1fr}body{font-size:16px}}
+@media print{body{background:#fff;font-size:13px}header,#nav,#bar,#pt,.view:not(#v5),.noprint{display:none!important}#v5{display:block!important}.card{box-shadow:none;border:0;padding:0}.ans{break-inside:avoid}.wrap{padding:0}}
+</style></head><body><div class="wrap">
+<header><h1>REAL LIFE, REAL CONNECTIONS</h1><p class="sub">Phrasal Verbs &amp; Everyday Expressions — B1 Vocabulary Practice</p>
+<div id="nav"></div><div id="bar"><i id="barf"></i></div><div id="pt"></div></header>
+
+<section class="view" id="v0">
+<div class="card"><h2>VOCABULARY BANK — LET'S REVISE!</h2><p class="hint">Take a moment to revise the expressions before starting.</p><div class="bank" id="bank"></div></div>
+<div class="card"><h2>Student information</h2>
+<label for="nm">Student's name</label><input type="text" id="nm" autocomplete="name" placeholder="First name and surname">
+<label for="dt">Date</label><input type="date" id="dt">
+<div class="err" id="e0"></div><button class="btn" id="go">Start Homework</button></div></section>
+
+<section class="view" id="v1"><div class="card"><h2>TASK 1 — FIND YOUR MATCH</h2><p class="hint">Match the expressions with their correct meanings. Tap an expression, then tap its meaning. Tap a matched meaning again to undo.</p>
+<div class="two"><div id="t1l"></div><div id="t1r"></div></div><div class="res" id="r1"></div><button class="btn" id="s1">Submit matches</button> <button class="btn alt hide" id="n1" hidden>Continue to Task 2 →</button></div></section>
+
+<section class="view" id="v2"><div class="card"><h2>TASK 2 — WHAT WOULD YOU SAY?</h2><p class="hint">Real-life situations. Choose the best expression.</p><div id="t2"></div>
+<div class="res" id="r2"></div><button class="btn" id="n2" disabled>Continue to Task 3 →</button></div></section>
+
+<section class="view" id="v3"><div class="card"><h2>TASK 3 — YOUR TURN: WRITE IT YOURSELF</h2><p class="hint">Use the vocabulary in your own sentences. Write 80–150 characters. Use the required expression (any tense). Type your own answer — pasting is not allowed.</p><div id="t3"></div>
+<button class="btn" id="n3" disabled>Save answers &amp; continue to Task 4 →</button></div></section>
+
+<section class="view" id="v4"><div class="card"><h2>TASK 4 — FINAL CHALLENGE: THE FRIENDSHIP STORY</h2><p class="hint">Your imagination. Your vocabulary.</p>
+<p style="background:var(--lav);padding:14px;border-radius:12px"><i>Imagine you have just moved away to a new city. You don't know anyone there. One evening, you attend a party and meet someone interesting. At first, you make small talk, but then you discover that you have several things in common.</i></p>
+<p>Continue the story.</p><textarea id="ta4" style="min-height:200px" placeholder="Type your story here…"></textarea><div class="warn"></div>
+<div class="cnt"><span id="c4">0 / 900</span><span>Minimum 350 characters</span></div><ul class="chk" id="k4"></ul>
+<button class="btn" id="n4" disabled>Finish &amp; create Teacher Report</button></div></section>
+
+<section class="view" id="v5"><div class="card" id="rep"></div></section>
+<div class="noprint" style="text-align:center;margin-top:40px"><a href="#" id="tnl" style="font-size:12px;color:#c9c4b8;text-decoration:none">teacher's notes</a></div>
+<div class="card noprint" id="tn" hidden><h3>Teacher's notes</h3>
+<p style="font-size:14px;color:var(--mut)">Tasks 1–2 are auto-graded (17 points). Tasks 3–4 (writing) are for you to assess. Task 3 limit: 80–150 characters. Restart is at the bottom of the report.</p>
+<p style="font-size:13px" id="key"></p>
+<button class="btn alt" id="sk">Skip current task →</button> <span class="err" id="skm"></span></div>
+</div>
+<script>
+/* ===== DATA ===== */
+const V=[["move away","переехать, уехать",/\bmov(e|es|ed|ing) away\b/i],["pick out","выбрать, отобрать",/\b(pick|picks|picked|picking) \w*\s?out\b/i],["hit it off","сразу найти общий язык",/\b(hit|hits|hitting) it off\b/i],
+["play it cool","держаться спокойно, не показывать волнения",/\b(play|plays|played|playing) it cool\b/i],["give it a shot","попробовать, дать шанс",/\b(give|gives|gave|given|giving) it a shot\b/i],
+["make small talk","поддерживать непринуждённую беседу",/\b(make|makes|made|making) small talk\b/i],["a necessary evil","необходимое зло",/\bnecessary evil\b/i],
+["have something in common","иметь что-то общее",/\b(have|has|had|having)\b[^.!?]{0,30}\bin common\b/i],["play it by ear","решать по ситуации",/\b(play|plays|played|playing) it by ear\b/i],
+["catch up","пообщаться, обменяться последними новостями",/\b(catch|catches|caught|catching) up\b/i],["keep in touch","поддерживать связь",/\b(keep|keeps|kept|keeping) in touch\b/i],
+["hang out","проводить время вместе",/\b(hang|hangs|hung|hanging) out\b/i],["reach out to","связаться с кем-либо",/\b(reach|reaches|reached|reaching) out\b/i],
+["get on","ладить, находить общий язык",/\b(get|gets|got|getting) on\b/i],["make up","помириться",/\b(make|makes|made|making) up\b/i],["let somebody down","подвести кого-либо",/\b(let|lets|letting) \w+ down\b/i],
+["check in on","узнать, как дела у кого-либо",/\b(check|checks|checked|checking) in on\b/i],["fall out with","поссориться с кем-либо",/\b(fall|falls|fell|fallen|falling) out\b/i],
+["stick up for","заступиться за кого-либо",/\b(stick|sticks|sticking|stuck) up for\b/i],["run into","случайно встретить",/\b(run|runs|ran|running) into\b/i],
+["get along with","ладить с кем-либо",/\b(get|gets|got|getting) along\b/i],["grow apart","отдаляться друг от друга",/\b(grow|grows|grew|grown|growing) apart\b/i]];
+const DEF=["leave your home to live in a different place","choose one thing or person from a group","like each other immediately when you first meet","stay calm and not show your feelings","try something, even if you are not sure about it","have a light, friendly chat about simple things","something bad that you must accept because it is useful","share the same interests or experiences with someone","decide what to do as things happen, without a plan","talk to someone to share your recent news"];
+const Q=[
+{s:"Your friend promised to help you move to a new apartment. However, he didn't show up and didn't even call you.",q:"What did your friend do?",o:["He hit it off with you.","He let you down.","He caught up with you."],c:1,e:"“Let somebody down” means to disappoint someone who trusted you."},
+{s:"You were walking to the supermarket when you suddenly saw your old classmate, Anna. You hadn't planned to meet her.",q:"What happened?",o:["You ran into Anna.","You checked in on Anna.","You made up with Anna."],c:0,e:"“Run into” somebody means to meet them by chance."},
+{s:"You and your best friend shouted at each other on Monday. Today you both said sorry and everything is fine again.",q:"What did you do?",o:["You grew apart.","You made up.","You moved away."],c:1,e:"“Make up” means to become friends again after an argument."},
+{s:"Your grandmother lives alone. Every evening you call her to ask how she feels and if she needs anything.",q:"What do you do?",o:["You fall out with her.","You pick her out.","You check in on her."],c:2,e:"“Check in on” somebody means to contact them to see if they are OK."},
+{s:"You moved to Canada last year. You can't visit your school friends, but you message them every week.",q:"What are you doing?",o:["You are keeping in touch with them.","You are hanging out with them.","You are playing it cool with them."],c:0,e:"“Keep in touch” means to stay in contact when you are far away. “Hang out” means spending time together in person."},
+{s:"You haven't spoken to your old colleague for two years. Today you send her a message: “Hi! I'd love to talk again. How are you?”",q:"What did you do?",o:["You got on with her.","You fell out with her.","You reached out to her."],c:2,e:"“Reach out to” somebody means to contact them, often after a long time."},
+{s:"Two neighbours had a big argument about loud music last month. Now they don't speak to each other.",q:"What happened between them?",o:["They got along well.","They fell out with each other.","They hit it off."],c:1,e:"“Fall out with” somebody means to stop being friendly after an argument."}];
+const C=[{h:"Challenge 1 — Friendship",p:"Describe a situation when you had to stick up for someone.",x:"stick up for",re:V[18][2]},
+{h:"Challenge 2 — Relationships",p:"Imagine that two childhood friends gradually became less close. Explain what happened.",x:"grow apart",re:V[21][2]},
+{h:"Challenge 3 — Social Life",p:"Imagine meeting a new person at a party. Describe how you became friends.",x:"hit it off",re:V[2][2]}];
+const LAB=["Vocabulary","Task 1","Task 2","Task 3","Task 4","Report"],KEY="rlrc_homework_v1";
+
+/* ===== STATE ===== */
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function shuf(){let a;do{a=[...Array(10).keys()].sort(()=>Math.random()-.5)}while(a.every((v,i)=>v===i));return a}
+const fresh=()=>({name:"",date:"",t0:0,tEnd:0,step:0,view:0,ord:shuf(),p:{},d1:false,a:Array(7).fill(null),t3:["","",""],d3:false,t4:"",d4:false,sk:{}});
+let S;try{S=JSON.parse(localStorage.getItem(KEY))||fresh()}catch(e){S=fresh()}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const sc1=()=>[...Array(10).keys()].filter(i=>S.p[i]===i).length,sc2=()=>S.a.filter((a,i)=>a===Q[i].c).length,d2=()=>S.a.every(a=>a!==null);
+let sel=null;
+
+/* ===== NAV ===== */
+function go(v){S.view=v;save();document.querySelectorAll(".view").forEach((e,i)=>e.classList.toggle("on",i===v));nav();scrollTo(0,0)}
+function nav(){$("#nav").innerHTML=LAB.map((l,i)=>`<button data-v="${i}" class="${i===S.view?"on":""}" ${i>S.step?"disabled":""}>${l}</button>`).join("");
+ const n=[S.d1,d2(),S.d3,S.d4].filter(Boolean).length;$("#barf").style.width=n*25+"%";$("#pt").textContent=n+" / 4 tasks completed"}
+$("#nav").onclick=e=>{const b=e.target.closest("button");if(b&&!b.disabled)go(+b.dataset.v)};
+function unlock(k){S.step=Math.max(S.step,k);save();nav()}
+
+/* ===== START ===== */
+$("#bank").innerHTML=V.map((v,i)=>`<div class="vc"><b><em>${i+1}</em>${v[0]}</b><span>${v[1]}</span></div>`).join("");
+function rStart(){$("#nm").value=S.name;$("#dt").value=S.date;const st=S.t0>0;$("#nm").disabled=$("#dt").disabled=st;$("#go").textContent=st?"Continue Homework →":"Start Homework"}
+$("#go").onclick=()=>{if(S.t0>0){go(Math.min(S.step,4)||1);return}const n=$("#nm").value.trim(),d=$("#dt").value;
+ if(!n||!d){$("#e0").textContent="Please enter your name and the date to start.";return}$("#e0").textContent="";S.name=n;S.date=d;S.t0=Date.now();S.step=1;save();rStart();go(1)};
+
+/* ===== TASK 1 ===== */
+function r1(){const d=S.d1;let L="",R="";
+ for(let i=0;i<10;i++){const p=S.p[i]!==undefined;L+=`<button class="chip${sel===i?" sel":""}${p?" paired":""}${d?(S.p[i]===i?" good":" wrong"):""}" data-e="${i}" ${d?"disabled":""}><b>${i+1}</b>${V[i][0]}</button>`}
+ S.ord.forEach(di=>{const o=Object.keys(S.p).find(k=>S.p[k]===di);R+=`<button class="chip${o!==undefined?" paired":""}${d&&o!==undefined?(+o===di?" good":" wrong"):""}" data-d="${di}" ${d?"disabled":""}>${o!==undefined?`<span class="bd">${+o+1}</span>`:""}${DEF[di]}</button>`});
+ $("#t1l").innerHTML=L;$("#t1r").innerHTML=R;$("#s1").disabled=d||Object.keys(S.p).length<10;$("#s1").hidden=d;$("#n1").hidden=!d;$("#r1").textContent=d?"Score: "+sc1()+" / 10":""}
+$("#v1").onclick=e=>{const b=e.target.closest(".chip");if(!b||S.d1)return;
+ if(b.dataset.e!==undefined)sel=+b.dataset.e;else{const d=+b.dataset.d,o=Object.keys(S.p).find(k=>S.p[k]===d);if(o!==undefined)delete S.p[o];if(sel!==null){S.p[sel]=d;sel=null}}save();r1()};
+$("#s1").onclick=()=>{S.d1=true;sel=null;save();r1();unlock(2)};$("#n1").onclick=()=>go(2);
+
+/* ===== TASK 2 ===== */
+function r2(){$("#t2").innerHTML=Q.map((q,i)=>{const a=S.a[i];return`<div class="q" style="margin-bottom:24px"><h3>${i+1}. ${esc(q.q)}</h3><p class="stem">${esc(q.s)}</p>`+
+ q.o.map((o,j)=>`<button class="opt${a!==null?(j===q.c?" good":j===a?" wrong":""):""}" data-q="${i}" data-o="${j}" ${a!==null?"disabled":""}>${"ABC"[j]}. ${esc(o)}</button>`).join("")+
+ (a!==null?`<div class="fb ${a===q.c?"g":"b"}">${a===q.c?"✓ Correct! ":"✗ Not quite. "}${esc(q.e)}</div>`:"")+`</div>`}).join("");
+ $("#n2").disabled=!d2();$("#r2").textContent=d2()?"Score: "+sc2()+" / 7":"";nav()}
+$("#t2").onclick=e=>{const b=e.target.closest(".opt");if(!b||b.disabled)return;S.a[+b.dataset.q]=+b.dataset.o;save();r2();if(d2())unlock(3)};$("#n2").onclick=()=>go(3);
+
+/* ===== WRITING FIELDS (anti-paste) ===== */
+function guard(t){const w=()=>{const m=t.nextElementSibling;m.textContent="Please type your own answer. Pasting is not allowed!";clearTimeout(t._w);t._w=setTimeout(()=>m.textContent="",2800)};
+ ["paste","drop"].forEach(ev=>t.addEventListener(ev,e=>{e.preventDefault();w()}));["copy","cut","contextmenu","dragstart","dragover"].forEach(ev=>t.addEventListener(ev,e=>{e.preventDefault();if(ev==="contextmenu")w()}));
+ t.addEventListener("beforeinput",e=>{if(/insertFromPaste|insertFromDrop|insertFromYank|insertReplacementText/.test(e.inputType)){e.preventDefault();w()}});
+ t.addEventListener("keydown",e=>{const k=e.key.toLowerCase();if(((e.ctrlKey||e.metaKey)&&["v","c","x","insert"].includes(k))||(e.shiftKey&&k==="insert")){e.preventDefault();if(k==="v"||k==="insert")w()}})}
+
+/* ===== TASK 3 ===== */
+function r3(){$("#t3").innerHTML=C.map((c,i)=>`<div style="margin-bottom:26px"><h3>${c.h}</h3><p>${c.p}</p><p>Required expression: <span class="req">${c.x}</span></p>
+ <textarea id="a3${i}" ${S.d3?"readonly":""} placeholder="Type your answer here…"></textarea><div class="warn"></div><div class="cnt"><span id="c3${i}"></span><span id="m3${i}"></span></div></div>`).join("");
+ C.forEach((c,i)=>{const t=$("#a3"+i);t.value=S.t3[i];guard(t);t.oninput=()=>{S.t3[i]=t.value;save();u3()}});u3()}
+function u3(){let all=true;C.forEach((c,i)=>{const v=S.t3[i].trim(),L=v.length,lo=L>=80&&L<=150,ex=c.re.test(v);all=all&&lo&&ex;
+ $("#c3"+i).innerHTML=`<span class="${lo?"ok":"no"}">${L} / 150</span> (min 80)`;$("#m3"+i).innerHTML=`<span class="${ex?"ok":"no"}">${ex?"✓":"○"} uses “${c.x}”</span>`});
+ $("#n3").disabled=S.d3?false:!all;$("#n3").textContent=S.d3?"Continue to Task 4 →":"Save answers & continue to Task 4 →"}
+$("#n3").onclick=()=>{if(!S.d3){S.d3=true;save();document.querySelectorAll("#t3 textarea").forEach(t=>t.readOnly=true);unlock(4)}go(4)};
+
+/* ===== TASK 4 ===== */
+const NEG=/n['’]t\b|\b(not|never|nobody|nothing|cannot|no one)\b/i;
+function chk4(v){v=v.trim();const sn=v.split(/[.!?]+(?:\s+|$)/).filter(x=>x.trim()).length,used=V.filter(x=>x[2].test(v)).map(x=>x[0]),L=v.length;
+ return{L,sn,used,items:[["4–5 complete sentences ("+sn+")",sn>=4&&sn<=5],["At least 4 vocabulary expressions ("+used.length+" found)",used.length>=4],["At least one negative sentence",NEG.test(v)],["At least one question",v.includes("?")],["350–900 characters",L>=350&&L<=900]]}}
+function u4(){const r=chk4(S.t4);$("#c4").innerHTML=`<span class="${r.L>=350&&r.L<=900?"ok":"no"}">${r.L} / 900</span>`;
+ $("#k4").innerHTML=r.items.map(i=>`<li class="${i[1]?"ok":""}">${i[1]?"✓":"○"} ${i[0]}</li>`).join("");$("#n4").disabled=S.d4?false:!r.items.every(i=>i[1])}
+function r4(){const t=$("#ta4");t.value=S.t4;t.readOnly=S.d4;guard(t);t.oninput=()=>{S.t4=t.value;save();u4()};u4()}
+$("#n4").onclick=()=>{if(!S.d4){S.d4=true;S.tEnd=Date.now();save();$("#ta4").readOnly=true;unlock(5)}rep();go(5)};
+
+/* ===== TEACHER REPORT ===== */
+function rep(){const a1=sc1(),a2=sc2(),skl=Object.keys(S.sk||{}),ms=S.tEnd-S.t0,tm=Math.floor(ms/3600000)?Math.floor(ms/3600000)+" h ":"",time=tm+Math.floor(ms/60000)%60+" min "+Math.floor(ms/1000)%60+" s";
+ const fl=(c)=>`<span class="${c?"ok":"no"}">${c?"✓ Yes":"✗ No"}</span>`;
+ const w3=C.map((c,i)=>{const v=S.t3[i].trim(),L=v.length;return`<h3>${c.h}</h3><p style="margin:2px 0">${esc(c.p)}</p><p style="margin:2px 0">Required: <b>${c.x}</b></p><div class="ans">${esc(v)}</div>
+ <p style="margin:2px 0 14px">Characters: <b>${L}</b> (80–150) — Length requirement: ${fl(L>=80&&L<=150)} &nbsp; Uses required expression: ${fl(c.re.test(v))}</p>`}).join("");
+ const r=chk4(S.t4),t1=[...Array(10).keys()].map(i=>`${i+1}. ${V[i][0]} — ${S.p[i]===i?"✓":"✗ (chose: "+(S.p[i]!==undefined?esc(DEF[S.p[i]]):"-")+")"}`).join("<br>"),
+ t2=Q.map((q,i)=>`${i+1}. ${S.a[i]===-1?"skipped":S.a[i]===q.c?"✓":"✗ (chose: "+esc(q.o[S.a[i]])+")"}`).join("<br>");
+ $("#rep").innerHTML=`<h2>TEACHER REPORT — B1 VOCABULARY CHALLENGE</h2><p class="hint">Real Life, Real Connections</p>
+ <table><tr><th>Student</th><td>${esc(S.name)}</td></tr><tr><th>Date of completion</th><td>${esc(S.date)}</td></tr><tr><th>Completion status</th><td>${skl.length?"PREVIEW — skipped: Task "+skl.join(", Task "):"Completed — all 4 tasks submitted"}</td></tr><tr><th>Completion time</th><td>${time} (from Start to final submission)</td></tr>
+ <tr><th>Task 1 — Matching</th><td>${a1} / 10</td></tr><tr><th>Task 2 — Situations</th><td>${a2} / 7</td></tr><tr><th>Total auto-graded score</th><td><b>${a1+a2} / 17</b></td></tr></table>
+ <p class="hint">Written answers (Tasks 3 and 4) are not scored automatically. Please read and assess them personally.</p>
+ <h2>Task 3 — Written answers</h2>${w3}
+ <h2>Task 4 — The Friendship Story</h2><div class="ans">${esc(S.t4.trim())}</div><p>Characters: <b>${r.L}</b></p>
+ <table>${r.items.map(i=>`<tr><th style="width:60%">${i[0]}</th><td>${fl(i[1])}</td></tr>`).join("")}<tr><th>Expressions detected</th><td>${r.used.length?r.used.join(", "):"–"}</td></tr></table>
+ <p class="hint">Detection is automatic and may miss unusual forms. Logic, creativity and grammar need teacher judgement.</p>
+ <h3>Task 1 details</h3><p style="font-size:15px">${t1}</p><h3>Task 2 details</h3><p style="font-size:15px">${t2}</p>
+ <div class="rbtn noprint"><button class="btn" id="pr">PRINT / SAVE AS PDF</button><button class="btn alt" id="rs">RESTART HOMEWORK</button></div>`;
+ $("#pr").onclick=()=>window.print();
+ $("#rs").onclick=()=>{if(confirm("Restart the homework? All answers of the current student will be deleted.")){try{localStorage.removeItem(KEY)}catch(e){}S=fresh();sel=null;init()}}}
+
+/* ===== TEACHER PANEL (hidden) ===== */
+$("#key").innerHTML="<b>Task 1:</b> "+[...Array(10).keys()].map(i=>V[i][0]+" = "+DEF[i]).join("; ")+"<br><b>Task 2:</b> "+Q.map((q,i)=>(i+1)+"-"+"ABC"[q.c]).join(", ");
+$("#tnl").onclick=e=>{e.preventDefault();$("#tn").hidden=!$("#tn").hidden;if(!$("#tn").hidden)$("#tn").scrollIntoView({behavior:"smooth"})};
+$("#sk").onclick=()=>{const k=S.view;if(k<1||k>4){$("#skm").textContent="Press Start first, open a task, then skip.";return}$("#skm").textContent="";S.sk=S.sk||{};
+ if(k===1&&!S.d1){S.sk[1]=1;S.d1=true;sel=null;r1()}
+ if(k===2&&!d2()){S.sk[2]=1;S.a=S.a.map(a=>a===null?-1:a);r2()}
+ if(k===3&&!S.d3){S.sk[3]=1;S.d3=true;r3()}
+ if(k===4&&!S.d4){S.sk[4]=1;S.d4=true;S.tEnd=Date.now();$("#ta4").readOnly=true;u4()}
+ save();unlock(k+1);if(k===4){rep();go(5)}else go(k+1)};
+
+/* ===== INIT ===== */
+function init(){rStart();r1();r2();r3();r4();if(S.step>=5&&S.d4)rep();document.querySelectorAll(".view").forEach((e,i)=>e.classList.toggle("on",i===S.view));nav();scrollTo(0,0)}
+init();
+</script></body></html>
