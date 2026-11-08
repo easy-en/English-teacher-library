@@ -5,43 +5,16 @@
 .page-hero{padding:44px max(24px,calc((100vw - 1000px)/2)) 48px}.vocabulary-hero{background:linear-gradient(135deg,#f8eaf1,#f8f2fc)}.grammar-hero{background:linear-gradient(135deg,#eaf0fb,#f3effc)}.page-hero p:not(.eyebrow){color:#766d83}.back-link{display:inline-block;margin-bottom:30px;color:#755c99;font-size:14px;font-weight:700}.back-link:hover{text-decoration:underline}
 .library-section{max-width:1050px;margin:0 auto;padding:50px 24px 85px}.section-heading{margin-bottom:28px}.section-heading h2{font-size:30px;color:#514267;margin-bottom:5px}.section-heading p:not(.eyebrow){font-size:14px;color:#81798c}.materials-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.material-card{display:flex;flex-direction:column;background:#fff;border:1px solid #eeeaf3;border-radius:16px;padding:26px;transition:transform .2s,box-shadow .2s}.material-card:hover{transform:translateY(-3px);box-shadow:0 10px 25px #46325a12}.material-card h2{font-size:20px;color:#514267;margin:14px 0 8px}.material-card p{color:#777083;font-size:14px;margin-bottom:22px;flex:1}.material-meta{display:flex;gap:8px;flex-wrap:wrap}.material-tag{padding:5px 11px;background:#f1eafb;color:#775b9b;border-radius:20px;font-size:11px;font-weight:700}.card-actions{display:flex;flex-wrap:wrap;gap:10px}.open-button,.copy-button{display:inline-flex;align-items:center;justify-content:center;border-radius:9px;padding:11px 17px;font-size:13px;font-weight:700;min-height:44px}.open-button{background:#8c73b0;color:#fff}.open-button:hover{background:#70558f}.copy-button{background:#fff;color:#70558f;border:1px solid #cdbfe0}.copy-button:hover{background:#f6f0fc}footer{text-align:center;padding:28px 20px;background:#f0edf5;color:#82788e;font-size:12px}
 @media(max-width:650px){.site-header{flex-direction:column;padding:20px}.logo{text-align:center}nav{gap:24px}.categories,.materials-grid{grid-template-columns:1fr}.categories{margin:24px auto 55px}.category-card{min-height:200px}.hero{padding:60px 20px}.page-hero{padding:30px 24px 40px}.library-section{padding:38px 20px 65px}}
-
 footer a{text-decoration:underline;text-underline-offset:2px} .terms-content{max-width:800px;margin:0 auto;padding:44px 24px 80px}.terms-content h2{font-size:21px;color:#514267;margin:22px 0 8px}.terms-content p{margin-bottom:16px}.terms-note{color:#82788e;font-size:13px}
-
-/* Beautiful pastel category cards */
-.vocabulary-card {
-  background: linear-gradient(135deg, #f8eaf1, #fce5ef);
-}
-
-.grammar-card {
-  background: linear-gradient(135deg, #eaf0fb, #e3e9ff);
-}
-
-.speaking-card {
-  background: linear-gradient(135deg, #fff0e6, #ffe3d6);
-}
-
-.reading-card {
-  background: linear-gradient(135deg, #e5f5ed, #d9f2e9);
-}
-
-/* Category icons */
-.category-icon {
-  font-size: 46px;
-  line-height: 1.2;
-  margin-bottom: 18px;
-  transition: transform 0.25s ease;
-}
-
-.category-card:hover .category-icon {
-  transform: translateY(-4px) rotate(-5deg) scale(1.08);
-}
-
-/* Speaking and Reading page backgrounds */
-.speaking-hero {
-  background: linear-gradient(135deg, #fff0e6, #fff7f0);
-}
-
-.reading-hero {
-  background: linear-gradient(135deg, #e5f5ed, #f2fcf7);
-}
+/* Pastel category cards */
+.vocabulary-card{background:linear-gradient(135deg,#f8eaf1,#fce5ef)}
+.grammar-card{background:linear-gradient(135deg,#eaf0fb,#e3e9ff)}
+.speaking-card{background:linear-gradient(135deg,#fff0e6,#ffe3d6)}
+.reading-card{background:linear-gradient(135deg,#e5f5ed,#d9f2e9)}
+.speaking-hero{background:linear-gradient(135deg,#fff0e6,#fff7f0)}
+.reading-hero{background:linear-gradient(135deg,#e5f5ed,#f2fcf7)}
+/* 3D illustrations inside category cards */
+.category-image{display:block;width:120px;height:105px;object-fit:contain;object-position:left center;margin:0 0 14px;transition:transform .25s ease}
+.category-card:hover .category-image{transform:translateY(-4px) scale(1.05)}
+@media(min-width:850px){.category-card{position:relative;min-height:270px;padding-left:155px;justify-content:center}.category-image{position:absolute;left:24px;top:50%;transform:translateY(-50%);width:115px;height:125px;margin:0}.category-card:hover .category-image{transform:translateY(-52%) scale(1.05)}}
+@media(max-width:650px){.category-image{width:115px;height:100px}}
