@@ -7,3 +7,41 @@
 @media(max-width:650px){.site-header{flex-direction:column;padding:20px}.logo{text-align:center}nav{gap:24px}.categories,.materials-grid{grid-template-columns:1fr}.categories{margin:24px auto 55px}.category-card{min-height:200px}.hero{padding:60px 20px}.page-hero{padding:30px 24px 40px}.library-section{padding:38px 20px 65px}}
 
 footer a{text-decoration:underline;text-underline-offset:2px} .terms-content{max-width:800px;margin:0 auto;padding:44px 24px 80px}.terms-content h2{font-size:21px;color:#514267;margin:22px 0 8px}.terms-content p{margin-bottom:16px}.terms-note{color:#82788e;font-size:13px}
+
+/* Beautiful pastel category cards */
+.vocabulary-card {
+  background: linear-gradient(135deg, #f8eaf1, #fce5ef);
+}
+
+.grammar-card {
+  background: linear-gradient(135deg, #eaf0fb, #e3e9ff);
+}
+
+.speaking-card {
+  background: linear-gradient(135deg, #fff0e6, #ffe3d6);
+}
+
+.reading-card {
+  background: linear-gradient(135deg, #e5f5ed, #d9f2e9);
+}
+
+/* Category icons */
+.category-icon {
+  font-size: 46px;
+  line-height: 1.2;
+  margin-bottom: 18px;
+  transition: transform 0.25s ease;
+}
+
+.category-card:hover .category-icon {
+  transform: translateY(-4px) rotate(-5deg) scale(1.08);
+}
+
+/* Speaking and Reading page backgrounds */
+.speaking-hero {
+  background: linear-gradient(135deg, #fff0e6, #fff7f0);
+}
+
+.reading-hero {
+  background: linear-gradient(135deg, #e5f5ed, #f2fcf7);
+}
