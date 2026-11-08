@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ALIEN — Describe It or Lose It</title>
+<style>
+:root{--bg:#f4f1ea;--ink:#16161a;--mute:#6a6872;--card:#fff;--grey:#e7e5df;--lime:#c8f31d;--vio:#a99bf5;--vio2:#e8e4fc;--red:#d93a40;--sh:4px 4px 0 var(--ink)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 "Helvetica Neue",Helvetica,Arial,sans-serif;min-height:100vh}
+h1,h2,h3,p{margin:0}
+.mono{font:700 .72rem/1.3 ui-monospace,Menlo,Consolas,monospace;text-transform:uppercase;letter-spacing:.09em;color:var(--mute)}
+.scr{display:none;max-width:1180px;margin:0 auto;padding:18px}.scr.on{display:block}
+button{font:inherit;font-weight:700;border:2px solid var(--ink);background:var(--card);color:var(--ink);border-radius:10px;padding:9px 14px;cursor:pointer;box-shadow:2px 2px 0 var(--ink);transition:transform .08s,box-shadow .08s}
+button:hover:not(:disabled){transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink)}
+button:active:not(:disabled){transform:translate(2px,2px);box-shadow:none}
+button:disabled{opacity:.4;cursor:not-allowed}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--vio);outline-offset:2px}
+button.pri{background:var(--lime)}button.on{background:var(--ink);color:var(--lime)}
+button.big{font-size:1.5rem;padding:16px 30px;box-shadow:var(--sh)}
+button.danger{border-color:var(--red);color:var(--red)}button.danger.on{background:var(--red);color:#fff}
+input,textarea{font:inherit;width:100%;padding:9px 12px;border:2px solid var(--ink);border-radius:10px;background:#fff;color:var(--ink)}
+textarea{resize:vertical;min-height:54px}
+.panel{background:var(--card);border:2px solid var(--ink);border-radius:16px;padding:16px;box-shadow:var(--sh)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.between{justify-content:space-between}
+.seg{display:inline-flex;gap:6px}
+.hero{display:flex;gap:24px;align-items:center;margin:6px 0 20px;flex-wrap:wrap}
+.logo{font-size:clamp(3.4rem,10vw,6.5rem);font-weight:900;letter-spacing:-.06em;line-height:.9}
+.sub{font-size:clamp(1.2rem,3vw,1.9rem);letter-spacing:-.03em;background:var(--lime);display:inline-block;padding:0 8px;margin:6px 0 10px;border:2px solid var(--ink);transform:rotate(-1deg)}
+.lead{max-width:520px;color:var(--mute)}
+.alien svg{width:100%;height:auto;display:block}.alien.lg{width:150px}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin:12px 0 18px}
+.tp{border:2px solid var(--ink);border-radius:14px;padding:12px;border-top-width:10px;display:grid;gap:8px;background:#fcfbf8}
+.top{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:14px}
+.brand{font-weight:900;font-size:1.6rem;letter-spacing:-.05em}
+.score{display:flex;gap:10px;flex-wrap:wrap}
+.chip{display:flex;align-items:center;gap:10px;background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:6px 14px;min-width:160px}
+.chip i{width:14px;height:14px;border-radius:50%;border:2px solid var(--ink);flex:none}
+.chip span{font-weight:800}.chip small{display:block}
+.chip b{font-size:2rem;margin-left:auto;font-variant-numeric:tabular-nums;line-height:1}
+.chip.act{background:var(--lime);box-shadow:var(--sh)}
+.menu{display:flex;gap:6px;flex-wrap:wrap}.menu button{padding:6px 10px;font-size:.85rem}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;align-items:start}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.idle{text-align:center;display:grid;gap:14px;justify-items:center;padding:34px 16px}
+.who{font-size:clamp(2.4rem,7vw,4.4rem);font-weight:900;letter-spacing:-.05em;line-height:1;background:linear-gradient(transparent 62%,var(--c) 62%)}
+.card{display:grid;gap:14px}
+.tmwrap{display:grid;gap:8px}
+.tm{font:800 clamp(3.4rem,9vw,5.6rem)/1 ui-monospace,Menlo,Consolas,monospace;letter-spacing:-.05em}
+.tm.warn{color:var(--red);animation:pl .5s infinite alternate}
+@keyframes pl{to{transform:scale(1.05)}}
+.prog{height:12px;border:2px solid var(--ink);border-radius:8px;overflow:hidden;background:var(--grey)}.prog i{display:block;height:100%;background:var(--ink);transition:width .2s linear}
+.banner{background:var(--ink);color:var(--lime);padding:10px 14px;border-radius:10px;font-weight:800}
+.secret{background:var(--vio2);border:2px solid var(--ink);border-radius:14px;padding:14px;display:grid;gap:8px;justify-items:start}
+.word{font-size:clamp(2.2rem,6vw,3.8rem);font-weight:900;letter-spacing:-.05em;text-transform:uppercase;line-height:1;overflow-wrap:anywhere}
+.hid{filter:blur(14px);user-select:none}
+.forb{display:flex;gap:8px;flex-wrap:wrap}
+.forb span{background:#fde9e9;border:2px solid var(--red);color:#8c1a1f;border-radius:999px;padding:4px 14px;font-weight:800;text-transform:uppercase;text-decoration:line-through}
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.g3 b{color:inherit;opacity:.7}
+.reveal{border:2px dashed var(--ink);border-radius:12px;padding:12px;background:#fffdf0}
+.mas{display:grid;gap:10px;grid-template-columns:100px 1fr;align-items:center}
+.bub{background:var(--lime);border:2px solid var(--ink);border-radius:14px;padding:8px 12px;font-weight:800;min-height:48px;display:flex;align-items:center;animation:pop .25s}
+.bub.dim{background:var(--grey);font-weight:600;color:var(--mute)}
+@keyframes pop{from{transform:scale(.9);opacity:0}}
+.side{display:grid;gap:14px}
+.tkh{width:100%;display:flex;justify-content:space-between;box-shadow:none;background:var(--ink);color:var(--lime)}
+.tabs{display:flex;gap:6px;margin:10px 0}.tabs button{flex:1;padding:6px;font-size:.85rem}
+.ph{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:6px}
+.ph li{background:var(--vio2);border:1.5px solid var(--ink);border-radius:8px;padding:3px 9px;font-size:.88rem}
+.note{font-size:.85rem;margin-top:10px;color:#33323a}
+.rc{border-left:6px solid var(--vio);padding:4px 10px;margin-bottom:8px;font-size:.9rem}.rc b{background:var(--lime);padding:0 6px}
+.log{margin:6px 0 0;padding-left:18px;font-size:.9rem}.dim{color:var(--mute)}
+#modal.on{position:fixed;inset:0;background:#16161acc;display:grid;place-items:center;z-index:9;padding:16px}
+#modal .panel{max-width:440px;display:grid;gap:12px}
+.fin{display:grid;gap:16px;justify-items:center;text-align:center;padding-top:10px}
+.fin .alien{width:170px}
+.rank{display:grid;gap:10px;width:min(560px,100%)}
+.rank .chip{min-width:0}.rank .chip b{font-size:2.6rem}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+
+<section id="setup" class="scr on">
+  <div class="hero"><div class="alien lg" id="heroAlien"></div>
+  <div><div class="mono">English speaking game · A2</div><h1 class="logo">ALIEN</h1><h2 class="sub">Describe it or lose it.</h2>
+  <p class="lead">An alien has landed on Earth and understands nothing. Explain the secret word without saying it. Your team guesses.</p></div></div>
+  <div class="panel">
+    <div class="row between"><div class="mono">Teams</div><div class="seg" role="group" aria-label="Number of teams"><button data-a="tn" data-v="2" id="tn2">2 teams</button><button data-a="tn" data-v="3" id="tn3">3 teams</button></div></div>
+    <div class="tgrid" id="tgrid"></div>
+    <div class="row between"><div class="row"><span class="mono">Timer</span><div class="seg" role="group" aria-label="Timer length"><button data-a="sdur" data-v="30" id="sd30">30s</button><button data-a="sdur" data-v="45" id="sd45">45s</button><button data-a="sdur" data-v="60" id="sd60">60s</button></div></div>
+    <button class="pri big" data-a="start">START GAME</button></div>
+  </div>
+</section>
+
+<section id="game" class="scr">
+  <div class="top"><div class="brand">ALIEN</div><div class="score" id="score"></div>
+  <div class="menu" id="menu"></div></div>
+  <div class="grid"><main id="stage"></main><aside class="side" id="side"></aside></div>
+</section>
+
+<section id="final" class="scr"></section>
+<div id="modal" role="dialog" aria-modal="true"></div>
+
+<script>
+/* ===== Deck: word | forbidden words (empty = normal card) | teacher definition | teacher example ===== */
+const CARDS=`keyboard|computer,type,keys|A set of keys you press to write on a screen.|It's a device that you use to write on a computer.
+charger||Gives power to a device.|It's something that you need when your phone battery is empty.
+password||A secret code that protects your account.|It's something that you must not tell anyone.
+smartwatch||A watch connected to your phone.|It's a device which measures your steps and heart rate.
+wireless headphones|music,ears,cable|Headphones without a cable.|It's a device that you wear to listen to music without a cable.
+receipt||Paper that shows what you bought.|It's a piece of paper that you get after you pay in a shop.
+delivery||Something brought to your door.|It's something that arrives at your door after you order online.
+appointment||A planned time to see a doctor or dentist.|It's something that you make when you want to see the dentist.
+routine||Things you do in the same order each day.|It's something that you do every day in the same order.
+pharmacy|medicine,pills,doctor|A shop for medicine.|It's a place where you can buy medicine.
+underground station|train,ticket,tunnel|Where you get on the metro.|It's a place where you catch a train under the city.
+stadium||A big building for sports events.|It's a place where thousands of people watch a match.
+neighbour||A person who lives near you.|It's someone who lives next door.
+photographer|camera,pictures,job|Someone who takes photos as a job.|It's a person who takes professional photographs.
+mechanic||A person who fixes machines.|It's someone who fixes engines.
+squirrel|tree,nuts,tail|A small animal that climbs trees.|It's an animal whose tail is big and fluffy.
+dolphin||A clever sea mammal.|It's an animal that jumps out of the sea.
+desert||A very dry place.|It's a place where it almost never rains.
+waterfall|river,cliff,mountain|Water falling from a high place.|It's a place where a river drops from a high rock.
+camping||Sleeping outside in a tent.|It's an activity where you sleep in a tent.
+skateboarding||Riding and doing tricks on a board.|It's a sport that you do on a board with wheels.
+surfing|waves,sea,beach|Riding waves on a board.|It's a sport where you stand on a board and ride waves.
+recycling||Using materials again.|It's something that you do when you put bottles in the right bin.
+laboratory|science,experiments,scientist|A room for scientific work.|It's a place where scientists do experiments.
+factory||A building where things are made.|It's a place where machines make products.
+shelter||A place that protects you from bad weather or danger.|It's a place where people stay when it is dangerous outside.
+knitting||Making clothes from wool.|It's a hobby where you make a scarf from wool.
+beehive|bees,honey,wax|A home for bees.|It's a place where bees live and make honey.
+camouflage|hide,colour,animals|Looking like your surroundings.|It's something that helps an animal hide.
+influencer|followers,videos,famous|A person with many online followers.|It's someone who shows products to many followers online.
+inventor|new,machine,idea|A person who creates new things.|It's a person who creates something that did not exist before.
+algorithm||Steps a computer follows to solve a problem.|It's a list of instructions that tells a computer what to do.
+teammate||A member of your team.|It's someone who plays in the same team as you.
+umbrella||Protection from the rain.|It's something that you carry when it is raining.
+suitcase||A bag for trips.|It's a bag that you pack before a holiday.
+lighthouse|sea,ship,light|A tower that guides ships.|It's a tower which shows ships where the coast is.
+scarecrow|farm,birds,field|A figure that frightens birds.|It's a figure that farmers put in fields to frighten birds.
+passport|travel,country,airport|A document for travelling abroad.|It's a document that you show at the border.
+tornado||A spinning column of wind.|It's a storm whose wind spins very fast.
+vending machine|snacks,coins,buttons|A machine that sells snacks.|It's a machine that gives you a snack when you pay.
+lift|floor,button,stairs|A box that carries people up and down.|It's something that takes you to the tenth floor without stairs.
+podcast||An audio show you listen to online.|It's something that you listen to when you want to hear people talk about a topic.
+compass|north,direction,map|Shows you which way is north.|It's a tool that shows you where north is.
+magnet||An object that pulls metal.|It's an object which attracts metal.
+volcano|lava,mountain,smoke|A mountain that can erupt.|It's a mountain from which hot lava comes out.
+referee||A person who controls a game.|It's a person who makes sure players follow the rules.
+souvenir|holiday,gift,remember|An object that reminds you of a trip.|It's something that you buy to remember a trip.
+queue||A line of people waiting.|It's a line of people who are waiting for something.
+tourist||A person who visits a place for fun.|It's someone who visits a city for a holiday.
+earthquake||When the ground moves suddenly.|It's an event that makes buildings shake.
+stopwatch||Measures how long something takes.|It's a device that measures how long a race takes.
+trust|believe,friend,honest|Believing someone will not hurt you.|It's a feeling that you have for a friend who never lies.
+freedom||Being able to do what you want.|It's something that people have when they can choose for themselves.
+responsibility||Something you must look after.|It's something that you have when you must take care of a pet.
+luck|chance,win,good|Good things that happen by chance.|It's something that people hope for before a game.
+competition||An event where people try to win.|It's an event where people try to be the best.
+patience|calm,wait,angry|Staying calm while you wait.|It's something that you need when you wait in a long queue.
+time machine|past,future,travel|A made-up device for travelling in time.|It's a machine that could take you to the past.
+invisibility cloak|see,disappear,magic|A made-up coat that makes you unseen.|It's something that you wear so that nobody can see you.
+teleportation device|move,instantly,beam|A made-up device that moves you at once.|It's a device that takes you to another city in one second.
+robot assistant|help,machine,home|A made-up robot helper.|It's a robot that helps you with housework.
+privacy||Keeping personal things secret.|It's something that you want when you don't want others to read your messages.
+habit||Something you do without thinking.|It's something that you do automatically every day.
+courage||Doing something scary anyway.|It's the quality of a person who does something scary.
+gravity||The force that pulls things down.|It's a force that pulls everything towards the Earth.
+memory||The ability to remember, or a thing you remember.|It's something that you use when you remember your first day at school.`
+.split("\n").map(l=>{const [w,f,d,e]=l.split("|");return {w,f:f?f.split(","):[],d,e}});
+
+/* ===== Toolkit ===== */
+const li=a=>`<ul class="ph">${a.map(x=>`<li>${x}</li>`).join("")}</ul>`;
+const TK={
+A:li(["It's something that...","It's someone who...","It's somewhere where...","It's a kind of...","It's a type of...","It's a device that...","It's a person whose...","It's a place where..."]),
+B:li(["It's used for...","You use it when...","People usually use it to...","It helps people...","You can find it...","It looks like...","It's similar to...","It's different from...","It belongs to...","It is opposite...","It is the opposite of...","It is made of...","It is made from...","It is something you need when..."])+
+`<p class="note"><b>opposite</b> + place = across from it: <i>It's opposite the bank.</i><br><b>the opposite of</b> = the reverse meaning: <i>It's the opposite of freedom.</i></p>
+<p class="note"><b>made of</b> = the material you can still see (a table made of wood). <b>made from</b> = a changed material (paper made from wood).</p>`,
+C:`<div class="rc"><b>WHO</b> for people<br><i>It's someone who helps people when they are ill.</i></div>
+<div class="rc"><b>WHICH</b> for things and animals<br><i>It's a device which measures your heart rate.</i></div>
+<div class="rc"><b>THAT</b> for people, things and animals in many defining clauses<br><i>It's something that keeps your food cold.</i></div>
+<div class="rc"><b>WHERE</b> for places<br><i>It's a place where you can borrow books.</i></div>
+<div class="rc"><b>WHOSE</b> for possession or a relationship: people, animals or things<br><i>It's an animal whose tail is very long.</i></div>
+<p class="note">Say it after the noun. Never say the secret word!</p>`};
+
+/* ===== Alien mascot (original, geometric) ===== */
+function alien(m){
+ const k="#16161a",L="#c8f31d",st=`stroke="${k}" stroke-width="3"`;
+ const eyes={
+  neutral:`<path d="M34 76q20-14 30 8q-18 8-30-8z" fill="${k}"/><path d="M126 76q-20-14-30 8q18 8 30-8z" fill="${k}"/>`,
+  confused:`<path d="M32 74q22-16 34 10q-20 10-34-10z" fill="${k}"/><circle cx="108" cy="84" r="9" fill="${k}"/><path d="M94 60q14-9 28-1" stroke="${k}" stroke-width="4" fill="none" stroke-linecap="round"/>`,
+  impressed:`<path d="M34 80q20-18 30 6q-18 10-30-6z" fill="${k}"/><path d="M126 80q-20-18-30 6q18 10 30-6z" fill="${k}"/><circle cx="52" cy="78" r="3" fill="${L}"/><circle cx="108" cy="78" r="3" fill="${L}"/><path d="M34 58q14-8 28 0M98 58q14-8 28 0" stroke="${k}" stroke-width="4" fill="none" stroke-linecap="round"/>`,
+  shocked:`<circle cx="52" cy="82" r="15" fill="#fff" ${st}/><circle cx="108" cy="82" r="15" fill="#fff" ${st}/><circle cx="52" cy="82" r="4" fill="${k}"/><circle cx="108" cy="82" r="4" fill="${k}"/>`,
+  celebrating:`<path d="M34 86q16-22 32 0M94 86q16-22 32 0" stroke="${k}" stroke-width="6" fill="none" stroke-linecap="round"/>`}[m];
+ const mouth={neutral:`<path d="M68 122h24" stroke="${k}" stroke-width="4" stroke-linecap="round"/>`,
+  confused:`<path d="M62 124q9-9 18 0t18 0" stroke="${k}" stroke-width="4" fill="none" stroke-linecap="round"/>`,
+  impressed:`<path d="M66 118q14 10 28 0" stroke="${k}" stroke-width="4" fill="none" stroke-linecap="round"/>`,
+  shocked:`<ellipse cx="80" cy="126" rx="9" ry="12" fill="${k}"/>`,
+  celebrating:`<path d="M58 112q22 32 44 0z" fill="${k}"/>`}[m];
+ const x=m=="celebrating"?`<rect x="4" y="20" width="10" height="10" fill="${L}" ${st} transform="rotate(20 9 25)"/><rect x="146" y="40" width="10" height="10" fill="#a99bf5" ${st}/><rect x="14" y="120" width="9" height="9" fill="#a99bf5" ${st}/><rect x="138" y="116" width="10" height="10" fill="${L}" ${st}/>`:m=="confused"?`<text x="128" y="40" font-size="34" font-weight="900" fill="${k}" font-family="Helvetica,Arial">?</text>`:"";
+ return `<svg viewBox="0 -12 160 212" role="img" aria-label="Alien mascot, ${m}"><path d="M62 20L50 -2M98 20L110 -2" stroke="${k}" stroke-width="3"/><rect x="43" y="-10" width="13" height="13" fill="${L}" ${st}/><rect x="104" y="-10" width="13" height="13" fill="${L}" ${st}/><path d="M42 152h76l14 48H28z" fill="${k}"/><path d="M80 14C122 14 142 54 138 94C134 130 108 152 80 152C52 152 26 130 22 94C18 54 38 14 80 14Z" fill="#dcd6fa" ${st}/><rect x="68" y="32" width="24" height="8" rx="2" fill="${L}" ${st}/>${eyes}${mouth}${x}</svg>`;
+}
+
+/* ===== State ===== */
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const COL=["#c8f31d","#a99bf5","#ffb199"],DEF=["Alien Energy","No Context","Brain Lag"];
+const S={n:2,dur:60,teams:[],active:0,deck:[],di:0,phase:"setup",cur:null,show:false,rev:false,fl:{c:0,d:0,r:0,v:0},log:[],rem:60,endAt:0,iv:0,sound:false,tk:true,tab:"A",mood:"neutral",bubble:"",modal:null,why:"",lastB:0};
+const SCR=id=>document.querySelectorAll(".scr").forEach(s=>s.classList.toggle("on",s.id==id));
+const fmt=r=>{const s=Math.ceil(r);return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")};
+const logw=t=>S.log.push(t);
+
+/* ===== Reactions (shuffle-bag, no repeats until all used) ===== */
+const R={ok:["That actually makes sense.","Low-key genius.","The explanation is explaining.","I'm not even from this planet and I understood that."],
+ rel:["Okay, that clause was clean.","Grammar level: unlocked.","Relative clause detected. Respect."],
+ time:["My alien brain needs a reboot.","Alien.exe has stopped working.","Okay, Earth is weird. Nice try.","Time's up. We go again."],
+ viol:["Wait. What? That word was forbidden.","Plot twist: forbidden word detected.","No context. Maximum confusion."],
+ skip:["Next card, new chaos.","Bro, explain better. Or skip. Both fine.","Okay, Earth is weird."],
+ win:["Earth makes slightly more sense now.","That was a good mission.","Alien approves. Mostly."]};
+const bag={};
+function react(k,mood,chance){
+ if(Math.random()>(chance==null?1:chance))return;
+ if(!bag[k]||!bag[k].length)bag[k]=shuf(R[k]);
+ S.bubble=bag[k].pop();S.mood=mood;side();
+ clearTimeout(S.bt);S.bt=setTimeout(()=>{S.bubble="";S.mood="neutral";side()},4200);
+}
+let AC=null;
+function beep(f,ms){if(!S.sound)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain();o.frequency.value=f;g.gain.value=.08;o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+ms/1000)}catch(e){}}
+
+/* ===== Setup ===== */
+function buildSetup(){
+ $("heroAlien").innerHTML=alien("neutral");
+ $("tgrid").innerHTML=[0,1,2].map(i=>`<div class="tp" id="tp${i}" style="border-top-color:${COL[i]}"><label class="mono" for="tn${i}">Team ${i+1} name</label><input id="tnm${i}" maxlength="24" value="${DEF[i]}"><label class="mono" for="pl${i}">Players (optional, comma separated)</label><textarea id="pl${i}" placeholder="Anna, Max, Sofia"></textarea></div>`).join("");
+ setupUI();
+}
+function setupUI(){
+ $("tn2").className=S.n==2?"on":"";$("tn3").className=S.n==3?"on":"";
+ [30,45,60].forEach(d=>$("sd"+d).className=S.dur==d?"on":"");
+ $("tp2").style.display=S.n==3?"":"none";
+}
+function startGame(){
+ S.teams=[...Array(S.n).keys()].map(i=>({name:$("tnm"+i).value.trim().slice(0,24)||DEF[i],color:COL[i],score:0,pi:0,
+  players:$("pl"+i).value.split(/[,\n]/).map(x=>x.trim().slice(0,20)).filter(Boolean)}));
+ S.active=0;newDeck();SCR("game");render();
+}
+function newDeck(){clearInterval(S.iv);S.iv=0;S.deck=shuf(CARDS);S.di=0;S.phase="idle";S.cur=null;S.log=[];S.rem=S.dur;S.show=false;S.rev=false}
+
+/* ===== Turn flow ===== */
+function draw(keepLog){
+ if(S.di>=S.deck.length){S.why="The deck is empty: every card has been played!";return finish()}
+ S.cur=S.deck[S.di++];S.fl={c:0,d:0,r:0,v:0};if(!keepLog)S.log=[];
+ S.show=false;S.rev=false;S.rem=S.dur;S.phase="card";S.mood="neutral";S.bubble="";render();
+}
+function startT(){S.endAt=performance.now()+S.rem*1000;S.phase="running";S.lastB=0;clearInterval(S.iv);S.iv=setInterval(tick,200);render()}
+function pauseT(){tick();if(S.phase!="running")return;clearInterval(S.iv);S.iv=0;S.phase="paused";render()}
+function resetT(){clearInterval(S.iv);S.iv=0;S.rem=S.dur;S.phase="card";render()}
+function tick(){
+ if(S.phase!="running")return;
+ S.rem=Math.max(0,(S.endAt-performance.now())/1000);
+ const tm=$("tm"),tb=$("tb");
+ if(tm){tm.textContent=fmt(S.rem);tm.classList.toggle("warn",S.rem<=10)}
+ if(tb)tb.style.width=S.rem/S.dur*100+"%";
+ const sc=Math.ceil(S.rem);if(sc<=3&&sc>0&&sc!=S.lastB){S.lastB=sc;beep(660,90)}
+ if(S.rem<=0)timeUp();
+}
+function timeUp(){clearInterval(S.iv);S.iv=0;S.rem=0;S.phase="timeup";beep(220,450);render();react("time","shocked",1)}
+function award(k){
+ if(!S.cur)return;
+ const t=S.teams[S.active],f=S.fl,N={c:"Correct guess",d:"Description bonus",r:"Relative clause bonus"};
+ if(k=="v"){
+  if(!f.v){["d","r"].forEach(x=>{if(f[x]){f[x]=0;t.score=Math.max(0,t.score-1);logw(N[x]+" removed")}});f.v=1;logw("Forbidden word used: no bonuses this card");render();react("viol","confused",1);return}
+  f.v=0;logw("Violation cleared");
+ }else if(f[k]){f[k]=0;t.score=Math.max(0,t.score-1);logw(N[k]+" removed (−1)")}
+ else{if(f.v&&k!="c")return;f[k]=1;t.score++;logw(N[k]+" (+1)");render();if(k=="c")react("ok","impressed",1);if(k=="r")react("rel","impressed",1);return}
+ render();
+}
+function adj(v){const t=S.teams[S.active];if(!S.cur)return;t.score=Math.max(0,t.score+v);logw("Manual "+(v>0?"+1":"−1"));render()}
+function skip(){
+ if(!S.cur)return;
+ const keep={p:S.phase,r:S.rem,e:S.endAt};logw("Card skipped");
+ if(S.di>=S.deck.length){S.why="The deck is empty: every card has been played!";return finish()}
+ draw(true);
+ if(keep.p=="running"||keep.p=="paused"){S.rem=keep.r;S.phase=keep.p;if(keep.p=="running"){S.endAt=keep.e;clearInterval(S.iv);S.iv=setInterval(tick,200)}render()}
+ react("skip","confused",.35);
+}
+function nextTeam(d){
+ clearInterval(S.iv);S.iv=0;const n=S.teams.length,t=S.teams[S.active];
+ if(d>0)t.pi++;
+ S.active=(S.active+n+d)%n;if(d<0)S.teams[S.active].pi=Math.max(0,S.teams[S.active].pi-1);
+ S.phase="idle";S.cur=null;S.log=[];S.show=false;S.rev=false;S.rem=S.dur;render();
+}
+function restartRound(){
+ if(!S.cur)return;const t=S.teams[S.active];
+ ["c","d","r"].forEach(x=>{if(S.fl[x])t.score=Math.max(0,t.score-1)});
+ S.fl={c:0,d:0,r:0,v:0};S.log=[];logw("Round restarted (card points undone)");resetT();
+}
+function finish(){clearInterval(S.iv);S.iv=0;S.phase="final";S.cur=null;S.mood="celebrating";finalUI();SCR("final")}
+function replay(reset){
+ if(reset){S.teams.forEach(t=>{t.score=0;t.pi=0});S.active=0}
+ newDeck();S.mood="neutral";S.bubble="";SCR("game");render();
+}
+function toSetup(){clearInterval(S.iv);S.iv=0;S.phase="setup";S.mood="neutral";SCR("setup");setupUI()}
+
+/* ===== Rendering ===== */
+function render(){scoreUI();stage();side();modal()}
+function scoreUI(){
+ $("score").innerHTML=S.teams.map((t,i)=>`<div class="chip${i==S.active?" act":""}"><i style="background:${t.color}"></i><span>${esc(t.name)}<small class="mono">${i==S.active?"Now playing":"Waiting"}</small></span><b aria-label="score">${t.score}</b></div>`).join("");
+ const ph=S.phase;
+ $("menu").innerHTML=`<button data-a="prev" ${ph=="idle"||S.cur?"":"disabled"}>← Previous team</button><button data-a="restart" ${S.cur?"":"disabled"}>Restart round</button><button data-a="snd" aria-pressed="${S.sound}">Sound: ${S.sound?"on":"off"}</button><button data-a="fin">Finish game</button><button data-a="rst">Reset</button>`;
+}
+function stage(){
+ const t=S.teams[S.active],c=S.cur,ph=S.phase;
+ const who=t.players.length?t.players[t.pi%t.players.length]:"";
+ if(!c){
+  $("stage").innerHTML=`<div class="panel idle"><div class="mono">Who's up?</div><h2 class="who" style="--c:${t.color}">${esc(t.name)}</h2>${who?`<div class="mono">Describer: ${esc(who)}</div>`:""}
+  <div class="seg" role="group" aria-label="Timer length">${[30,45,60].map(d=>`<button class="${S.dur==d?"on":""}" data-a="dur" data-v="${d}">${d}s</button>`).join("")}</div>
+  <button class="pri big" data-a="draw">DRAW A CARD</button><div class="mono">${S.deck.length-S.di} cards left in the deck</div></div>`;return}
+ const f=S.fl,pre=ph=="card",run=ph=="running",tu=ph=="timeup",hid=S.show?"":" hid";
+ $("stage").innerHTML=`<div class="panel card">
+  <div class="row between"><div class="mono">${esc(t.name)}${who?" · "+esc(who):""}</div>
+   <div class="seg" role="group" aria-label="Timer length">${[30,45,60].map(d=>`<button class="${S.dur==d?"on":""}" data-a="dur" data-v="${d}" ${pre?"":"disabled"}>${d}s</button>`).join("")}</div></div>
+  <div class="tmwrap"><div id="tm" class="tm${(run&&S.rem<=10)||tu?" warn":""}" role="timer">${fmt(S.rem)}</div><div class="prog"><i id="tb" style="width:${S.rem/S.dur*100}%"></i></div>
+   <div class="row"><button class="pri" data-a="go" ${tu?"disabled":""}>${run?"Pause":ph=="paused"?"Resume":"Start timer"}</button><button data-a="treset">Reset timer</button></div></div>
+  ${tu?`<div class="banner">TIME'S UP. Your call: reveal, award a just-in-time guess, skip, or move on.</div>`:""}
+  <div class="secret"><div class="mono">Secret word</div><div class="word${hid}">${esc(c.w)}</div><button data-a="word">${S.show?"Hide word":"Show word"}</button></div>
+  ${c.f.length?`<div><div class="mono">Forbidden: do not say these</div><div class="forb${hid}">${c.f.map(x=>`<span>${esc(x)}</span>`).join("")}</div></div>`:`<div class="mono">No forbidden words on this card</div>`}
+  <div class="g3">
+   <button class="${f.c?"on":""}" data-a="c" aria-pressed="${!!f.c}">✔ Correct guess <b>+1</b></button>
+   <button class="${f.d?"on":""}" data-a="d" aria-pressed="${!!f.d}" ${f.v?"disabled":""}>Description bonus <b>+1</b></button>
+   <button class="${f.r?"on":""}" data-a="r" aria-pressed="${!!f.r}" ${f.v?"disabled":""}>Relative clause <b>+1</b></button>
+   ${c.f.length?`<button class="danger${f.v?" on":""}" data-a="v" aria-pressed="${!!f.v}">Forbidden word used</button>`:""}
+   <button data-a="adj" data-v="-1">−1 point</button><button data-a="adj" data-v="1">+1 point</button></div>
+  ${S.rev?`<div class="reveal"><div class="mono">Teacher only</div><b style="font-size:1.3rem;text-transform:uppercase">${esc(c.w)}</b><p>${esc(c.d)}</p><p class="dim">Example: ${esc(c.e)}</p></div>`:""}
+  <div class="row"><button data-a="rev">${S.rev?"Hide answer":"Reveal answer"}</button><button data-a="skip">Skip card</button><button class="pri" data-a="next" style="margin-left:auto">End turn → next team</button></div></div>`;
+}
+function side(){
+ $("side").innerHTML=`<div class="panel mas"><div class="alien">${alien(S.mood)}</div><div class="bub${S.bubble?"":" dim"}" aria-live="polite">${S.bubble?esc(S.bubble):"The alien is watching. Deadpan."}</div></div>
+ <div class="panel"><button class="tkh" data-a="tk" aria-expanded="${S.tk}">Description Toolkit <span>${S.tk?"−":"+"}</span></button>
+ ${S.tk?`<div class="tabs" role="group" aria-label="Toolkit sections">${[["A","Start"],["B","Explain"],["C","Who / which"]].map(x=>`<button class="${S.tab==x[0]?"on":""}" data-a="tab" data-v="${x[0]}">${x[1]}</button>`).join("")}</div><div>${TK[S.tab]}</div>`:""}</div>
+ <div class="panel"><div class="mono">This round</div><ul class="log">${S.log.length?S.log.map(x=>`<li>${esc(x)}</li>`).join(""):`<li class="dim">Nothing scored yet</li>`}</ul></div>`;
+}
+function modal(){
+ const m=$("modal"),x=S.modal;
+ if(!x){m.className="";m.innerHTML="";return}
+ const T={reset:["Reset the session?","All scores and teams will be cleared.",`<button data-a="mc">Cancel</button><button class="danger on" data-a="mreset">Yes, reset</button>`],
+  finish:["Finish the game?","Show the final scoreboard now.",`<button data-a="mc">Keep playing</button><button class="pri" data-a="mfin">Finish</button>`],
+  replay:["Replay with the same teams?","Shuffle a new deck. Keep the current scores or start from zero?",`<button data-a="mc">Cancel</button><button class="pri" data-a="keep">Keep scores</button><button class="danger on" data-a="fresh">Reset scores</button>`]}[x];
+ m.className="on";m.innerHTML=`<div class="panel"><h2>${T[0]}</h2><p>${T[1]}</p><div class="row">${T[2]}</div></div>`;
+ const b=m.querySelector("button");if(b)b.focus();
+}
+function finalUI(){
+ const sc=S.teams.map(t=>t.score),mx=Math.max(...sc),w=S.teams.filter(t=>t.score==mx);
+ const head=mx==0?"No points yet. Everyone is still in the game.":w.length>1?`It's a tie: ${w.map(t=>esc(t.name)).join(" & ")}`:`${esc(w[0].name)} wins!`;
+ $("final").innerHTML=`<div class="fin"><div class="alien">${alien(mx>0?"celebrating":"neutral")}</div><div class="mono">${esc(S.why||"Final scoreboard")}</div><h1 class="logo" style="font-size:clamp(2rem,7vw,4rem)">${head}</h1>
+ <div class="rank">${S.teams.slice().sort((a,b)=>b.score-a.score).map(t=>`<div class="chip${t.score==mx&&mx>0?" act":""}"><i style="background:${t.color}"></i><span>${esc(t.name)}</span><b>${t.score}</b></div>`).join("")}</div>
+ <div class="bub">${bagPick("win")}</div>
+ <div class="row"><button class="pri big" data-a="rpl">REPLAY</button><button data-a="rst">Reset</button></div></div>`;
+ S.why="";
+}
+function bagPick(k){if(!bag[k]||!bag[k].length)bag[k]=shuf(R[k]);return esc(bag[k].pop())}
+
+/* ===== Events ===== */
+document.addEventListener("click",e=>{
+ const b=e.target.closest("[data-a]");if(!b||b.disabled)return;
+ const a=b.dataset.a,v=b.dataset.v;
+ switch(a){
+  case"tn":S.n=+v;setupUI();break;
+  case"sdur":S.dur=+v;S.rem=S.dur;setupUI();break;
+  case"start":startGame();break;
+  case"dur":if(S.phase=="idle"||S.phase=="card"){S.dur=+v;S.rem=S.dur;render()}break;
+  case"draw":if(S.phase=="idle")draw();break;
+  case"go":if(S.phase=="card"||S.phase=="paused")startT();else if(S.phase=="running")pauseT();break;
+  case"treset":resetT();break;
+  case"word":S.show=!S.show;render();break;
+  case"c":case"d":case"r":case"v":award(a);break;
+  case"adj":adj(+v);break;
+  case"rev":S.rev=!S.rev;if(S.rev)S.show=true;render();break;
+  case"skip":skip();break;
+  case"next":nextTeam(1);break;
+  case"prev":nextTeam(-1);break;
+  case"restart":restartRound();break;
+  case"snd":S.sound=!S.sound;render();break;
+  case"tk":S.tk=!S.tk;side();break;
+  case"tab":S.tab=v;side();break;
+  case"fin":S.modal="finish";modal();break;
+  case"rst":S.modal="reset";modal();break;
+  case"rpl":S.modal="replay";modal();break;
+  case"mc":S.modal=null;modal();break;
+  case"mfin":S.modal=null;modal();finish();break;
+  case"mreset":S.modal=null;modal();SCR("setup");toSetup();break;
+  case"keep":S.modal=null;replay(false);break;
+  case"fresh":S.modal=null;replay(true);break;
+ }
+});
+document.addEventListener("keydown",e=>{if(e.key=="Escape"&&S.modal){S.modal=null;modal()}});
+buildSetup();
+</script></body></html>

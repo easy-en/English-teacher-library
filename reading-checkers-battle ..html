@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>READING CHECKERS BATTLE</title>
+<style>
+:root{--bg:#0b101b;--pn:#131a2a;--pn2:#1a2338;--ln:#2a3552;--ink:#e9edf5;--mu:#8b97b0;--gold:#c9a55a;--teal:#3fb8af;--red:#d9696b;--bs:min(calc(100vh - 78px),calc(100vw - 460px))}
+.ctl{gap:6px}.ctl button{padding:6px 9px;font-size:.8rem}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(1200px 600px at 50% -10%,#1a2a4a,transparent),var(--bg);color:var(--ink);font:15px/1.4 "Segoe UI",system-ui,-apple-system,Helvetica,Arial,sans-serif}
+button{font:inherit;font-weight:600;color:var(--ink);background:var(--pn2);border:1px solid var(--ln);border-radius:8px;padding:8px 14px;cursor:pointer;transition:background .15s,border-color .15s}
+button:hover:not(:disabled){border-color:var(--gold)}button:disabled{opacity:.4;cursor:not-allowed}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+button.pri{background:var(--teal);color:#06201e;border-color:var(--teal)}button.gold{background:var(--gold);color:#241b08;border-color:var(--gold)}
+input[type=text],textarea{width:100%;background:#0e1524;color:var(--ink);border:1px solid var(--ln);border-radius:8px;padding:8px 10px;font:inherit}
+.top{display:flex;align-items:center;gap:12px;padding:8px 16px;border-bottom:1px solid var(--ln);flex-wrap:wrap;justify-content:space-between}
+.top h1{margin:0;font-size:.85rem;letter-spacing:.12em;color:var(--gold);font-weight:700}
+#clock{font:700 2.1rem/1 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.04em;padding:4px 18px;border:1px solid var(--ln);border-radius:10px;background:var(--pn)}
+#clock.warn{color:var(--red);border-color:var(--red)}
+.ctl{display:flex;gap:8px;flex-wrap:wrap}
+#turn{display:flex;align-items:center;gap:8px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:.85rem}
+.dot{display:inline-block;width:14px;height:14px;border-radius:50%;border:2px solid #888}.dot.w{background:#f1e8d2}.dot.b{background:#23232b;border-color:#777}
+.app{display:grid;grid-template-columns:200px 1fr 200px;gap:14px;padding:6px 14px;margin:0 auto;align-items:center;min-height:calc(100vh - 62px)}
+.mid{display:grid;gap:14px;justify-items:center}
+.pn{background:var(--pn);border:1px solid var(--ln);border-radius:14px;padding:12px;display:grid;gap:7px}
+.pn.act{border-color:var(--teal);box-shadow:0 0 0 1px var(--teal),0 0 24px #3fb8af30}
+.pt{display:flex;align-items:center;gap:8px}.pt b{font-size:1.05rem;overflow-wrap:anywhere}.pt small{margin-left:auto;color:var(--mu);letter-spacing:.1em}
+.tot{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--ln);border-bottom:1px solid var(--ln);padding:6px 0}
+.tot b{font-size:2.4rem;color:var(--gold);line-height:1}.tot span{color:var(--mu);font-size:.75rem;letter-spacing:.12em}
+.kv{display:flex;justify-content:space-between;color:var(--mu);font-size:.9rem}.kv b{color:var(--ink)}
+.cp{min-height:60px;display:flex;flex-wrap:wrap;gap:2px;background:linear-gradient(#a79b84,#968a73);border:1px solid #5d5240;border-radius:10px;padding:6px;align-content:flex-start}
+.mini{width:30px;height:30px;display:block}.mini svg{width:100%;height:100%}.mini.new{animation:ap .5s}
+@keyframes ap{from{transform:scale(2.2) translateY(-14px);opacity:0}}
+#board{position:relative;width:var(--bs);height:var(--bs);min-width:300px;min-height:300px;border:10px solid #33261a;border-radius:6px;box-shadow:0 18px 50px #000a,inset 0 0 0 1px #0006;touch-action:none;user-select:none}
+#sqs{position:absolute;inset:0;display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr)}
+.sq{position:relative}.sq.l{background:linear-gradient(135deg,#ecd9b0,#e3cd9f)}.sq.d{background:linear-gradient(135deg,#a97a50,#98693f)}
+.sq.lm::before{content:"";position:absolute;inset:0;background:#d9b84a66}
+.sq.sel::before{content:"";position:absolute;inset:0;background:#3fb8af88}
+.sq.chk::before{content:"";position:absolute;inset:0;background:radial-gradient(circle,#e0545a99,transparent 70%)}
+.sq.lg::after{content:"";position:absolute;left:36%;top:36%;width:28%;height:28%;border-radius:50%;background:#1d4d4acc}
+.sq.lc::after{content:"";position:absolute;inset:4%;border-radius:50%;border:5px solid #c4443ecc}
+.co{position:absolute;font:700 .62rem/1 Arial;font-style:normal;opacity:.7;color:#4a3320}.sq.d .co{color:#f0dcb4}.co.r{left:3px;top:3px}.co.f{right:3px;bottom:3px}
+#pcs{position:absolute;inset:0;pointer-events:none}
+.pc{position:absolute;width:12.5%;height:12.5%;display:grid;place-items:center;transition:left .28s ease,top .28s ease,opacity .38s,transform .38s}
+.pc svg{width:90%;height:90%;filter:drop-shadow(0 2px 2px #0007)}
+.pc.cap{opacity:0;transform:scale(.3)}.pc.drag{transition:none;z-index:9;cursor:grabbing}.pc.drag svg{filter:drop-shadow(0 8px 6px #0008)}
+.pw path,.pw circle{fill:url(#gW);stroke:#2b2118;stroke-width:1.5;stroke-linejoin:round}.pb path,.pb circle{fill:url(#gB);stroke:#0a0a0f;stroke-width:1.5;stroke-linejoin:round}
+.pw .e{fill:#2b2118;stroke:none}.pb .e{fill:#d7d7e4;stroke:none}.pw .ln{fill:none;stroke:#2b2118;stroke-width:1.6}.pb .ln{fill:none;stroke:#cfcfdc;stroke-width:1.6}
+#promo{display:none;position:absolute;inset:0;background:#000a;place-items:center;z-index:12}#promo.on{display:grid}
+#promo div{display:flex;gap:10px;background:var(--pn);padding:12px;border-radius:12px;border:1px solid var(--gold)}#promo button{width:70px;height:70px;padding:4px;background:#ddd0b0}#promo svg{width:100%;height:100%}
+#read{position:absolute;left:3%;right:3%;top:50%;transform:translateY(-50%);z-index:15;background:rgba(9,13,24,.94);border:2px solid var(--gold);border-radius:18px;padding:calc(var(--bs)/36) calc(var(--bs)/32);display:grid;gap:calc(var(--bs)/70);text-align:center;box-shadow:0 24px 70px #000d;touch-action:manipulation}
+#read.off{display:none}
+#read .msg{font-size:clamp(.9rem,calc(var(--bs)/38),1.3rem);min-height:1.2em}#read .msg.big{font-size:clamp(1.1rem,calc(var(--bs)/26),2rem);color:var(--ink)}
+#read .row{gap:calc(var(--bs)/90)}#read .row button{font-size:clamp(.85rem,calc(var(--bs)/36),1.3rem);padding:calc(var(--bs)/100) calc(var(--bs)/48)}
+#read .row button.pri{font-size:clamp(1rem,calc(var(--bs)/27),1.8rem);padding:calc(var(--bs)/70) calc(var(--bs)/34)}
+#toast{position:absolute;left:50%;bottom:2.5%;transform:translateX(-50%);z-index:14;background:#0b101bee;border:1px solid var(--teal);color:var(--ink);padding:6px 16px;border-radius:999px;font-weight:700;font-size:clamp(.85rem,calc(var(--bs)/38),1.2rem);opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
+#toast.on{opacity:1}#toast.err{border-color:var(--red)}
+.lab{font-size:clamp(.7rem,calc(var(--bs)/50),1rem);letter-spacing:.18em;color:var(--teal);font-weight:700;min-height:1em}
+.sent{font:600 clamp(1.6rem,calc(var(--bs)/11),4.2rem)/1.1 Georgia,"Times New Roman",serif;letter-spacing:.01em}
+.sent mark{background:none;color:var(--gold);border-bottom:3px solid var(--gold)}
+.msg{color:var(--mu);min-height:1.4em}.msg.big{font-size:1.15rem;color:var(--ink)}.msg.err{color:var(--red)}.msg.ok{color:var(--teal)}
+.row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.ov{position:fixed;inset:0;background:#05080fdd;display:none;place-items:center;z-index:30;padding:14px;overflow:auto}.ov.on{display:grid}
+.card{background:var(--pn);border:1px solid var(--gold);border-radius:16px;padding:22px;width:min(560px,100%);display:grid;gap:12px;max-height:94vh;overflow:auto}
+.card h2{margin:0;letter-spacing:.14em;color:var(--gold);font-size:1.1rem}
+.seg{display:flex;gap:6px;flex-wrap:wrap}.seg button.on{background:var(--teal);color:#06201e;border-color:var(--teal)}
+.res{display:grid;grid-template-columns:1fr 1fr;gap:12px}.res .pn{text-align:center}
+.win{text-align:center;font:700 1.6rem/1.2 Georgia,serif;color:var(--gold);animation:ap .8s}
+.leg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center}.leg svg{width:64px;height:64px}
+.gl{position:absolute;width:0;height:0}
+.pw .rim{fill:#a8976c}.pb .rim{fill:#050508}.pw .rg{fill:none;stroke:#b7a67c;stroke-width:1.6}.pb .rg{fill:none;stroke:#62627a;stroke-width:1.6}
+.pw .cr,.pb .cr{fill:#d9b34f;stroke:#4a3a12;stroke-width:1.2}
+.sq.must{outline:3px solid #d9696baa;outline-offset:-3px}
+@media(max-width:1000px){:root{--bs:min(96vw,calc(100vh - 230px))}.app{grid-template-columns:1fr 1fr;align-items:start}.mid{grid-column:1/-1;order:3}.pn .cp{min-height:36px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style></head><body>
+<svg class="gl" aria-hidden="true"><defs>
+<linearGradient id="gW" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fffaf0"/><stop offset="1" stop-color="#d9cdb0"/></linearGradient>
+<linearGradient id="gB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4a4a58"/><stop offset="1" stop-color="#17171e"/></linearGradient></defs></svg>
+
+<header class="top"><h1>READING CHECKERS BATTLE</h1><div id="turn"></div><div id="clock" role="timer">3:00</div>
+<div class="ctl"><button class="pri" id="bGo" data-a="go">Start</button><button data-a="restart">Restart</button><button data-a="end">End game</button><button data-a="hl" id="bHl">Highlight: ON</button><button data-a="snd" id="bSnd">Sound: on</button><button data-a="info">Guide</button><button data-a="set">Settings</button><button data-a="pass" id="bPass" style="display:none">Pass turn</button></div></header>
+<main class="app"><aside id="p1"></aside>
+<section class="mid"><div id="board"><div id="sqs"></div><div id="pcs"></div><div id="promo"></div><div id="read"></div><div id="toast"></div></div></section>
+<aside id="p2"></aside></main>
+<div class="ov" id="ov"></div>
+
+<script>
+/* ================= DRAUGHTS ENGINE (Russian draughts / shashki) =================
+ Dark squares only. Men move 1 step diagonally forward. Capture is compulsory, men capture forward AND backward,
+ a man that reaches the far row during a capture becomes a King and keeps capturing. Kings move and capture along the whole diagonal.
+ Captured pieces are removed after the whole move (a piece cannot be jumped twice). */
+const D4=[[-1,-1],[-1,1],[1,-1],[1,1]],inb=(r,f)=>r>=0&&r<8&&f>=0&&f<8,FILES="abcdefgh",sqn=i=>FILES[i&7]+(8-(i>>3));
+function initState(){const b=Array(64).fill(null);for(let r=0;r<8;r++)for(let f=0;f<8;f++)if((r+f)%2){if(r<3)b[r*8+f]="bM";else if(r>4)b[r*8+f]="wM"}return {b,t:"w"}}
+function seqs(b,pos,color,king,taken,path,caps,out){
+ const r=pos>>3,f=pos&7,en=color=="w"?"b":"w";let any=false;
+ for(const[dr,df]of D4){
+  if(!king){
+   const r2=r+2*dr,f2=f+2*df;if(!inb(r2,f2))continue;const m=(r+dr)*8+f+df,l=r2*8+f2;
+   if(b[m]&&b[m][0]==en&&!taken.has(m)&&!b[l]){any=true;const nk=color=="w"?r2==0:r2==7;taken.add(m);seqs(b,l,color,nk,taken,path.concat(l),caps.concat(m),out);taken.delete(m)}
+  }else{
+   let rr=r+dr,ff=f+df;while(inb(rr,ff)&&!b[rr*8+ff]){rr+=dr;ff+=df}
+   if(!inb(rr,ff))continue;const m=rr*8+ff;if(b[m][0]!=en||taken.has(m))continue;
+   const lands=[];let lr=rr+dr,lf=ff+df;while(inb(lr,lf)&&!b[lr*8+lf]){lands.push(lr*8+lf);lr+=dr;lf+=df}
+   if(!lands.length)continue;any=true;taken.add(m);
+   const cont=lands.filter(l=>{const t=[];seqs(b,l,color,true,taken,[],[],t);return t.length>0});
+   for(const l of(cont.length?cont:lands))seqs(b,l,color,true,taken,path.concat(l),caps.concat(m),out);
+   taken.delete(m)}}
+ if(!any&&caps.length)out.push({path,caps,king})}
+function moves(s){
+ const t=s.t,b=s.b,out=[];
+ for(let i=0;i<64;i++){const p=b[i];if(!p||p[0]!=t)continue;const b2=b.slice();b2[i]=null;const tmp=[];
+  seqs(b2,i,t,p[1]=="K",new Set(),[],[],tmp);tmp.forEach(q=>out.push({from:i,path:q.path,caps:q.caps,to:q.path[q.path.length-1],king:q.king}))}
+ if(out.length)return out;
+ for(let i=0;i<64;i++){const p=b[i];if(!p||p[0]!=t)continue;const r=i>>3,f=i&7,k=p[1]=="K";
+  for(const[dr,df]of D4){if(!k&&dr!=(t=="w"?-1:1))continue;let rr=r+dr,ff=f+df;
+   while(inb(rr,ff)&&!b[rr*8+ff]){const to=rr*8+ff;out.push({from:i,path:[to],caps:[],to,king:k||(t=="w"?rr==0:rr==7)});if(!k)break;rr+=dr;ff+=df}}}
+ return out}
+function apply(s,mv){const b=s.b.slice(),t=s.t;b[mv.from]=null;mv.caps.forEach(c=>b[c]=null);b[mv.to]=t+(mv.king?"K":"M");return {b,t:t=="w"?"b":"w"}}
+function perft(s,d){if(!d)return 1;const L=moves(s);if(d==1)return L.length;let n=0;for(const m of L)n+=perft(apply(s,m),d-1);return n}
+
+/* ================= READING BANK (edit here or in Settings) =================
+ format:  sentence | pattern pattern      patterns: ape ane ame ake ave ate ite ipe ine ime ive ike ide one oke ose ole u ai ay ee */
+const DEFAULT_BANK=`A big ape.|ape
+Draw a cape.|ape
+The ape ate grapes.|ape ate
+Tape the shape.|ape
+A red cape.|ape
+The plane is late.|ane ate
+Jane has a plane.|ane
+The lane is long.|ane
+A tall crane.|ane
+The game is fun.|ame
+Name the game.|ame
+Play the same game.|ame
+A flame is hot.|ame
+My name is Jane.|ame ane
+A big frame.|ame
+Jake can bake.|ake
+Make a cake.|ake
+A big snake.|ake
+Take the cake.|ake
+Dave is brave.|ave
+We can save it.|ave
+A cave by the lake.|ave ake
+Wave and shake.|ave ake
+Dave gave a wave.|ave
+Bake a big cake.|ake
+The lake is wide.|ake ide
+Wake up, Jake.|ake
+A dark cave.|ave
+Kate is late.|ate
+We ate cake.|ate ake
+Wait for Kate.|ate ai
+Skate with Kate.|ate
+Open the gate.|ate
+A plate of cake.|ate ake
+Kate ate a date.|ate
+We skate on the lake.|ate ake
+The gate is open.|ate
+The kite is fine.|ite ine
+Shine a light.|ine
+A white kite.|ite
+A ripe plum.|ipe
+Wipe the line.|ipe ine
+A long pipe.|ipe
+Nine kites.|ine ite
+The line is fine.|ine
+Wipe the pipe.|ipe
+Bite the ripe plum.|ite ipe
+The sun will shine.|ine
+A kite in the sky.|ite
+Time to dive.|ime ive
+Five white mice.|ive ite
+It is time.|ime
+Dive in the lake.|ive ake
+Green slime.|ime
+A lime tree.|ime
+Five big hives.|ive
+Drive the bus.|ive
+Time for lunch.|ime
+We dive and swim.|ive
+Mike can hide.|ike ide
+Ride the bike.|ide ike
+I like this ride.|ike ide
+A wide slide.|ide
+We hike and ride.|ike ide
+Mike has a bike.|ike
+Slide with Mike.|ide ike
+The sea is wide.|ide
+I like my bike.|ike
+A long bike ride.|ike ide
+Hide and seek.|ide ee
+The stone broke.|one oke
+I spoke to Joe.|oke
+A phone rang.|one
+A big bone.|one
+The dog has a bone.|one
+The smoke is grey.|oke
+Tell a joke.|oke
+A big cone.|one
+Joe woke up.|oke
+Pick up a stone.|one
+Joe is alone.|one
+Close the door.|ose
+The hole is big.|ole
+A mole can dig.|ole
+A red rose.|ose
+Rose has a red nose.|ose
+A long pole.|ole
+Use the hose.|u ose
+A hole in my sock.|ole
+A mole in a hole.|ole
+Those roses are red.|ose
+Close the box.|ose
+June has a blue hat.|u
+Use the huge cube.|u
+A new blue tube.|u
+A cute mule.|u
+Play a flute.|ay u
+A big blue cube.|u
+Use blue glue.|u
+A few new pens.|u
+June is cute.|u
+Sing a tune.|u
+The mule is huge.|u
+A new rule.|u
+The train is late.|ai ate
+A snail in the rain.|ai
+Wait for the train.|ai
+Paint a tail.|ai
+A sail on the lake.|ai ake
+Get the mail.|ai
+The rain is wet.|ai
+Hit the nail.|ai
+A slow snail.|ai
+Wait here, Jane.|ai ane
+A pail of paint.|ai
+Play all day.|ay
+Stay and play.|ay
+We may stay.|ay
+Say hi to May.|ay
+The hay is gray.|ay
+Pay for the tray.|ay
+A sunny day.|ay
+Play with clay.|ay
+Go away, Ray.|ay
+Jay can play.|ay
+A tray of cake.|ay ake
+Stay and wait.|ay ai
+I see three bees.|ee
+Feed the sheep.|ee
+Three sheep sleep.|ee
+A green tree.|ee
+Plant a seed.|ee
+Keep the cheese.|ee
+Meet me at three.|ee
+The bee is free.|ee
+Feet on the street.|ee
+A sheep can sleep.|ee
+The sheep eat cheese.|ee`;
+const PAT={};["ape","ane","ame","ake","ave","ate","ite","ipe","ine","ime","ive","ike","ide","one","oke","ose","ole"].forEach(p=>PAT[p]={src:p+"(?=s?\\b)",lab:"-"+p.toUpperCase()});
+PAT.u={src:"(?:u[^aeiouy\\W]e|ue|ew)(?=s?\\b)",lab:"LONG U"};PAT.ai={src:"ai",lab:"AI"};PAT.ay={src:"ay",lab:"AY"};PAT.ee={src:"ee",lab:"EE"};
+const rx=p=>new RegExp(PAT[p].src,"gi");
+function parseBank(txt){const out=[];let bad=0;
+ txt.split("\n").forEach(l=>{l=l.trim();if(!l)return;const [t,tg]=l.split("|");
+  const tags=(tg||"").split(/[\s,]+/).filter(x=>PAT[x]&&rx(x).test(t||""));
+  if(t&&t.trim()&&tags.length)out.push({t:t.trim(),tags});else bad++});
+ return {out,bad}}
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function hl(text,tags){
+ return text.split(/(\b\w+\b)/).map(tok=>{
+  if(!/^\w+$/.test(tok))return esc(tok);
+  const R=[];tags.forEach(g=>{for(const m of tok.matchAll(rx(g)))R.push([m.index,m.index+m[0].length])});
+  if(!R.length)return esc(tok);R.sort((a,b)=>a[0]-b[0]);
+  let h="",p=0;for(const[a,b]of R){if(a<p)continue;h+=esc(tok.slice(p,a))+"<mark>"+esc(tok.slice(a,b))+"</mark>";p=b}
+  return h+esc(tok.slice(p))}).join("")}
+
+/* ================= PIECE ART (original SVG discs) ================= */
+const DISC='<circle class="rim" cx="22.5" cy="25.5" r="18.5"/><circle cx="22.5" cy="22.5" r="18.5"/><circle class="rg" cx="22.5" cy="22.5" r="12.5"/>';
+const CROWN='<path class="cr" d="M14.5 27.5l1.8-10 4.7 4.8 1.5-7.5 1.5 7.5 4.7-4.8 1.8 10z"/>';
+const pcSvg=c=>`<svg viewBox="0 0 45 45" class="${c[0]=="w"?"pw":"pb"}" aria-hidden="true">${DISC}${c[1]=="K"?CROWN:""}</svg>`;
+
+/* ================= GAME STATE ================= */
+const $=id=>document.getElementById(id);
+const reduce=typeof matchMedia!="undefined"&&matchMedia("(prefers-reduced-motion:reduce)").matches;
+let BANK=parseBank(DEFAULT_BANK).out,PE={};
+const G={mode:"pvp",n:["PLAYER 1","PLAYER 2"],dur:180,bonus:true,hl:true,snd:true,phase:"idle",paused:false,rem:180,endAt:0,s:null,sel:null,targets:[],last:null,anim:false,pend:false,card:null,deck:[],di:0,P:null,msg:["",""],fresh:false,tm:null};
+const teacher=()=>G.mode=="tvs"&&G.s.t=="b";
+const running=()=>G.phase!="idle"&&G.phase!="ended"&&!G.paused;
+const canMove=()=>running()&&G.phase=="move"&&!G.anim;
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+
+/* sound (Web Audio, no files) */
+let AC=null;
+function tone(f,d,ty,g,w){if(!G.snd)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),v=AC.createGain(),t=AC.currentTime+(w||0);o.type=ty||"sine";o.frequency.value=f;v.gain.setValueAtTime(g||.06,t);v.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(v);v.connect(AC.destination);o.start(t);o.stop(t+d)}catch(e){}}
+const SND={move:()=>tone(330,.09,"triangle",.07),cap:()=>{tone(170,.16,"square",.04);tone(110,.22,"triangle",.07,.04)},ok:()=>{tone(523,.1);tone(784,.18,"sine",.06,.1)},end:()=>{tone(392,.25);tone(294,.45,"sine",.06,.25)}};
+
+/* ================= RESET / BUILD ================= */
+function resetGame(){
+ clearTimeout(G.tm);G.s=initState();G.phase="idle";G.paused=false;G.rem=G.dur;G.sel=null;G.targets=[];G.last=null;G.anim=false;G.pend=false;G.fresh=false;
+ G.P={w:{rp:0,cb:0,reads:0,caps:[]},b:{rp:0,cb:0,reads:0,caps:[]}};G.deck=shuf(BANK.map((_,i)=>i));G.di=0;G.card=null;G.msg="";
+ buildBoard();$("promo").className="";render()}
+function buildBoard(){
+ let h="";for(let i=0;i<64;i++){const r=i>>3,f=i&7;h+=`<div class="sq ${(r+f)%2?"d":"l"}">${f==0?`<i class="co r">${8-r}</i>`:""}${r==7?`<i class="co f">${FILES[f]}</i>`:""}</div>`}
+ $("sqs").innerHTML=h;$("pcs").innerHTML="";PE={};G.s.b.forEach((p,i)=>{if(p)mkPiece(i,p)})}
+const pos=(e,i)=>{e.style.left=(i&7)*12.5+"%";e.style.top=(i>>3)*12.5+"%"};
+function mkPiece(i,p){const e=document.createElement("div");e.className="pc";e.innerHTML=pcSvg(p);pos(e,i);$("pcs").appendChild(e);PE[i]=e}
+function paint(){
+ const q=$("sqs").children,mu=new Set(G.phase=="move"&&G.sel==null&&!G.anim?moves(G.s).filter(m=>m.caps.length).map(m=>m.from):[]);
+ for(let i=0;i<64;i++){const c=q[i].classList;c.toggle("lm",!!G.last&&(G.last.from==i||G.last.to==i));c.toggle("sel",G.sel===i);c.toggle("lg",false);c.toggle("lc",false);c.toggle("must",mu.has(i))}
+ G.targets.forEach(m=>q[m.to].classList.add(m.cap?"lc":"lg"))}
+
+/* ================= RENDER ================= */
+const fmt=r=>{const s=Math.ceil(r);return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")};
+function clock(){$("clock").textContent=fmt(G.rem);$("clock").classList.toggle("warn",G.phase!="idle"&&G.phase!="ended"&&G.rem<=30)}
+function panel(c){const p=G.P[c],name=G.n[c=="w"?0:1],act=G.phase!="idle"&&G.phase!="ended"&&G.s.t==c;
+ const h=`<div class="pn${act?" act":""}"><div class="pt"><i class="dot ${c}"></i><b>${esc(name)}</b><small>${c=="w"?"WHITE":"BLACK"}</small></div>
+ <div class="tot"><span>TOTAL SCORE</span><b>${p.rp+p.cb}</b></div>
+ <div class="kv"><span>Reading points</span><b>${p.rp}</b></div><div class="kv"><span>Capture bonus</span><b>${p.cb}</b></div>
+ <div class="kv"><span>Correct readings</span><b>${p.reads}</b></div><div class="kv"><span>Pieces captured</span><b>${p.caps.length}</b></div>
+ <div class="cp" aria-label="Captured pieces">${p.caps.map((x,i)=>`<span class="mini${G.fresh==c&&i==p.caps.length-1?" new":""}">${pcSvg(x)}</span>`).join("")}</div></div>`;return h}
+function render(){
+ $("p1").innerHTML=panel("w");$("p2").innerHTML=panel("b");G.fresh=false;clock();
+ const t=G.s.t,nm=esc(G.n[t=="w"?0:1]);$("turn").innerHTML=G.phase=="ended"?"Game over":G.phase=="idle"?"Ready":`<i class="dot ${t}"></i>${nm} · ${G.phase=="move"?"MOVE":G.phase=="read"?"READ":"—"}`;
+ $("bHl").textContent="Highlight: "+(G.hl?"ON":"OFF");$("bPass").style.display=G.phase=="move"?"":"none";
+ $("bGo").textContent=G.phase=="idle"?"Start":G.paused?"Resume":"Pause";$("bGo").disabled=G.phase=="ended";
+ $("bSnd").textContent="Sound: "+(G.snd?"on":"off");
+ readUI();paint()}
+function readUI(){
+ const R=$("read"),t=G.s.t,name=esc(G.n[t=="w"?0:1]);R.classList.remove("paused");
+ if(G.phase!="move")$("toast").className="";const set=h=>{R.classList.remove("off");R.innerHTML=h};
+ if(G.paused&&G.phase!="ended"&&G.phase!="idle")return set(`<div class="msg big">PAUSED</div><div class="row"><button class="pri" data-a="go">RESUME</button></div>`);
+ const msg=G.msg?`<div class="msg ${G.msgc||""}" aria-live="polite">${esc(G.msg)}</div>`:"";
+ if(G.phase=="idle")return set(`<div class="msg big">Ready? ${esc(G.n[0])} vs ${esc(G.n[1])}</div><div class="row"><button class="pri" data-a="go">START</button></div>`);
+ if(G.phase=="ended")return set(`<div class="msg big">The match is over.</div><div class="row"><button class="pri" data-a="results">Show results</button></div>`);
+ if(G.phase=="stuck")return set(`<div class="msg big">${name} cannot move.</div><div class="row"><button class="pri" data-a="newpos">Reset the pieces (keep scores)</button><button data-a="pass">Pass the turn</button></div>`);
+ if(G.phase=="move"){R.classList.add("off");R.innerHTML="";return}
+ const c=G.card,lab=G.hl?"TARGET PATTERN: "+c.tags.map(x=>PAT[x].lab).join(" / "):"&nbsp;";
+ set(`<div class="lab">${lab}</div><div class="sent">${G.hl?hl(c.t,c.tags):esc(c.t)}</div>${msg}<div class="row"><button class="pri" data-a="ok">CORRECT — UNLOCK MOVE</button><button data-a="again">TRY AGAIN</button><button data-a="skip">SKIP CARD</button>${teacher()?`<button class="gold" data-a="just">JUST MOVE (no reading)</button>`:""}</div>`)}
+function toast(m,c){const e=$("toast");e.textContent=m;e.className="on"+(c=="err"?" err":"");clearTimeout(G.tt);G.tt=setTimeout(()=>{e.className=""},2600)}
+const say=(m,c)=>{if(G.phase=="move"){toast(m,c);return}G.msg=m;G.msgc=c||"";readUI()};
+
+/* ================= TURN FLOW ================= */
+function drawCard(){if(!BANK.length)return;if(G.di>=G.deck.length){G.deck=shuf(BANK.map((_,i)=>i));G.di=0}G.card=BANK[G.deck[G.di++]]}
+function beginTurn(){
+ if(G.phase=="ended")return;G.sel=null;G.targets=[];
+ const L=moves(G.s);if(!L.length){G.phase="stuck";G.msg="";render();return}
+ G.phase="read";drawCard();const cap=L[0].caps.length>0;
+ G.msg=cap?"A capture is compulsory! Read first.":teacher()?"Teacher: read the card, or just move.":"Read the sentence aloud.";G.msgc=cap?"err":"";render()}
+function startPause(){
+ if(G.phase=="ended")return;
+ if(G.phase=="idle"){G.endAt=performance.now()+G.rem*1000;G.paused=false;beginTurn();return}
+ if(G.paused){G.endAt=performance.now()+G.rem*1000;G.paused=false}else{tick();G.paused=true}
+ render()}
+function tick(){if(!running())return;G.rem=Math.max(0,(G.endAt-performance.now())/1000);clock();if(G.rem<=0)endGame()}
+function endGame(){
+ if(G.phase=="ended")return;if(G.anim){G.pend=true;return}
+ G.phase="ended";G.paused=false;G.sel=null;G.targets=[];SND.end();render();results()}
+function action(a){
+ if(a=="ok"&&G.phase=="read"&&running()){const t=G.s.t;G.P[t].rp++;G.P[t].reads++;G.phase="move";G.msg="";SND.ok();render();toast("Move unlocked: move ONE piece.","ok")}
+ else if(a=="just"&&G.phase=="read"&&running()&&teacher()){G.phase="move";G.msg="";render();toast("Teacher: move one piece.")}
+ else if(a=="again"&&G.phase=="read"&&running())say("Try again. Read the sentence once more.","err");
+ else if(a=="skip"&&G.phase=="read"&&running()){drawCard();G.msg="New card. No point for skipping.";G.msgc="";render()}
+ else if(a=="pass"&&(G.phase=="stuck"||(G.phase=="move"&&canMove()))){G.s={...G.s,t:G.s.t=="w"?"b":"w",ep:-1};G.sel=null;G.targets=[];beginTurn()}
+ else if(a=="newpos"&&G.phase=="stuck"){const t=G.s.t;G.s=initState();G.s.t=t;G.last=null;buildBoard();beginTurn()}
+ else if(a=="hl"){G.hl=!G.hl;render()}}
+
+/* ================= MOVES ================= */
+function pickMove(to){const ms=G.targets.filter(m=>m.to==to).sort((a,b)=>b.caps.length-a.caps.length);if(!ms.length)return false;doMove(ms[0]);return true}
+function select(sq){
+ G.sel=sq;const all=moves(G.s);G.targets=all.filter(m=>m.from==sq);const must=all.length&&all[0].caps.length;
+ say(G.targets.length?(G.s.b[sq][1]=="K"?"KING":"CHECKER")+" SELECTED":must?"You must capture! Pick a marked checker.":"This checker cannot move.",G.targets.length?"":"err");paint()}
+function doMove(mv){
+ if(!canMove())return;G.anim=true;
+ const t=G.s.t,pe=PE[mv.from],codes=mv.caps.map(c=>G.s.b[c]);
+ G.sel=null;G.targets=[];G.last={from:mv.from,to:mv.to};paint();
+ const H=reduce?0:300;let i=0;
+ const fin=()=>{
+  mv.caps.forEach(c=>{PE[c].remove();delete PE[c]});
+  delete PE[mv.from];PE[mv.to]=pe;if(mv.king&&G.s.b[mv.from][1]=="M")pe.innerHTML=pcSvg(t+"K");
+  const P=G.P[t];codes.forEach(c=>{P.caps.push(c);if(G.bonus)P.cb+=c[1]=="K"?2:1});if(codes.length)G.fresh=t;
+  G.s=apply(G.s,mv);G.anim=false;G.msg="";
+  if(G.pend){G.pend=false;endGame();return}
+  beginTurn()};
+ const hop=()=>{pos(pe,mv.path[i]);if(mv.caps[i]!=null){PE[mv.caps[i]].classList.add("cap");SND.cap()}else SND.move();i++;
+  if(i<mv.path.length)setTimeout(hop,H);else setTimeout(fin,H+(mv.caps.length?140:0))};
+ hop()}
+
+/* pointer input: click-select, click-move, drag-and-drop */
+let drag=null;
+const sqAt=e=>{const r=$("sqs").getBoundingClientRect(),f=Math.floor((e.clientX-r.left)/r.width*8),rw=Math.floor((e.clientY-r.top)/r.height*8);return f<0||f>7||rw<0||rw>7?null:rw*8+f};
+$("board").addEventListener("pointerdown",e=>{
+ if(e.target.closest("#promo,#read"))return;const sq=sqAt(e);if(sq==null)return;
+ if(!canMove()){if(G.phase=="read"&&running())say("Read the sentence first!","err");return}
+ if(G.sel!=null&&G.targets.some(m=>m.to==sq)){pickMove(sq);return}
+ const p=G.s.b[sq];
+ if(p&&p[0]==G.s.t){select(sq);drag={sq,x:e.clientX,y:e.clientY,el:PE[sq],moved:false};try{$("board").setPointerCapture(e.pointerId)}catch(_){}}
+ else{G.sel=null;G.targets=[];paint();if(G.sel==null&&!p)say("Move unlocked: move ONE piece.","ok")}});
+$("board").addEventListener("pointermove",e=>{
+ if(!drag)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;
+ if(!drag.moved&&Math.hypot(dx,dy)>6){drag.moved=true;drag.el.classList.add("drag")}
+ if(drag.moved)drag.el.style.transform=`translate(${dx}px,${dy}px)`});
+$("board").addEventListener("pointerup",e=>{
+ if(!drag)return;const d=drag;drag=null;d.el.classList.remove("drag");d.el.style.transform="";
+ if(d.moved){const to=sqAt(e);if(to!=null&&to!=d.sq&&!pickMove(to))say("That move is not allowed. Try another square.","err")}});
+$("board").addEventListener("pointercancel",()=>{if(drag){drag.el.classList.remove("drag");drag.el.style.transform="";drag=null}});
+
+/* ================= OVERLAYS ================= */
+const ov=h=>{$("ov").innerHTML=`<div class="card">${h}</div>`;$("ov").className="ov on"};
+const closeOv=()=>{$("ov").className="ov";$("ov").innerHTML=""};
+function settings(){
+ ov(`<h2>MATCH SETTINGS</h2>
+ <div class="seg" role="group" aria-label="Mode"><button data-m="pvp" class="${G.mode=="pvp"?"on":""}">Player vs Player</button><button data-m="tvs" class="${G.mode=="tvs"?"on":""}">Student vs Teacher</button></div>
+ <label>White — Player 1<input type="text" id="n1" maxlength="20" value="${esc(G.n[0])}"></label>
+ <label>Black — Player 2<input type="text" id="n2" maxlength="20" value="${esc(G.n[1])}"></label>
+ <div>Timer (maximum 5 minutes)</div><div class="seg" role="group" aria-label="Timer">${[1,2,3,4,5].map(m=>`<button data-t="${m}" class="${G.dur==m*60?"on":""}">${m} min</button>`).join("")}</div>
+ <div class="seg"><button data-tg="bonus" class="${G.bonus?"on":""}">Capture bonus: ${G.bonus?"ON":"OFF"}</button><button data-tg="hl" class="${G.hl?"on":""}">Highlight: ${G.hl?"ON":"OFF"}</button></div>
+ <details><summary>Edit sentences (${BANK.length} cards)</summary><p class="msg">One per line: <b>sentence | pattern</b>. Patterns: ape ane ame ake ave ate ite ipe ine ime ive ike ide one oke ose ole u ai ay ee</p>
+ <textarea id="bank" rows="8" spellcheck="false">${esc(BANK.map(b=>b.t+"|"+b.tags.join(" ")).join("\n"))}</textarea>
+ <div class="row"><button data-a="bapply">Apply sentences</button><button data-a="breset">Reset to default</button></div><div class="msg" id="bmsg"></div></details>
+ <div class="row"><button class="pri" data-a="apply">Apply &amp; new match</button><button data-a="closeov">Cancel</button></div>`)}
+function results(){
+ const a=G.P.w,b=G.P.b,ta=a.rp+a.cb,tb=b.rp+b.cb,col=(c,p,n)=>`<div class="pn"><div class="pt"><i class="dot ${c}"></i><b>${esc(n)}</b></div><div class="tot"><span>TOTAL</span><b>${p.rp+p.cb}</b></div><div class="kv"><span>Reading points</span><b>${p.rp}</b></div><div class="kv"><span>Capture bonus</span><b>${p.cb}</b></div><div class="kv"><span>Correct readings</span><b>${p.reads}</b></div><div class="kv"><span>Pieces captured</span><b>${p.caps.length}</b></div></div>`;
+ ov(`<h2>MATCH RESULT</h2><div class="win">${ta==tb?"DRAW":esc(G.n[ta>tb?0:1])+" WINS!"}</div><div class="res">${col("w",a,G.n[0])}${col("b",b,G.n[1])}</div>
+ <div class="row"><button class="pri" data-a="again2">PLAY AGAIN</button><button data-a="timer">CHANGE TIMER</button><button data-a="restart2">RESTART MATCH</button><button data-a="closeov">BACK TO BOARD</button></div>`)}
+function info(){ov(`<h2>PIECE GUIDE</h2><div class="leg" style="grid-template-columns:repeat(4,1fr)"><div>${pcSvg("wM")}<div>Checker</div></div><div>${pcSvg("wK")}<div>King</div></div><div>${pcSvg("bM")}<div>Checker</div></div><div>${pcSvg("bK")}<div>King</div></div></div><p class="msg">Russian draughts: move diagonally on the dark squares. A checker moves one step forward. Capture is compulsory: jump over an opponent's piece (forward or backward) and keep jumping if you can. Reach the far side to become a King. A King moves and captures along the whole diagonal. Capture bonus: Checker +1, King +2.</p><div class="row"><button data-a="closeov">Close</button></div>`)}
+
+/* ================= EVENTS ================= */
+document.addEventListener("click",e=>{
+ const pr=e.target.closest("[data-pr]");if(pr&&G.pm){const m=G.pm.find(x=>x.promo==pr.dataset.pr);G.pm=null;if(m)doMove(m);return}
+ const b=e.target.closest("button");if(!b||b.disabled)return;const d=b.dataset,a=d.a;
+ if(d.m){G.mode=d.m;if(d.m=="tvs"&&$("n2").value.trim().toUpperCase()=="PLAYER 2")$("n2").value="TEACHER";if(d.m=="pvp"&&$("n2").value.trim().toUpperCase()=="TEACHER")$("n2").value="PLAYER 2";const n1=$("n1").value,n2=$("n2").value;G.n=[n1,n2];settings();return}
+ if(d.t){G.dur=+d.t*60;G.n=[$("n1").value,$("n2").value];settings();return}
+ if(d.tg){G[d.tg]=!G[d.tg];G.n=[$("n1").value,$("n2").value];settings();return}
+ switch(a){
+  case"go":startPause();break;
+  case"restart":case"restart2":closeOv();resetGame();break;
+  case"again2":closeOv();resetGame();startPause();break;
+  case"timer":case"set":settings();break;
+  case"end":if(G.phase!="idle")endGame();break;
+  case"results":results();break;
+  case"snd":G.snd=!G.snd;$("bSnd").textContent="Sound: "+(G.snd?"on":"off");break;
+  case"info":info();break;
+  case"closeov":closeOv();break;
+  case"apply":{const n1=$("n1").value.trim().slice(0,20)||"PLAYER 1",n2=$("n2").value.trim().slice(0,20)||"PLAYER 2";G.n=[n1,n2];closeOv();resetGame();break}
+  case"bapply":{const r=parseBank($("bank").value);if(r.out.length<1){$("bmsg").textContent="Need at least one valid line.";break}BANK=r.out;$("bmsg").textContent=`${r.out.length} cards ready. ${r.bad?r.bad+" invalid line(s) ignored.":""}`;break}
+  case"breset":{BANK=parseBank(DEFAULT_BANK).out;$("bank").value=BANK.map(b=>b.t+"|"+b.tags.join(" ")).join("\n");$("bmsg").textContent="Default sentences restored.";break}
+  default:action(a)}});
+setInterval(tick,200);
+resetGame();settings();
+</script></body></html>
