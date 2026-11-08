@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MY WEEK, MY PLANS!</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f0ff;--bg2:#e9e4ff;--panel:#fff;--p2:#f6f3ff;--ink:#1f1a3d;--mut:#6b6690;--line:#e1dbf7;--vio:#6c4cf1;--blue:#2f6bff;--coral:#ff6b6b;--mint:#16a37f;--shadow:0 8px 26px rgba(70,50,150,.12);--r:20px;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14112b;--bg2:#1c1840;--panel:#1f1b42;--p2:#27224f;--ink:#efecff;--mut:#a7a1d0;--line:#383264;--shadow:0 8px 26px rgba(0,0,0,.4)}}
+:root[data-theme="dark"]{--bg:#14112b;--bg2:#1c1840;--panel:#1f1b42;--p2:#27224f;--ink:#efecff;--mut:#a7a1d0;--line:#383264;--shadow:0 8px 26px rgba(0,0,0,.4)}
+*,*:before,*:after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100vh;font-family:'DM Sans','Segoe UI',system-ui,sans-serif;font-size:17px;color:var(--ink);background:#f3f0ff;background:radial-gradient(1200px 500px at 90% -10%,rgba(108,76,241,.18),transparent),radial-gradient(900px 500px at -10% 10%,rgba(47,107,255,.14),transparent),var(--bg) fixed}
+button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--vio);outline-offset:2px}
+h1,h2,h3{font-family:Outfit,'DM Sans',sans-serif;margin:0 0 8px;line-height:1.1}h2{font-size:27px}h3{font-size:20px}
+p{margin:6px 0}.sub{color:var(--mut);font-size:15px}.sm{font-size:14px;color:var(--mut)}
+.card{background:var(--panel);border-radius:var(--r);box-shadow:var(--shadow);padding:18px 20px;margin-bottom:16px}.card.center{text-align:center}.card.warn{border:2px solid var(--coral)}
+.btn{border:0;border-radius:14px;padding:10px 18px;font-weight:700;background:var(--p2);color:var(--ink);box-shadow:0 3px 0 var(--line)}
+.btn:hover{filter:brightness(.97)}.btn:active{transform:translateY(2px);box-shadow:none}.btn.pri{background:var(--vio);color:#fff;box-shadow:0 3px 0 rgba(0,0,0,.25)}.btn.big{font-size:19px;padding:13px 26px}.btn.sm{padding:6px 12px;font-size:14px;color:inherit;border-radius:11px}.btn.pri.sm{color:#fff}.btn:disabled{opacity:.45;cursor:default}
+.ib{border:0;background:var(--panel);width:40px;height:40px;border-radius:12px;font-size:18px;box-shadow:0 2px 0 var(--line)}
+.inp{border:2px solid var(--line);background:var(--panel);border-radius:12px;padding:8px 11px;font-weight:600;font-size:16px;max-width:100%}
+.ta{width:100%;border:2px solid var(--line);background:var(--panel);border-radius:14px;padding:10px 13px;font-size:18px;resize:vertical}
+.lab{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);margin:12px 0 5px}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.chips{display:flex;gap:6px;flex-wrap:wrap}.chip{border:2px solid var(--line);background:var(--p2);border-radius:999px;padding:4px 12px;font-size:14px;font-weight:700}.chip.on{border-color:var(--vio);background:rgba(108,76,241,.14)}.chip.dn{border-color:var(--mint)}.chip.rnd{border-style:dashed}
+.seg{display:inline-flex;background:var(--p2);border-radius:999px;padding:3px;gap:2px;flex-wrap:wrap}.seg button{border:0;background:transparent;border-radius:999px;padding:6px 14px;font-weight:700;color:var(--mut)}.seg button.on{background:var(--vio);color:#fff}.seg small{display:block;font-weight:500;font-size:11px}
+.top{display:flex;align-items:center;gap:12px;padding:12px 20px;flex-wrap:wrap}
+.brand{font-family:Outfit,sans-serif;display:flex;flex-direction:column;line-height:1;margin-right:6px}.brand b{font-size:24px;font-weight:800;color:var(--vio)}.brand span{font-size:13px;font-weight:700;letter-spacing:.12em;color:var(--coral)}
+.pl{display:flex;gap:6px;flex-wrap:wrap;flex:1}.pchip{border:2px solid var(--line);background:var(--panel);border-radius:999px;padding:3px 14px 3px 4px;display:flex;align-items:center;gap:6px;font-weight:700}.pchip.on{border-color:var(--c);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 25%,transparent)}
+.tools{display:flex;gap:8px;align-items:center}.badge{font-size:12px;font-weight:800;text-transform:uppercase;border-radius:999px;padding:4px 10px;background:rgba(22,163,127,.16);color:var(--mint)}.badge.challenge{background:rgba(255,107,107,.18);color:var(--coral)}
+.nav{display:flex;gap:6px;padding:0 20px 8px;overflow-x:auto;scrollbar-width:thin}.nv{border:0;background:var(--panel);border-radius:14px;padding:9px 16px;font-weight:700;white-space:nowrap;box-shadow:0 2px 0 var(--line);position:relative;color:var(--mut)}.nv.on{background:var(--vio);color:#fff}.dot{background:var(--coral);color:#fff;font-style:normal;font-size:11px;border-radius:999px;padding:1px 6px;margin-left:6px;font-weight:800}
+main{padding:6px 20px 40px;max-width:1500px;margin:0 auto}
+.home{max-width:980px;margin:0 auto;padding:30px 20px}.hero{text-align:center;margin-bottom:24px}.hero h1{font-size:clamp(40px,8vw,76px);font-weight:800;background:linear-gradient(100deg,var(--vio),var(--blue) 50%,var(--coral));-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1.02}.tag{font-size:21px;font-weight:700;color:var(--mut);letter-spacing:.04em}
+.cnt{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 14px}.cntb{border:3px solid var(--line);background:var(--p2);border-radius:18px;padding:8px 22px;display:flex;flex-direction:column;align-items:center}.cntb b{font-family:Outfit,sans-serif;font-size:30px;line-height:1}.cntb span{font-size:13px;color:var(--mut)}.cntb.on{border-color:var(--vio);background:rgba(108,76,241,.14)}
+.pcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.pcard{background:var(--p2);border-radius:18px;padding:12px;border-top:5px solid var(--c)}.pc-top{display:flex;align-items:center;gap:10px}.pc-top .inp{flex:1;min-width:0}
+.sw{display:flex;gap:6px;flex-wrap:wrap}.swb{width:26px;height:26px;border-radius:50%;border:3px solid var(--panel);box-shadow:0 0 0 2px var(--line);padding:0}.swb.on{box-shadow:0 0 0 3px var(--ink)}.avb{border:2px solid transparent;background:transparent;border-radius:50%;padding:0}.avb.on{border-color:var(--ink)}
+.wk{display:grid;grid-template-columns:320px 1fr;gap:16px;align-items:start}@media (max-width:1000px){.wk{grid-template-columns:1fr}}
+.legend{display:grid;gap:5px}.lg{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700}.lg b{width:24px;height:24px;border-radius:8px;background:color-mix(in srgb,var(--sc) 20%,transparent);color:var(--sc);display:flex;align-items:center;justify-content:center}
+.ttl{display:flex;justify-content:space-between;gap:8px;border-bottom:1px dashed var(--line);padding:6px 0;font-size:15px}.ttl span{color:var(--mut);font-weight:700}
+.calwrap{background:var(--panel);border-radius:var(--r);box-shadow:var(--shadow);padding:14px;overflow-x:auto}.calt{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.cal{min-width:760px}.cal-h,.cal-b{display:grid;grid-template-columns:48px repeat(7,1fr)}.cal-h div{text-align:center;font-weight:800;padding:6px 0;color:var(--mut);font-size:14px}
+.hrs div{font-size:11px;color:var(--mut);text-align:right;padding-right:6px;transform:translateY(-6px)}.col{position:relative;border-left:1px solid var(--line);cursor:cell;touch-action:pan-y}.hl{position:absolute;left:0;right:0;border-top:1px solid var(--line);opacity:.7;pointer-events:none;display:block}
+.ev{position:absolute;border-radius:10px;padding:3px 6px;font-size:12px;overflow:hidden;cursor:grab;background:color-mix(in srgb,var(--sc) 17%,var(--panel));border-left:5px solid var(--oc);color:var(--ink);line-height:1.2;user-select:none;touch-action:none;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.ev b{display:block;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ev span{display:block;opacity:.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ev em{font-size:10.5px;font-style:normal;font-weight:800;color:var(--oc)}
+.ev.fixed{background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--sc) 22%,var(--panel)) 0 8px,color-mix(in srgb,var(--sc) 12%,var(--panel)) 8px 16px)}.ev.intention{border-style:dashed;border-left-style:solid;outline:1.5px dashed var(--sc);outline-offset:-3px}.ev.flexible{background:color-mix(in srgb,var(--sc) 10%,var(--panel));opacity:.92}.ev.drag{z-index:20;opacity:.85;cursor:grabbing;box-shadow:0 8px 20px rgba(0,0,0,.3)}
+.empty{background:var(--p2);border-radius:14px;padding:16px;text-align:center;color:var(--mut);font-weight:600;margin:8px 0}
+.ovl{position:fixed;inset:0;background:rgba(20,16,50,.55);z-index:60;display:flex;align-items:center;justify-content:center;padding:14px}.dlg{background:var(--panel);border-radius:24px;box-shadow:var(--shadow);padding:22px 24px;max-width:640px;width:100%;max-height:92vh;overflow:auto}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:10px}.form label{display:flex;flex-direction:column;gap:3px;font-size:13px;font-weight:800;color:var(--mut)}.form .fw{grid-column:1/-1}.form .inp,.form .ta{color:var(--ink)}.wf{grid-template-columns:1fr}
+.err{background:rgba(255,107,107,.15);color:var(--coral);border-radius:12px;padding:8px 12px;margin:8px 0;font-weight:700}.okb{background:rgba(22,163,127,.15);color:var(--mint);border-radius:12px;padding:8px 12px;margin:8px 0;font-weight:700}
+.rtabs{display:flex;gap:8px;overflow-x:auto;margin-bottom:12px}.rt{border:2px solid var(--line);background:var(--panel);border-radius:14px;padding:7px 14px 7px 7px;display:flex;align-items:center;gap:8px;font-weight:700;white-space:nowrap}.rt b{width:26px;height:26px;border-radius:50%;background:var(--p2);display:flex;align-items:center;justify-content:center}.rt.on{border-color:var(--vio);background:rgba(108,76,241,.12)}.rt.done b{background:var(--mint);color:#fff}
+.prac{display:grid;grid-template-columns:1fr 300px;gap:16px;align-items:start}@media (max-width:900px){.prac{grid-template-columns:1fr}}
+.tkh{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}.pill{font-size:12px;font-weight:800;border-radius:999px;padding:3px 10px;background:var(--p2);color:var(--mut)}.pill.mine{background:rgba(22,163,127,.16);color:var(--mint)}.pill.st{background:color-mix(in srgb,var(--sc) 16%,transparent);color:var(--sc)}
+.ctx{background:var(--p2);border-radius:14px;padding:12px 14px;font-size:18px;margin-bottom:8px}.prompt{margin:8px 0}.mini{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:8px 0}.big{font-size:20px}
+.hintb{background:rgba(255,193,7,.18);border-radius:12px;padding:8px 12px;margin:8px 0;font-weight:600}
+.fb{border-radius:16px;padding:12px 14px;margin:12px 0}.fb.ok{background:rgba(22,163,127,.13);border:2px solid rgba(22,163,127,.4)}.fb.tip{background:rgba(108,76,241,.1);border:2px solid rgba(108,76,241,.3)}.fbh{font-family:Outfit,sans-serif;font-weight:800;font-size:20px}.yours{font-style:italic;color:var(--mut);margin:4px 0}.fl{margin:3px 0}.fl.ok{color:var(--mint)}.fl.bad{color:var(--coral)}.corr{margin-top:6px;background:var(--panel);border-radius:10px;padding:6px 10px}.corr span{color:var(--mut);font-size:13px}.corr.alt{border-left:4px solid var(--blue)}
+.conseq{margin:8px 0;font-weight:700}
+.chat{display:grid;grid-template-columns:280px 1fr;gap:16px;align-items:start}@media (max-width:800px){.chat{grid-template-columns:1fr}}
+.cl{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:0;background:transparent;border-radius:14px;padding:8px;margin-bottom:4px}.cl.on{background:var(--p2)}.cl b{display:block}.cl span{font-size:13px;color:var(--mut)}.chk{color:var(--mint);font-style:normal;font-weight:800;margin-left:auto}
+.mav{width:38px;height:38px;border-radius:50%;color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none;font-family:Outfit,sans-serif}.convh{display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:8px}
+.msgs{min-height:200px;max-height:420px;overflow:auto;display:flex;flex-direction:column;gap:10px;padding:6px 2px}.msg{display:flex;gap:8px;align-items:flex-end;animation:pop .3s}.msg.me{justify-content:flex-end}.bub{max-width:76%;padding:9px 13px;border-radius:18px;background:var(--p2);font-size:17px}.msg.me .bub{background:var(--vio);color:#fff;border-bottom-right-radius:5px}.msg.them .bub{border-bottom-left-radius:5px}.msg.bad .bub{outline:2px dashed var(--coral)}.bub small{display:block;opacity:.65;font-size:11px;margin-top:2px}
+.typing{display:flex;gap:4px;padding:10px 14px;background:var(--p2);border-radius:16px;width:60px}.typing i{width:8px;height:8px;border-radius:50%;background:var(--mut);animation:bl 1s infinite}.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes bl{0%,60%,100%{opacity:.3;transform:none}30%{opacity:1;transform:translateY(-3px)}}@keyframes pop{from{opacity:0;transform:translateY(8px) scale(.96)}to{opacity:1;transform:none}}
+.calchip{background:rgba(47,107,255,.12);color:var(--blue);border-radius:999px;padding:5px 12px;font-weight:700;font-size:14px;margin:4px 0;display:inline-block}.reply{border-top:1px solid var(--line);padding-top:8px;margin-top:8px}
+.alert{display:inline-block;background:var(--coral);color:#fff;font-weight:800;border-radius:999px;padding:3px 12px;font-size:12px;letter-spacing:.08em;margin-bottom:6px}
+.gt{margin:8px 0}.gh{display:flex;justify-content:space-between;padding-left:120px;font-size:11px;color:var(--mut)}.gl{display:flex;align-items:center;gap:8px;margin:5px 0}.gl>span{width:112px;flex:none;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.gbar{position:relative;flex:1;height:30px;border-radius:9px;background:var(--p2)}.gbar i{position:absolute;top:2px;bottom:2px;border-radius:7px;font-style:normal;font-size:11px;color:#fff;font-weight:700;overflow:hidden;padding:5px 5px;white-space:nowrap}.gbar.free{background:var(--p2)}.gbar.free i{background:var(--mint)}
+.decision{background:rgba(22,163,127,.14);border:2px solid rgba(22,163,127,.4);border-radius:16px;padding:10px 14px;margin-top:10px}.decision p{margin:4px 0;font-weight:700;font-size:18px}
+.gmsg{border-left:5px solid var(--c);padding-left:12px;margin:12px 0}.gm-h{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.reqs{display:grid;gap:6px;margin:10px 0}.rq{display:flex;gap:10px;align-items:flex-start;background:var(--p2);border-radius:12px;padding:8px 12px;font-weight:600}.rq b{color:var(--mut)}.rq.ok{background:rgba(22,163,127,.14)}.rq.ok b{color:var(--mint)}
+.fin{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}@media (max-width:900px){.fin{grid-template-columns:1fr}}
+.sumrow{border-left:5px solid var(--c);padding:6px 0 6px 12px;margin-bottom:10px}.sh{display:flex;align-items:center;gap:8px;margin-bottom:4px}.sev{background:color-mix(in srgb,var(--sc) 14%,var(--panel));border-radius:10px;padding:5px 10px;margin:4px 0;font-size:15px}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}.stat{display:flex;justify-content:space-between;border-bottom:1px dashed var(--line);padding:5px 0;font-size:15px}.sb{display:grid;grid-template-columns:130px 1fr 26px;gap:8px;align-items:center;font-size:14px;margin:4px 0}.sb div{height:10px;border-radius:6px;background:var(--line);overflow:hidden}.sb i{display:block;height:100%}
+.tpanel{position:fixed;right:0;top:0;bottom:0;width:min(420px,100vw);background:var(--panel);box-shadow:-10px 0 30px rgba(0,0,0,.25);z-index:40;padding:16px 18px;overflow:auto}.tp-h{display:flex;justify-content:space-between;align-items:center}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--ink);color:var(--bg);border-radius:14px;padding:9px 18px;font-weight:700;z-index:90}
+.av{display:block;flex:none}
+@media print{body{background:#fff!important;color:#000}.top,.nav,.acts,.tpanel,.tools,.ta,.btn,.card:not(.fin-print){}.fin{grid-template-columns:1fr}.top,.nav,.tpanel,.acts{display:none!important}.card{box-shadow:none;border:1px solid #ccc;break-inside:avoid}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="modal"></div>
+<script>
+/* ====================== UTIL ====================== */
+const $=(s,r)=>(r||document).querySelector(s),$$=(s,r)=>Array.from((r||document).querySelectorAll(s));
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,9);
+const pad=n=>String(n).padStart(2,'0');
+const DAYS=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const toMin=t=>{const m=/^(\d{1,2}):(\d{2})$/.exec(t||'');return m?(+m[1])*60+(+m[2]):null};
+const hhmm=m=>pad(Math.floor(m/60))+':'+pad(m%60);
+function pmT(t){const m=toMin(t);if(m==null)return'';let h=Math.floor(m/60),mm=m%60;const ap=h>=12?'PM':'AM';h=h%12||12;return mm?`${h}:${pad(mm)} ${ap}`:`${h} ${ap}`}
+const NUMW=['twelve','one','two','three','four','five','six','seven','eight','nine','ten','eleven'];
+function spoken(t){const m=toMin(t),h=Math.floor(m/60),mm=m%60,h12=h%12||12;return mm?`${h12}:${pad(mm)}`:NUMW[h12%12]}
+const cap=s=>s?s.charAt(0).toUpperCase()+s.slice(1):s;
+const lowerFirst=s=>s?s.charAt(0).toLowerCase()+s.slice(1):s;
+/* ====================== VERBS ====================== */
+const BASEV=('meet go visit take attend play study have prepare work watch buy see call help join cook clean practise practice learn write read do make swim run ride pick book get bring send leave arrive start begin end finish open close depart come stay travel fly drive walk eat drink sleep return pay change catch miss check ask tell give show carry lend borrow wait phone text message email order collect hurry sit invite find use look turn move put hold wash tidy paint draw sing dance shop cycle ring post upload download decide say talk speak try forget remember save cancel bake celebrate rest relax revise win lose pack cheer').split(' ');
+const IRR3={have:'has',go:'goes',do:'does'};
+const third=b=>IRR3[b]||(/(s|sh|ch|x|z|o)$/.test(b)?b+'es':/[^aeiou]y$/.test(b)?b.slice(0,-1)+'ies':b+'s');
+const DBL=['run','sit','get','swim','put','stop','plan','shop','begin','chat','cut','set','win','hit','travel'];
+const ing=b=>DBL.includes(b)?b+b.slice(-1)+'ing':/ie$/.test(b)?b.slice(0,-2)+'ying':/[^e]e$/.test(b)?b.slice(0,-1)+'ing':b+'ing';
+const BASE=new Set(BASEV),THIRDMAP={},INGMAP={};
+BASEV.forEach(b=>{THIRDMAP[third(b)]=b;INGMAP[ing(b)]=b});INGMAP.traveling='travel';INGMAP.practicing='practise';INGMAP.practising='practise';INGMAP.travelling='travel';
+const TTV=['leave','start','begin','end','finish','open','close','depart','arrive','run','come'];
+const PLACES=['school','work','bed','town','home','church','university','college','the','a','an','my','your','his','her','our','their','london','paris','warsaw','berlin','kyiv','lviv','cinema','park','shop','shops','museum','concert','party','station','airport','gym','pool','beach','mall','supermarket','library','dentist','doctor','hospital','another','that','this'];
+/* ====================== NORMALISE / ANALYSE ====================== */
+function norm(t){return String(t||'').toLowerCase().replace(/[’‘`]/g,"'")
+ .replace(/\bcan't\b/g,'can not').replace(/\bcannot\b/g,'can not').replace(/\bwon't\b/g,'will not').replace(/\bshan't\b/g,'shall not')
+ .replace(/\b(is|are|do|does|did|was|were|has|have|had|would|should|could)n't\b/g,'$1 not')
+ .replace(/\bi'm\b/g,'i am').replace(/\b(you|we|they)'re\b/g,'$1 are').replace(/\b(he|she|it|that|there|what|who|where|here)'s\b/g,'$1 is')
+ .replace(/\b(i|you|he|she|it|we|they|that|there|who)'ll\b/g,'$1 will').replace(/\b(i|you|we|they)'ve\b/g,'$1 have').replace(/\blet's\b/g,'let us').replace(/'d\b/g,' would')
+ .replace(/[^a-z0-9:.' ?]/g,' ').replace(/(\D)\./g,'$1 ').replace(/\s+/g,' ').trim()}
+function timeIn(txt,t){const m=toMin(t);if(m==null)return true;const H=Math.floor(m/60),M=m%60,hm=H%12;let s=norm(txt).replace(/\?/g,' ');
+ NUMW.forEach((w,i)=>{s=s.replace(new RegExp('\\b'+w+'\\b','g'),String(i===0?12:i))});s=s.replace(/\bfifteen\b/g,'15').replace(/\bthirty\b/g,'30').replace(/\bforty ?five\b/g,'45').replace(/\b(\d{1,2}) (15|30|45)\b/g,'$1:$2');
+ for(const r of s.matchAll(/\b(\d{1,2})[:.](\d{2})\b/g))if(+r[1]%12===hm&&+r[2]===M)return true;
+ if(M===15){const x=/quarter past (\d{1,2})/.exec(s);if(x&&+x[1]%12===hm)return true}
+ if(M===30){const x=/half past (\d{1,2})/.exec(s);if(x&&+x[1]%12===hm)return true}
+ if(M===45){const x=/quarter to (\d{1,2})/.exec(s);if(x&&((+x[1]+11)%12)===hm)return true}
+ if(M===0)for(const r of s.matchAll(/\b(\d{1,2})\b/g)){if(+r[1]<=24&&+r[1]%12===hm)return true}
+ return false}
+const dayIn=(txt,d)=>new RegExp('\\b('+DAYS[d].toLowerCase()+'|'+DAYS[d].slice(0,3).toLowerCase()+')\\b').test(norm(txt));
+const BEFOR={i:'am',he:'is',she:'is',it:'is',we:'are',you:'are',they:'are'};
+function analyze(raw){let t=norm(raw);const q=/\?\s*$/.test(String(raw).trim())||(/^(do|does|am|is|are|will|shall|can|could|what|when|where|who|how|why|which)\b/.test(t)&&!/^do not\b/.test(t));t=t.replace(/\?/g,'').trim();
+ const tk=t.split(' ').filter(Boolean),A={t,tk,q,errors:[],structs:[]};
+ A.neg=/\bnot\b|\bnever\b/.test(t);
+ A.modal=/\b(can|could|should|must|may|might)\b|let us/.test(t);
+ A.will=/\b(will|shall)\b/.test(t);
+ // going to: future vs motion
+ A.gt=false;const gti=tk.findIndex((w,i)=>w==='going'&&tk[i+1]==='to'&&i>0&&/^(am|is|are|not)$/.test(tk[i-1]||''));
+ if(gti>=0){const nx=tk[gti+2];const origTokens=String(raw).replace(/[^A-Za-z' ]/g,' ').split(/\s+/).filter(Boolean);const isProper=false;A.gt=!!nx&&!PLACES.includes(nx)||(!!nx&&(BASE.has(nx)))}
+ A.pc=false;for(let i=0;i<tk.length;i++){if(/^(am|is|are)$/.test(tk[i])){for(let j=i+1;j<=Math.min(i+4,tk.length-1);j++){if(INGMAP[tk[j]]&&!(tk[j]==='going'&&tk[j+1]==='to'&&A.gt)){A.pc=true;break}if(tk[j]==='going'&&tk[j+1]==='to'&&!A.gt){A.pc=true;break}}}}
+ A.ps=false;if(!A.will&&!A.gt&&!A.pc&&!A.modal){A.ps=/\b(do|does) (not )?/.test(t)||tk.some((w,i)=>THIRDMAP[w]&&!/^(has|goes|does)$/.test(w)||(BASE.has(w)&&i>0&&/^(i|you|we|they|not)$/.test(tk[i-1]))||/^(has|goes)$/.test(w)||(TTV.includes(w)&&i>0))}
+ ['ps','pc','gt','will'].forEach(k=>{if(A[k])A.structs.push(k)});
+ const sm=/^(yes|no)\b[ ,]*(?:(i|he|she|it|we|you|they) (am|is|are|does|do|will)\b( not)?)?/.exec(t);A.short=sm?{yn:sm[1],pron:sm[2]||null,aux:sm[3]||null,negAux:!!sm[4]}:null;
+ // error rules (applied on normalised text)
+ let c=t;const E=(code,msg,fix)=>{const n=fix(c);if(n!==c){A.errors.push({code,msg});c=n}};
+ E('be1','With “I” we use “am”: I am / I’m.',x=>x.replace(/\bi (is|are)\b/g,'i am'));
+ E('be2','With he / she / it we use “is”.',x=>x.replace(/\b(he|she|it) (am|are)\b/g,'$1 is'));
+ E('be3','With we / you / they we use “are”.',x=>x.replace(/\b(we|you|they) (am|is)\b/g,'$1 are'));
+ E('ing','After am / is / are we need the -ing form (for example: meeting, going, buying).',x=>x.replace(/\b(am|is|are)( not)? ([a-z]+)\b/g,(m,a,n,v)=>(BASE.has(v)&&v!=='be')?`${a}${n||''} ${ing(v)}`:m));
+ E('beMiss','Present Continuous needs am / is / are before the -ing verb: I’m meeting…',x=>x.replace(/\b(i|you|he|she|it|we|they)( not)? ([a-z]+ing)\b/g,(m,p,n,v,off,str)=>{const bf=str.slice(0,off).trim().split(' ').pop();if(/^(am|is|are|was|were|do|does|will|shall|can|could|what|where|who|how|why|when|which|not)$/.test(bf))return m;return INGMAP[v]?`${p} ${BEFOR[p]}${n||''} ${v}`:m}));
+ E('willTo','After “will” we use the base verb without “to”.',x=>x.replace(/\bwill( not)? to\b/g,'will$1'));
+ E('willIng','After “will” use the base verb (not -ing).',x=>x.replace(/\bwill( not)? ([a-z]+ing)\b/g,(m,n,v)=>INGMAP[v]?`will${n||''} ${INGMAP[v]}`:m));
+ E('will3','After “will” use the base verb (no -s).',x=>x.replace(/\bwill( not)? ([a-z]+)\b/g,(m,n,v)=>THIRDMAP[v]&&!BASE.has(v)?`will${n||''} ${THIRDMAP[v]}`:m));
+ E('gtIng','After “going to” use the base verb (no -ing).',x=>x.replace(/\bgoing to ([a-z]+ing)\b/g,(m,v)=>INGMAP[v]?`going to ${INGMAP[v]}`:m));
+ E('gt3','After “going to” use the base verb (no -s).',x=>x.replace(/\bgoing to ([a-z]+)\b/g,(m,v)=>THIRDMAP[v]&&!BASE.has(v)?`going to ${THIRDMAP[v]}`:m));
+ E('gtTo','We say “going to” + verb: I’m going to buy…',x=>x.replace(/\b(am|is|are)( not)? going ([a-z]+)\b/g,(m,a,n,v)=>BASE.has(v)?`${a}${n||''} going to ${v}`:m));
+ E('does3','After “does” the verb has no -s: Does the bus leave…?',x=>{const w=x.split(' ');let ch=false;for(let i=0;i<w.length;i++){if(w[i]==='does'){for(let j=i+1;j<Math.min(i+5,w.length);j++){if(THIRDMAP[w[j]]&&!BASE.has(w[j])){w[j]=THIRDMAP[w[j]];ch=true;break}}}}return ch?w.join(' '):x});
+ E('tps','With he / she / it / “the bus” the Present Simple verb needs -s: the bus leaves.',x=>{const w=x.split(' ');let ch=false;for(let i=1;i<w.length;i++){if(TTV.includes(w[i])&&!w.slice(Math.max(0,i-4),i).some(y=>/^(will|to|can|could|must|should|do|does|may|might|us)$/.test(y))&&(/^(he|she|it)$/.test(w[i-1])||(w[i-2]==='the'&&(!/s$/.test(w[i-1])||/^(bus|class|glass|tennis|dress)$/.test(w[i-1]))&&!/^(i|you|we|they)$/.test(w[i-1])))){w[i]=third(w[i]);ch=true}}return ch?w.join(' '):x});
+ A.fixed=c;return A}
+function finalize(t,q){let s=t.replace(/\bi am\b/g,"I'm").replace(/\bi will\b/g,"I'll").replace(/\bi\b/g,'I').replace(/\b(he|she|it|you|we|they) will\b/g,m=>m.replace(' will',"'ll")).replace(/\b(you|we|they) are\b/g,"$1're").replace(/\b(he|she|it) is\b/g,"$1's").replace(/ not\b/g,' not');s=cap(s);return s+(/[.?!]$/.test(s)?'':(q?'?':'.'))}
+/* ====================== CONTENT ====================== */
+const STATUS={fixed:{l:'Fixed timetable',ic:'⏱',c:'#2f6bff'},confirmed:{l:'Confirmed arrangement',ic:'✓',c:'#16a37f'},intention:{l:'Personal intention',ic:'✦',c:'#ff6b6b'},flexible:{l:'Flexible plan',ic:'∼',c:'#8a6cf0'}};
+const TYPES=['social','shopping','culture','travel','sport','school','family','entertainment','other'];
+const TEMPLATES=[
+ ['Meet a friend','social','confirmed','',60],['Go shopping','shopping','intention','the mall',90],['Visit a museum','culture','flexible','the museum',120],['Take a train','travel','fixed','the station',60],
+ ['Attend a dance class','sport','confirmed','dance studio',60],['Play basketball','sport','confirmed','the sports hall',60],['Go to the cinema','entertainment','confirmed','the cinema',120],['Study for an exam','school','intention','home',90],
+ ['Have a family dinner','family','confirmed','home',90],['Go to a concert','entertainment','confirmed','the arena',150],['Prepare for a birthday party','social','intention','home',90],['Visit a new city','travel','flexible','',240],
+ ['Go swimming','sport','flexible','the pool',60],['Have a sleepover','social','confirmed','',720],['Work on a school project','school','intention','school',90]].map(([title,type,status,loc,dur])=>({title,type,status,loc,dur}));
+const VERB_OPTS=['leaves','departs','arrives','starts','begins','ends','finishes','opens','closes'];
+const SAMPLES=[
+ [[0,'16:00',60,'Attend a dance class','confirmed','dance studio','','sport'],[1,'17:00',90,'Take a train','fixed','Warsaw','','travel','The train','leaves'],[2,'15:00',90,'Study for an exam','intention','home','','school'],[4,'18:00',60,'Meet a friend','confirmed','the café','Mia','social'],[5,'10:00',60,'Go swimming','flexible','the pool','','sport'],[5,'19:30',120,'Go to the cinema','fixed','the cinema','','entertainment','The film','starts']],
+ [[0,'15:30',60,'Play basketball','confirmed','the sports hall','Leo','sport'],[1,'16:00',90,'Go shopping','intention','the mall','','shopping'],[3,'09:15',45,'Take a bus','fixed','school','','travel','The bus','leaves'],[4,'19:00',150,'Go to a concert','confirmed','the arena','Alex','entertainment'],[5,'11:00',120,'Visit a museum','flexible','the museum','','culture'],[5,'17:00',30,'Museum closing time','fixed','the museum','','culture','The museum','closes']],
+ [[1,'17:00',60,'Have a family dinner','confirmed','home','my family','family'],[2,'18:00',60,'Work on a school project','intention','school','','school'],[4,'16:00',60,'Go swimming','confirmed','the pool','Sam','sport'],[5,'09:30',60,'Take a train','fixed','the station','','travel','The train','departs'],[6,'14:00',120,'Prepare for a birthday party','intention','home','','social']],
+ [[0,'18:00',60,'Study for an exam','intention','home','','school'],[2,'16:30',60,'Meet a friend','confirmed','the park','Nina','social'],[3,'18:30',120,'Go to the cinema','fixed','the cinema','','entertainment','The film','starts'],[5,'12:00',180,'Visit a new city','flexible','','','travel'],[6,'10:00',60,'Have a sleepover','flexible','','','social']]];
+const sampleWeek=i=>SAMPLES[i%4].map(([day,start,dur,title,status,loc,people,type,subject,verb])=>({id:uid(),title,day,start,end:hhmm(toMin(start)+dur),loc,people,type,status,note:'',subject:subject||'',verb:verb||''}));
+/* ----- structure explanations ----- */
+const EXPL={ps:'Present Simple is for timetables and fixed schedules: “The bus leaves at 9:15.”',pc:'Present Continuous is for personal arrangements that are already organised: “I’m meeting Mia at six.”',gt:'Be going to is for intentions and plans you decided before speaking: “I’m going to buy a new jacket.”',will:'Will is for spontaneous decisions, offers, promises and predictions: “I’ll help you!”',modal:'“Can” works, but “I’ll…” sounds like a decision or promise made right now.'};
+const NAME={ps:'Present Simple',pc:'Present Continuous',gt:'be going to',will:'will',modal:'can / shall'};
+const FORMULA={ps:'subject + verb(-s) + time',pc:'I’m / he’s / we’re + verb-ing + time',gt:'I’m / he’s / we’re going to + verb',will:'I’ll + verb'};
+/* ----- verb phrase from a title ----- */
+function evPhrase(e){const w=e.title.trim().split(/\s+/),f=(w[0]||'').toLowerCase(),rest=w.slice(1).join(' ');
+ if(BASE.has(f))return{base:f+(rest?' '+rest:''),ing:ing(f)+(rest?' '+rest:''),verb:f};
+ return{base:'have '+lowerFirst(e.title.trim()),ing:'having '+lowerFirst(e.title.trim()),verb:'have'}}
+function ttSubj(e){return (e.subject||('the '+lowerFirst(e.title.replace(/^(take|catch)\s+(a|the)\s+/i,''))))}
+function ttVerb(e){return e.verb||'starts'}
+const verbBase=v=>THIRDMAP[v]||v.replace(/s$/,'');
+const otherDay=d=>(d+2)%7;
+const ev12=e=>pmT(e.start);
+function peopleTxt(e,title){return e.people&&!new RegExp(e.people.split(/[ ,]+/)[0],'i').test(title)?' with '+e.people:''}
+/* ----- task builder ----- */
+let TID=0;
+function mkTask(round,kind,e,tense,sample){const day=DAYS[e.day],tm=spoken(e.start),ph=evPhrase(e),T={id:'t'+(++TID),round,kind,e,sample:!!sample,tense,expect:{time:null,day:null,words:[]},models:[],prim:[tense],alt:[],status:e.status};
+ const subj=ttSubj(e),vb=ttVerb(e),vbase=verbBase(vb),who=peopleTxt(e,e.title);
+ const kw=e.title.toLowerCase().split(/\W+/).filter(w=>w.length>3&&!/^(have|take|with|your|going|class|visit|attend|study|prepare|work)$/.test(w));
+ if(e.people)e.people.toLowerCase().split(/[ ,]+/).filter(x=>x.length>2).forEach(x=>kw.push(x));
+ if(tense==='ps'){T.alt=['pc'];
+  T.ctx=`<b>Timetable</b> · ${cap(subj)}${e.loc?' → '+esc(e.loc):''} · ${day} · ${e.start}`;
+  if(kind==='say'){T.prompt=`Tell your friend what time ${esc(subj)} ${esc(vb)}.`;T.expect={time:e.start,day:null,words:[]};T.models=[`${cap(subj)} ${vb} at ${tm}.`,`${cap(subj)} ${vb} at ${e.start}.`]}
+  if(kind==='ask'){T.prompt=`You need to know the time. Ask your friend about the timetable: when ${esc(subj)} ${esc(vb)}.`;T.models=[`What time does ${subj} ${vbase}?`,`Does ${subj} ${vbase} at ${tm}?`]}
+  if(kind==='neg'){const w=hhmm((toMin(e.start)+780)%1440);T.prompt=`Your friend thinks ${esc(subj)} ${esc(vb)} at ${w}. That’s wrong — correct them.`;T.expect={time:e.start,day:null,words:[]};T.models=[`${cap(subj)} doesn't ${vbase} at ${w}. It ${vb} at ${tm}.`]}
+  if(kind==='short'){T.prompt=`Your friend asks: “Does ${esc(subj)} ${esc(vbase)} at ${esc(tm)}?” Say yes.`;T.yn='yes';T.models=['Yes, it does.']}}
+ if(tense==='pc'){T.alt=['gt'];
+  T.ctx=`<b>Calendar</b> · ${esc(e.title)} · ${day}, ${pmT(e.start)}${e.people?' · with '+esc(e.people):''}${e.loc?' · '+esc(e.loc):''}<br><span class="sm">Already arranged.</span>`;T.expect={time:e.start,day:e.day,words:kw};
+  if(kind==='say'){T.prompt='How would you tell someone about this plan?';T.models=[`I'm ${ph.ing}${who} on ${day} at ${tm}.`,`I'm ${ph.ing}${who} on ${day}.`]}
+  if(kind==='ask'){T.prompt=`You want to know your friend’s plans. Ask about ${day} evening.`;T.expect={time:null,day:null,words:[]};T.models=[`What are you doing on ${day} evening?`,`Are you ${ph.ing} on ${day}?`]}
+  if(kind==='neg'){T.prompt=`Your friend thinks you’re ${esc(ph.ing)} on ${DAYS[otherDay(e.day)]}. That’s not true — say so.`;T.expect={time:null,day:null,words:[]};T.models=[`I'm not ${ph.ing} on ${DAYS[otherDay(e.day)]}. I'm ${ph.ing} on ${day}.`]}
+  if(kind==='short'){T.prompt=`Your friend asks: “Are you ${esc(ph.ing)} on ${day}?” Say yes.`;T.yn='yes';T.expect={time:null,day:null,words:[]};T.models=['Yes, I am.']}}
+ if(tense==='gt'){T.alt=['will'];if(e.status==='confirmed')T.alt=['pc'];
+  T.ctx=`<b>Intention</b> · ${esc(e.title)} · ${day}${e.start?' ('+pmT(e.start)+')':''}<br><span class="sm">You haven’t arranged anything yet.</span>`;T.expect={time:null,day:null,words:kw};
+  if(kind==='say'){T.prompt='Tell your friend about your intention.';T.models=[`I'm going to ${ph.base}${who} on ${day}.`,`I'm going to ${ph.base} this week.`]}
+  if(kind==='ask'){T.prompt='Ask your friend about their intentions for the weekend.';T.expect.words=[];T.models=["What are you going to do this weekend?","Are you going to do anything on Saturday?"]}
+  if(kind==='neg'){T.prompt=`You’ve decided NOT to ${esc(ph.base)}. Tell your friend.`;T.models=[`I'm not going to ${ph.base}.`]}
+  if(kind==='short'){T.prompt=`Your friend asks: “Are you going to ${esc(ph.base)}?” Say yes.`;T.yn='yes';T.expect.words=[];T.models=['Yes, I am.']}}
+ T.hint=`Think about the situation. Formula: <b>${FORMULA[tense]}</b>`;
+ return T}
+const WILL_T=[
+ {ctx:'<b>Mum</b>: “Can you buy some milk on your way home?”',prompt:'Decide right now and reply to Mum.',kind:'say',words:['milk','get','buy','pick','bring'],models:["Sure, I'll get some milk!","OK, I'll buy it on my way home."]},
+ {ctx:'<b>Friend</b>: “I can’t carry all these bags!”',prompt:'Offer to help.',kind:'say',words:['help','carry','take'],models:["Don't worry, I'll carry some!","I'll help you with your bags."]},
+ {ctx:'<b>Mia</b>: “Please don’t forget to send me the photos!”',prompt:'Make a promise.',kind:'say',words:['send','photos','tonight','promise'],models:["I promise I'll send them tonight!","Don't worry, I'll send them later."]},
+ {ctx:'<b>Friend</b>: “It’s cold in here.”',prompt:'Decide to do something about it — right now.',kind:'say',words:['window','heating','close','turn','coat','jacket'],models:["I'll close the window.","I'll turn the heating on."]},
+ {ctx:'<b>Friend</b>: “I’m so nervous about tomorrow’s exam!”',prompt:'Say what you think will happen.',kind:'say',words:['pass','fine','ok','well','good'],models:["Don't worry, you'll pass!","I'm sure you'll do well."]},
+ {ctx:'<b>Dad</b>: “Don’t tell Mum about the surprise party!”',prompt:'Promise you won’t tell.',kind:'neg',words:['tell','say','mum','secret'],models:["I won't tell her. I promise!","Don't worry, I won't say anything."]},
+ {ctx:'<b>Your friend</b> has too many heavy bags.',prompt:'Offer help by asking a question.',kind:'ask',words:['carry','help','bag'],models:["Shall I carry your bag?","Can I help you with your bags?"],modalOK:true},
+ {ctx:'<b>Phone</b>: ring ring… 📞 Nobody is picking up.',prompt:'Decide: say you’ll answer it.',kind:'say',words:['answer','get','phone','it'],models:["I'll get it!","I'll answer it."]}];
+function willTask(i,round){const w=WILL_T[i%WILL_T.length];return{id:'t'+(++TID),round,kind:w.kind,sample:true,e:null,tense:'will',ctx:w.ctx,prompt:w.prompt,prim:['will'],alt:w.modalOK?['modal']:['modal'],expect:{time:null,day:null,words:w.words},models:w.models,hint:`Decide right now. Formula: <b>${FORMULA.will}</b>`,status:'spont'}}
+const SAMPLE_E={ps:{title:'Take a bus',day:1,start:'09:15',status:'fixed',subject:'The bus',verb:'leaves',loc:'',people:''},pc:{title:'Meet Mia',day:4,start:'18:00',status:'confirmed',people:'Mia',loc:'',subject:'',verb:''},gt:{title:'Buy a new jacket',day:5,start:'',status:'intention',people:'',loc:'',subject:'',verb:''}};
+function buildRound(p,round){const KINDS=['say','say','ask','neg','short'],out=[];const by=s=>p.events.filter(e=>e.status===s);
+ const mk=(tense,list,r,i)=>{const e=list.length?list[i%list.length]:SAMPLE_E[tense];return mkTask(r,KINDS[i],list.length?e:Object.assign({id:'s'},e),tense,!list.length)};
+ if(round===1)for(let i=0;i<5;i++)out.push(mk('ps',by('fixed'),1,i));
+ else if(round===2)for(let i=0;i<5;i++)out.push(mk('pc',by('confirmed'),2,i));
+ else if(round===3){const L=by('intention').concat(by('flexible'));for(let i=0;i<5;i++)out.push(mk('gt',L,3,i))}
+ else if(round===4){const idx=[0,1,2,3,4,5,6,7].sort((a,b)=>((a*7+p.name.length+S.players.indexOf(p)*3)%8)-((b*7+p.name.length+S.players.indexOf(p)*3)%8));[0,1,2,5,6].forEach(k=>out.push(willTask(idx[k],4)))}
+ else{[['ps',by('fixed')],['pc',by('confirmed')],['gt',by('intention').concat(by('flexible'))]].forEach(([t,L],k)=>{const e=L.length?L[0]:SAMPLE_E[t];out.push(mkTask(5,'say',L.length?e:Object.assign({id:'s'},e),t,!L.length))});out.push(willTask(0,5));out.push(willTask(2,5));
+  out.forEach(t=>{t.round=5;t.mix=true;t.hint='Which structure fits best: a timetable, an arrangement, an intention, or a quick decision?'})}
+ return out}
+/* ----- judge a practice task ----- */
+function judgeTask(task,text){const a=analyze(text),L=[],res={a,verdict:'',lines:L,corrected:null,models:task.models,used:null};
+ const pick=a.structs.includes('will')?'will':a.structs.includes('gt')?'gt':a.structs.includes('pc')?'pc':a.structs.includes('ps')?'ps':null;res.used=pick;
+ if(!text.trim()){res.verdict='empty';L.push({t:'tip',s:'Write your sentence first.'});return res}
+ if(a.errors.length){res.verdict='fix';L.push({t:'tip',s:'Your meaning is almost clear — check the grammar:'});a.errors.forEach(e=>L.push({t:'bad',s:e.msg}));res.corrected=finalize(a.fixed,a.q);return res}
+ // form
+ let formBad=null;
+ if(task.kind==='ask'&&!a.q)formBad='This task needs a question. Start with Do / Does / Am / Is / Are / Will / Shall or a question word (What…?).';
+ if(task.kind==='neg'&&!a.neg)formBad='This task needs a negative sentence (not / n’t / won’t).';
+ if(task.kind==='short'){const s=a.short,okAux={ps:['do','does'],pc:['am','is','are'],gt:['am','is','are'],will:['will']}[task.tense]||[];
+  if(!s||!s.pron||!s.aux)formBad='Give a short answer: Yes / No + pronoun + auxiliary (for example: “Yes, I am.”).';
+  else if(s.yn!==(task.yn||'yes'))formBad=`The answer should be “${cap(task.yn||'yes')}”.`;
+  else if(!okAux.includes(s.aux))formBad=`Use the same auxiliary as in the question (${okAux.join(' / ')}).`;
+  else{const agree={i:['am','do','will'],he:['is','does','will'],she:['is','does','will'],it:['is','does','will'],we:['are','do','will'],you:['are','do','will'],they:['are','do','will']};if(!(agree[s.pron]||[]).includes(s.aux))formBad='Check the pronoun and auxiliary: I am / he is / they are / it does…';else{res.verdict='great';L.push({t:'ok',s:'Short answer — correct!'});return res}}}
+ if(formBad){res.verdict='form';L.push({t:'tip',s:formBad});return res}
+ const sts=a.structs.slice();if(a.modal&&!sts.length)sts.push('modal');
+ const prim=task.prim.some(k=>sts.includes(k)),alt=task.alt.some(k=>sts.includes(k));
+ // info
+ const info=[];const ex=task.expect||{};
+ if(ex.time){const ok=timeIn(text,ex.time);info.push({ok,s:ok?'You gave the time.':'Add the time.'})}
+ if(ex.day!=null&&task.e){const ok=dayIn(text,ex.day);info.push({ok,s:ok?'You gave the day.':'Add the day.'})}
+ if(ex.words&&ex.words.length){const n=norm(text);const ok=ex.words.some(w=>n.includes(w));info.push({ok,s:ok?'You said what you will do / who it is with.':'Add a few more details (what / who?).'})}
+ const miss=info.filter(x=>!x.ok);
+ const why=(need,used)=>{
+  if(need==='pc'&&used==='ps')return 'Present Simple is for timetables. This is your own arrangement — use Present Continuous: “I’m meeting…”.';
+  if(need==='pc'&&used==='gt')return '“Going to” is possible, but because the plan is already arranged, Present Continuous sounds more natural.';
+  if(need==='gt'&&used==='pc')return 'Present Continuous suggests everything is already arranged. You only have an intention, so use “be going to”.';
+  if(need==='gt'&&used==='will')return '“Will” is for decisions made at the moment. You decided before speaking — use “be going to”.';
+  if(need==='gt'&&used==='ps')return 'Present Simple is for timetables. For an intention use “be going to”.';
+  if(need==='ps'&&used==='pc')return 'Present Continuous is possible, but a timetable (bus, film, opening times) uses Present Simple.';
+  if(need==='ps'&&(used==='gt'||used==='will'))return 'Timetables use Present Simple: “The bus leaves at 9:15.”';
+  if(need==='will'&&(used==='gt'||used==='pc'))return 'You are deciding right now — use “will” (I’ll…). “Going to” / Present Continuous are for plans made before.';
+  if(need==='will'&&used==='ps')return 'For a spontaneous decision or promise use “will”: I’ll…';
+  return EXPL[need]};
+ if(prim){res.verdict=miss.length?'meaning':'great';L.push({t:'ok',s:`Great choice — you used ${NAME[pick]}${pick==='will'?' for a spontaneous decision':pick==='ps'?' for a timetable':pick==='pc'?' for an arrangement':' for an intention'}.`});L.push({t:'ok',s:EXPL[pick]});}
+ else if(alt){res.verdict=miss.length?'meaning':'alt';L.push({t:'ok',s:'Nice alternative!'});L.push({t:'tip',s:why(task.tense,pick||'modal')})}
+ else if(!sts.length){res.verdict='unclear';L.push({t:'tip',s:'I can’t see a clear structure yet. Try the formula: '+FORMULA[task.tense]+'.'})}
+ else{res.verdict='try';L.push({t:'tip',s:'Your meaning is clear. '+why(task.tense,pick||sts[0])})}
+ miss.forEach(m=>L.push({t:'tip',s:m.s}));info.filter(x=>x.ok).forEach(m=>L.push({t:'ok',s:m.s}));
+ return res}
+/* ====================== CHAT / TWIST / SPEAK ====================== */
+function intents(a){const t=a.t;return{
+ refuse:/\b(sorry|can not|not free|busy|unfortunately|afraid|not available|do not have time|i have to|i can not)\b/.test(t),
+ alt:/\b(how about|what about|let us|can we|shall we|another (day|time)|instead|free on|free after|maybe (on|we|next|tomorrow)|or (on|we)|what if|would you like to)\b/.test(t),
+ accept:/\b(sure|ok|okay|yes|of course|no problem|all right|alright|great)\b/.test(t),
+ offer:/\b(i will (help|carry|get|buy|lend|come|go|call|bring|pick|take|find|give|drive|check|share|do|try|ask)|let me|shall i|can i|do you want me|i can (help|carry|lend|come|bring|give|go))\b/.test(t),
+ promise:/\b(promise|swear|definitely|for sure|i will not forget|i will (send|call|be there|text|bring|post|upload))\b/.test(t),
+ explain:/\b(because|since|so |but i|i am (taking|meeting|having|going|visiting|playing|studying|working|doing|seeing|travelling|traveling|attending|training)|i have)\b/.test(t+' '),
+ comfort:/\b(do not worry|no worries|calm down|relax|it will be (ok|fine|okay|all right)|you will (be|pass|find|do))\b/.test(t),
+ plan:a.will||a.gt||a.pc,question:a.q}}
+const NEED={refuse:['You politely said you can’t.','Say politely that you can’t come (Sorry, I can’t…).'],alt:['You suggested another time.','Suggest another time (How about…? / Let’s…).'],pc:['You described your arrangement.','Say what you are doing (I’m … ing …).'],accept:['You answered the request.','Answer the request (Sure! / OK!).'],offer:['You offered to help.','Offer your help (I’ll help you! / Shall I…?).'],promise:['You made a promise.','Make a promise (I promise I’ll…).'],explain:['You explained the reason.','Explain why (I’m … / because …).'],plan:['You decided what to do.','Say what you will do (I’ll… / I’m going to… / I’m …ing).'],comfort:['You calmed your friend.','Calm your friend (Don’t worry…).'],question:['You asked a follow-up question.','You could also ask a question (What about…?).']};
+const dayWord=t=>{const m=/\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b/.exec(norm(t));return m?cap(m[1]):null};
+const SCEN=[
+ {id:'A',title:'Shopping invitation',sender:'Mia',role:'Best friend',color:'#7c5cff',msg:"Hey! Are you free on Tuesday? Let's go shopping after school!",cal:{day:1,start:'17:00',title:'Train to Warsaw',status:'fixed'},need:['refuse','pc','alt'],prim:['pc'],alt:['gt'],hint:'Check your calendar first. Say you can’t, say what you are doing, suggest another day.',example:"Sorry, I can't. I'm taking the train to Warsaw at five. How about Wednesday?",
+  follow:(t,r)=>r.I.alt?`${dayWord(t)||'That'} works for me! What time shall we meet?`:'Oh, OK. So when are you free, then?'},
+ {id:'B',title:'Milk, please!',sender:'Mum',role:'Parent',color:'#ff6b6b',msg:'Can you buy some milk on your way home?',need:['accept'],prim:['will'],alt:['modal','gt'],hint:'You decide right now. Use “I’ll…”.',example:"Sure, I'll get some milk!",follow:(t,r)=>r.used==='will'?'Thanks, darling! 💛 Could you get some bread too?':'Thank you! Please hurry, it’s getting late.'},
+ {id:'C',title:'A forgotten present',sender:'Alex',role:'Friend',color:'#2f6bff',msg:'Oh no! I forgot to buy a birthday present. The party starts in an hour!',need:['offer'],prim:['will'],alt:['modal'],hint:'Offer help with “I’ll…” — you decide at this moment.',example:"Don't worry, I'll help you! I'll come to the shop with you.",follow:(t,r)=>r.I.offer?'Really? You’re a lifesaver! Let’s meet outside the shop in ten minutes.':'Hmm… I don’t know what to do. Any ideas?'},
+ {id:'D',title:'The photos',sender:'Mia',role:'Friend',color:'#7c5cff',msg:"Please don't forget to send me the photos!",need:['promise'],prim:['will'],alt:[],hint:'Make a promise: “I promise I’ll…”.',example:"I promise I'll send them tonight!",follow:(t,r)=>r.I.promise?'Thank you!! You’re the best 😊':'Okay… but please do it today!'},
+ {id:'E',title:'Cinema clash',sender:'Leo',role:'Classmate',color:'#16a37f',msg:"Let's meet at the cinema on Saturday!",cal:{day:5,start:'16:00',title:'Dance class',status:'confirmed'},need:['explain','pc','alt'],prim:['pc'],alt:['gt','ps'],hint:'Explain the conflict, say what you are doing, suggest another time — and maybe ask a question.',example:"I'm sorry, I can't on Saturday — I'm going to my dance class at four. What about Sunday?",follow:(t,r)=>r.I.alt?`${dayWord(t)||'Another day'} could work. What time are you free?`:'Oh no. So when can we meet?'},
+ {id:'F',title:'Bus cancelled!',sender:'Travel update',role:'Travel company',color:'#ffa94d',msg:'Your bus has been cancelled!',need:['plan'],prim:['will','gt','pc'],alt:['modal'],hint:'Decide what to do. Any natural plan is OK: I’ll… / I’m going to… / I’m meeting…',example:"I'll take a taxi. / I'm going to book another ticket.",follow:(t,r)=>'Update: the next bus leaves at 19:30. Platform 4.'}];
+function scenCal(p,sc){if(!sc.cal)return null;const c=sc.cal,m=toMin(c.start);const e=p.events.find(x=>x.day===c.day&&toMin(x.start)<=m+60&&toMin(x.end)>m-1)||p.events.find(x=>x.day===c.day);return e?{title:e.title,day:e.day,start:e.start,real:true}:{title:c.title,day:c.day,start:c.start,real:false}}
+function judgeScen(sc,text,evw){const a=analyze(text),I=intents(a),L=[],res={a,I,verdict:'',lines:L,corrected:null,used:null};
+ const sts=a.structs.slice();if(a.modal&&!sts.includes('will'))sts.push('modal');res.used=a.structs.includes('will')?'will':a.structs.includes('gt')?'gt':a.structs.includes('pc')?'pc':a.structs.includes('ps')?'ps':(a.modal?'modal':null);
+ if(!text.trim()){res.verdict='empty';L.push({t:'tip',s:'Write your reply first.'});return res}
+ if(a.errors.length){res.verdict='fix';L.push({t:'tip',s:'Your message is almost clear — check the grammar:'});a.errors.forEach(e=>L.push({t:'bad',s:e.msg}));res.corrected=finalize(a.fixed,a.q);return res}
+ const need=(sc.need||[]).slice(),miss=[];
+ need.forEach(k=>{let ok;if(k==='pc')ok=a.pc||a.gt;else if(k==='accept')ok=I.accept||I.plan||I.offer;else if(k==='promise')ok=I.promise||a.will;else if(k==='offer')ok=I.offer||a.will||a.modal;else ok=I[k];
+  if(k==='explain'&&evw&&evw.length&&evw.some(w=>a.t.includes(w)))ok=true;if(ok)L.push({t:'ok',s:NEED[k][0]});else miss.push(k)});
+ const prim=(sc.prim||[]).some(k=>sts.includes(k)),alt=(sc.alt||[]).some(k=>sts.includes(k));
+ if(prim)L.push({t:'ok',s:`Good structure — ${NAME[res.used]}. ${EXPL[res.used]}`});
+ else if(alt)L.push({t:'tip',s:`Possible, but ${NAME[res.used]} isn’t the most natural here. ${EXPL[(sc.prim||['will'])[0]]}`});
+ else if(sts.length)L.push({t:'tip',s:`Your meaning is clear. Think about the situation: ${EXPL[(sc.prim||['will'])[0]]}`});
+ else L.push({t:'tip',s:'Try a full sentence with a clear structure: '+FORMULA[(sc.prim||['will'])[0]]+'.'});
+ miss.forEach(k=>L.push({t:'tip',s:NEED[k][1]}));
+ const good=!miss.length&&(prim||(!sc.prim)),okish=!miss.length&&alt;
+ res.verdict=good?'great':okish?'alt':miss.length&&miss.length<need.length?'partial':(prim||alt)?'partial':'try';
+ res.score={prim,alt,miss};return res}
+const TWISTS=[
+ {id:'t1',title:'The bus is late',msg:'Your bus is 30 minutes late! Your friend is waiting for you at the cinema.',day:5,time:'18:00',want:['plan','explain'],good:'Your friend writes: “No problem, I’ll wait inside. Hurry up!”',other:'Your friend writes: “Where are you?? The film is starting!”'},
+ {id:'t2',title:'New screening time',msg:'The cinema has changed the film time from 6 PM to 8 PM. You’re meeting friends at six.',day:5,time:'18:00',want:['plan','alt'],good:'Everyone agrees: “Let’s get pizza first, then the film.”',other:'Your friends are confused: “So… what are we doing now?”'},
+ {id:'t3',title:'Lost phone',msg:'Your friend says: “I lost my phone and I can’t call anyone!”',day:3,time:'16:00',want:['offer','plan'],good:'Your friend: “Thank you! That helps a lot.”',other:'Your friend: “Oh no… what do I do?”'},
+ {id:'t4',title:'Rain!',msg:'It’s starting to rain. You planned a picnic in the park this afternoon.',day:5,time:'14:00',want:['plan','alt'],good:'The group cheers: “Great idea — a picnic indoors!”',other:'The picnic basket is getting wet…'},
+ {id:'t5',title:'No ticket',msg:'Sam: “I forgot my ticket and the train leaves in ten minutes!”',day:1,time:'17:00',want:['offer','plan'],good:'Sam: “You’re a star! See you at the station!”',other:'Sam: “It’s too late. I’m going to miss the train…”'},
+ {id:'t6',title:'Heavy bags',msg:'Dad: “The shopping bags are really heavy. Can you help me?”',day:5,time:'11:00',want:['offer'],good:'Dad: “Thanks! You’re a big help.”',other:'Dad: “Never mind, I’ll do it myself.”'},
+ {id:'t7',title:'No present',msg:'The party starts in an hour and you haven’t bought a present.',day:5,time:'18:00',want:['plan','explain'],good:'You find a nice gift just in time!',other:'The shops are closing…'},
+ {id:'t8',title:'Two invitations',msg:'Mia invites you to the cinema and Leo invites you to a basketball game — both on Saturday at four.',day:5,time:'16:00',want:['plan','explain','alt'],good:'Both friends understand: “OK, maybe next time!”',other:'Mia and Leo are waiting for your answer…'},
+ {id:'t9',title:'Fully booked',msg:'The restaurant says: “Sorry, we’re fully booked tonight.”',day:4,time:'19:00',want:['plan','alt'],good:'Your group: “Good idea! Let’s try the pizza place.”',other:'Your group is hungry and waiting…'},
+ {id:'t10',title:'Surprise test',msg:'The teacher announces a surprise test tomorrow morning. You planned to go out tonight.',day:2,time:'18:00',want:['plan','explain'],good:'Your friends: “Good luck! We’ll go out on Friday.”',other:'Your friends: “So are you coming or not?”'},
+ {id:'t11',title:'Need a lift',msg:'Your friend needs a lift to the station. You don’t have a car, but your uncle does.',day:6,time:'09:00',want:['offer','plan'],good:'Your friend: “Wow, thank you so much!”',other:'Your friend is looking at the clock…'},
+ {id:'t12',title:'Earlier start',msg:'You find out that the concert starts at six, not seven.',day:4,time:'19:00',want:['plan','explain'],good:'Your friend: “Thanks for telling me! Let’s leave earlier.”',other:'Your friend: “Oh no, we’re going to be late!”'}];
+function judgeTwist(tw,text){const a=analyze(text),I=intents(a),L=[],res={a,I,verdict:'',lines:L,corrected:null,used:null};res.used=a.structs.includes('will')?'will':a.structs.includes('gt')?'gt':a.structs.includes('pc')?'pc':a.structs.includes('ps')?'ps':null;
+ if(!text.trim()){res.verdict='empty';L.push({t:'tip',s:'Write your answer first.'});return res}
+ if(a.errors.length){res.verdict='fix';L.push({t:'tip',s:'Your idea is almost clear — check the grammar:'});a.errors.forEach(e=>L.push({t:'bad',s:e.msg}));res.corrected=finalize(a.fixed,a.q);return res}
+ const found=tw.want.filter(k=>k==='alt'?(I.alt||I.plan&&/\b(instead|another|different|later|earlier|taxi|new)\b/.test(a.t)):(I[k]||(k==='offer'&&a.modal)));
+ const lab={plan:['You said what you will do.','Say what you will do (I’ll… / I’m going to…).'],offer:NEED.offer,explain:['You explained your situation or new plan.','Explain the situation or your new plan (…because… / I’m …ing).'],alt:['You suggested an alternative.','Suggest an alternative (How about…? / Let’s… instead).']};
+ tw.want.forEach(k=>{if(found.includes(k))L.push({t:'ok',s:lab[k][0]});else L.push({t:'tip',s:lab[k][1]})});
+ if(res.used)L.push({t:'ok',s:`Structure: ${NAME[res.used]}. ${EXPL[res.used]}`});else if(!a.modal)L.push({t:'tip',s:'Try a full sentence with I’ll… / I’m going to… / I’m …ing.'});
+ res.verdict=found.length>=Math.min(2,tw.want.length)&&res.used?'great':found.length&&(res.used||a.modal)?'partial':'try';res.found=found;return res}
+const SPEAK=[
+ {id:'s1',title:'Tell me about your week',q:day=>`What are you doing on ${day}?`,focus:'pc',tip:'Use Present Continuous for your arrangements.'},
+ {id:'s2',title:'Explain your intentions',q:()=>'What are you going to do this weekend?',focus:'gt',tip:'Use be going to for intentions.'},
+ {id:'s3',title:'React to a problem',q:()=>'Your friend has missed the bus. What will you do?',focus:'will',tip:'Offer help with “I’ll…”.'},
+ {id:'s4',title:'Compare your plans',q:()=>'How are your plans different from your partner’s?',focus:'pc',tip:'“I’m … but she’s …”'},
+ {id:'s5',title:'Negotiate a meeting',q:()=>'You want to meet, but you are both busy. Find a suitable time.',focus:'mix',tip:'“I’m busy on… How about…?”'},
+ {id:'s6',title:'Predict what will happen',q:()=>'What do you think will happen next?',focus:'will',tip:'“I think… will…”'}];
+function judgeFree(text,focus){const a=analyze(text),L=[],res={a,verdict:'',lines:L,corrected:null,used:null};res.used=a.structs.includes('will')?'will':a.structs.includes('gt')?'gt':a.structs.includes('pc')?'pc':a.structs.includes('ps')?'ps':null;
+ if(!text.trim()){res.verdict='empty';L.push({t:'tip',s:'Write something first.'});return res}
+ if(a.errors.length){res.verdict='fix';L.push({t:'tip',s:'Your meaning is clear — check the grammar:'});a.errors.forEach(e=>L.push({t:'bad',s:e.msg}));res.corrected=finalize(a.fixed,a.q);return res}
+ if(focus&&focus!=='none'&&focus!=='mix'){if(a.structs.includes(focus)){res.verdict='great';L.push({t:'ok',s:`Nice — you used ${NAME[focus]}. ${EXPL[focus]}`})}else{res.verdict='try';L.push({t:'tip',s:`Your message is understandable. For this situation try ${NAME[focus]}: ${EXPL[focus]}`})}}
+ else if(res.used){res.verdict='great';L.push({t:'ok',s:`Clear message — you used ${NAME[res.used]}. ${EXPL[res.used]}`})}
+ else{res.verdict='unclear';L.push({t:'tip',s:'Try a full sentence: I’ll… / I’m going to… / I’m …ing / the bus leaves…'})}
+ return res}
+/* ====== per-student variants of every chat scenario ====== */
+const fol=(yes,no)=>(t,r)=>(r.I&&(r.I.alt||r.I.offer||r.I.promise)||r.used==='will'||r.used==='pc')?yes:no;
+const VARIANTS={
+ A:[{},
+  {sender:'Leo',role:'Classmate',color:'#16a37f',title:'Basketball invitation',msg:'Want to play basketball on Wednesday after lessons?',cal:{day:2,start:'16:00',title:'Study for an exam',status:'intention'},example:"Sorry, I can't. I'm studying for an exam at four. How about Thursday?",follow:(t,r)=>r.I.alt?`${dayWord(t)||'That'} sounds good! I'll book the court.`:'No problem. Let me know when you are free!'},
+  {sender:'Nina',role:'Friend',color:'#d65db1',title:'Cinema on Thursday',msg:'Fancy going to the cinema on Thursday evening?',cal:{day:3,start:'19:00',title:'Family dinner',status:'confirmed'},example:"Sorry, I can't. I'm having dinner with my family at seven. What about Friday?",follow:(t,r)=>r.I.alt?`${dayWord(t)||'Another day'} is fine with me. What film shall we see?`:'Oh, OK. Maybe another time then?'},
+  {sender:'Sam',role:'Classmate',color:'#2bb3c0',title:'School project',msg:'Are you free on Monday? Let’s work on our school project together!',cal:{day:0,start:'16:00',title:'Dance class',status:'confirmed'},example:"Sorry, I can't. I'm going to my dance class at four. How about Tuesday?",follow:(t,r)=>r.I.alt?`${dayWord(t)||'That'} works. I'll bring the posters!`:'Hmm… when can we meet, then?'}],
+ B:[{},
+  {sender:'Dad',role:'Parent',color:'#2f6bff',title:'The rubbish',msg:'Can you take the rubbish out before you go out?',example:"Sure, I'll do it right now!",follow:fol('Thanks! And please close the gate too.','Please do it before you leave.')},
+  {sender:'Grandma',role:'Family',color:'#ffa94d',title:'The letter',msg:'Could you post this letter for me on your way to school?',example:"Of course, I'll post it this morning!",follow:fol('Thank you, dear! You are so kind.','Thank you… please don’t forget it.')},
+  {sender:'Little sister',role:'Sister',color:'#d65db1',title:'So thirsty',msg:'I’m so thirsty, but my hands are full of toys…',example:"Don't worry, I'll bring you some juice!",follow:fol('Yay! Thank you!!','Hmm… I am still thirsty.')}],
+ C:[{},
+  {sender:'Nina',role:'Friend',color:'#d65db1',title:'Lost keys',msg:'I can’t find my keys and I’m late for school!',example:"Don't worry, I'll help you look for them!",follow:(t,r)=>r.I.offer?'Found them! They were in my bag. Thanks for helping!':'Oh no… where can they be?'},
+  {sender:'Leo',role:'Classmate',color:'#16a37f',title:'Flat tyre',msg:'My bike has a flat tyre and the match starts in twenty minutes!',example:"Don't worry, I'll lend you my bike!",follow:(t,r)=>r.I.offer?'Really?! You are the best. Meet me at the gate!':'I’m going to be late…'},
+  {sender:'Sam',role:'Classmate',color:'#2bb3c0',title:'Forgotten homework',msg:'I left my homework at home and the lesson starts soon!',example:"Don't worry, I'll show you mine after the lesson!",follow:(t,r)=>r.I.offer?'Thanks! I owe you one.':'What am I going to tell the teacher?'}],
+ D:[{},
+  {sender:'Mum',role:'Parent',color:'#ff6b6b',title:'Call Grandma',msg:'Please don’t forget to call Grandma tonight!',example:"I promise I'll call her after dinner!",follow:(t,r)=>r.I.promise||r.used==='will'?'Thank you, darling. She will be so happy.':'Please do not forget!'},
+  {sender:'Leo',role:'Classmate',color:'#16a37f',title:'My book',msg:'Promise you’ll bring my book back tomorrow?',example:"I promise I'll bring it tomorrow morning!",follow:(t,r)=>r.I.promise||r.used==='will'?'Great, I need it for the test.':'Hmm… I really need it tomorrow.'},
+  {sender:'Nina',role:'Friend',color:'#d65db1',title:'My plants',msg:'Don’t forget to water my plants while I’m away!',example:"Don't worry, I'll water them every day!",follow:(t,r)=>r.I.promise||r.used==='will'?'You are a star! I’ll bring you a present.':'Please, they’ll die without water!'}],
+ E:[{},
+  {sender:'Mia',role:'Best friend',color:'#7c5cff',title:'Museum clash',msg:'Let’s go to the museum on Friday afternoon!',cal:{day:4,start:'16:00',title:'Play basketball',status:'confirmed'},example:"I'm sorry, I can't on Friday — I'm playing basketball at four. What about Saturday?",follow:(t,r)=>r.I.alt?`${dayWord(t)||'Another day'} could work. What time are you free?`:'Oh no. So when can we go?'},
+  {sender:'Alex',role:'Friend',color:'#2f6bff',title:'Birthday party',msg:'Come to my birthday party on Sunday at two!',cal:{day:6,start:'14:00',title:'Have a family dinner',status:'confirmed'},example:"I'm sorry, I can't on Sunday — I'm having a family dinner at two. Can we celebrate on Saturday?",follow:(t,r)=>r.I.alt?`${dayWord(t)||'Another day'} would be OK. I’ll ask my parents!`:'That’s a pity… are you coming later?'},
+  {sender:'Nina',role:'Friend',color:'#d65db1',title:'The park',msg:'Let’s meet at the park on Monday after school!',cal:{day:0,start:'16:00',title:'Go swimming',status:'confirmed'},example:"I'm sorry, I can't on Monday — I'm going swimming at four. What about Tuesday?",follow:(t,r)=>r.I.alt?`${dayWord(t)||'Another day'} is fine. See you there!`:'Oh, OK. When are you free, then?'}],
+ F:[{},
+  {sender:'Travel update',role:'Travel company',color:'#ffa94d',title:'Train delayed',msg:'Your train is delayed by one hour!',example:"I'll call my friend and tell her. / I'm going to read a book.",follow:()=>'Update: the train now leaves at 18:45 from platform 2.'},
+  {sender:'Coach',role:'Sports club',color:'#16a37f',title:'Match cancelled',msg:'The match has been cancelled because of the rain!',example:"I'll text my team. / I'm going to play at home instead.",follow:()=>'The match is moved to next Saturday at 10:00.'},
+  {sender:'Phone',role:'System message',color:'#2f6bff',title:'Battery low',msg:'Your phone battery is almost dead and you are meeting Mia in ten minutes!',example:"I'll send Mia a message now. / I'm going to charge my phone.",follow:()=>'Mia: “No problem, I’ll wait at the café!”'}]};
+function variantOf(sc,vi){const arr=VARIANTS[sc.id];if(!arr)return sc;const v=arr[vi%arr.length]||{};return Object.assign({},sc,v)}
+/* ====================== STATE ====================== */
+const KEY='myweek_v1',COLORS=['#7c5cff','#2f6bff','#ff6b6b','#16a37f','#ffa94d','#d65db1','#2bb3c0','#8bc34a'];
+const newPlayer=i=>({name:'',color:COLORS[i],avatar:i,events:[],pr:{round:1,tasks:null,i:0,tries:0,done:{}},chat:{},twist:{},speak:{},stats:{sentences:0,comm:0,fixes:0,struct:{ps:0,pc:0,gt:0,will:0},rounds:{},speak:0}});
+const fresh=()=>({v:1,screen:'home',view:'week',n:2,players:[newPlayer(0),newPlayer(1)],cur:0,mode:'practice',hints:true,explain:true,sound:true,theme:'auto',tOpen:false,weekName:'My week',wild:[],group:{day:5,activity:'',start:'16:00',end:'18:00',how:'',msgs:{},decision:null},final:{day:5,text:'',change:''},log:[],cmp:false});
+let S=fresh();const UI={fb:null,draft:{},bad:{},ex:false,scen:null,twist:null,gfb:{},tw:{},busy:{}};
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function load(){try{const o=JSON.parse(localStorage.getItem(KEY));if(o&&o.v===1&&o.players&&o.players.length){const f=fresh();S=Object.assign(f,o);S.group=Object.assign(f.group,o.group||{});S.final=Object.assign(f.final,o.final||{});S.players.forEach((p,i)=>{const n=newPlayer(i);p.pr=Object.assign(n.pr,p.pr||{});p.stats=Object.assign(n.stats,p.stats||{});p.stats.struct=Object.assign(n.stats.struct,p.stats.struct||{});p.chat=p.chat||{};p.twist=p.twist||{};p.speak=p.speak||{};p.events=p.events||[]});return true}}catch(e){}return false}
+const P=()=>S.players[S.cur]||S.players[0],pname=(p,i)=>(p.name||'').trim()||('Player '+((i!=null?i:S.players.indexOf(p))+1));
+/* ====================== SOUND ====================== */
+let AC;function beep(f,d,g){if(!S.sound)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),v=AC.createGain();o.type='sine';o.frequency.value=f;v.gain.setValueAtTime(g||.06,AC.currentTime);v.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+d);o.connect(v);v.connect(AC.destination);o.start();o.stop(AC.currentTime+d)}catch(e){}}
+const ding=()=>{beep(880,.18);setTimeout(()=>beep(1175,.28),110)},okS=()=>{beep(660,.12);setTimeout(()=>beep(990,.2),100)},noS=()=>beep(300,.2);
+function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2400)}
+/* ====================== AVATAR ====================== */
+function avatar(p,sz){const g={star:'<path d="M20 8l3.6 7.6 8.2 1-6 5.7 1.6 8.2L20 26.400l-7.400 4.100 1.600-8.200-6-5.700 8.200-1z"/>',moon:'<path d="M24 9a11 11 0 1 0 7 17 9 9 0 0 1-7-17z"/>',bolt:'<path d="M23 7L12 22h7l-2 11 11-16h-7z"/>',leaf:'<path d="M10 28C10 15 18 9 31 9c0 13-6 21-19 21z"/><path d="M12 30L24 18" stroke="#0003" stroke-width="2" fill="none"/>',wave:'<path d="M7 24q4-8 8 0t8 0 8 0v6H7z"/>',flame:'<path d="M20 7c2 6 8 8 8 15a8 8 0 0 1-16 0c0-4 3-5 3-9 2 1 4 2 5-6z"/>'}[['star','moon','bolt','leaf','wave','flame'][p.avatar%6]];
+ return`<svg class="av" viewBox="0 0 40 40" width="${sz||36}" height="${sz||36}" aria-hidden="true"><circle cx="20" cy="20" r="20" fill="${p.color}"/><g fill="#fff" opacity=".95">${g}</g></svg>`}
+/* ====================== SHELL ====================== */
+const VIEWS=[['week','My Week'],['practice','Sentences'],['chat','Chat Storm'],['twist','Plot Twist'],['group','Group'],['speak','Speak'],['final','Final Mission'],['progress','Progress']];
+function pendingWild(p,i){return S.wild.filter(w=>wildFor(w,i)&&!(p.chat['w'+w.id]&&p.chat['w'+w.id].opened)).length}
+function render(){document.documentElement.dataset.theme=S.theme==='auto'?'':S.theme;const app=$('#app');
+ if(S.screen==='home'){app.innerHTML=homeHTML();save();return}
+ const p=P();const un=pendingWild(p,S.cur);
+ app.innerHTML=`<header class="top"><div class="brand"><b>MY WEEK</b><span>MY PLANS!</span></div><div class="pl">${S.players.map((q,i)=>`<button class="pchip ${i===S.cur?'on':''}" data-a="cur" data-i="${i}" style="--c:${q.color}">${avatar(q,26)}<span>${esc(pname(q,i))}</span></button>`).join('')}</div>
+ <div class="tools"><span class="badge ${S.mode}">${S.mode==='practice'?'Practice':'Challenge'}</span><button class="ib" data-a="sound" title="Sound" aria-label="Sound ${S.sound?'on':'off'}" aria-pressed="${S.sound}">${S.sound?'🔊':'🔇'}</button><button class="ib" data-a="theme" title="Theme" aria-label="Switch theme">◐</button><button class="btn sm pri" data-a="teacher">🎓 Teacher</button></div></header>
+ <nav class="nav">${VIEWS.map(([k,l])=>`<button class="nv ${S.view===k?'on':''}" data-a="view" data-v="${k}">${l}${k==='chat'&&un?`<i class="dot">${un}</i>`:''}</button>`).join('')}</nav>
+ <main id="main">${({week:weekHTML,practice:practiceHTML,chat:chatHTML,twist:twistHTML,group:groupHTML,speak:speakHTML,final:finalHTML,progress:progressHTML})[S.view]()}</main>${S.tOpen?teacherHTML():''}`;
+ afterRender();save()}
+function homeHTML(){const saved=(()=>{try{const o=JSON.parse(localStorage.getItem(KEY));return o&&o.started?o:null}catch(e){return null}})();
+ return`<div class="home"><div class="hero"><h1>MY WEEK,<br>MY PLANS!</h1><p class="tag">Plan it. Message it. Change it. Speak it.</p></div>
+ <div class="card"><h2>Choose your team</h2><div class="cnt">${[1,2,3,4].map(n=>`<button class="cntb ${S.n===n?'on':''}" data-a="n" data-v="${n}"><b>${n}</b><span>${n===1?'player':'players'}</span></button>`).join('')}</div>
+ <div class="pcards">${S.players.map((p,i)=>`<div class="pcard" style="--c:${p.color}"><div class="pc-top">${avatar(p,46)}<input class="inp" data-in="name" data-i="${i}" value="${esc(p.name)}" placeholder="Name or nickname (player ${i+1})" maxlength="20" aria-label="Name of player ${i+1}"></div>
+  <div class="lab">Colour</div><div class="sw">${COLORS.map(c=>`<button class="swb ${p.color===c?'on':''}" style="background:${c}" data-a="pcolor" data-i="${i}" data-v="${c}" aria-label="colour"></button>`).join('')}</div>
+  <div class="lab">Avatar</div><div class="sw">${[0,1,2,3,4,5].map(a=>`<button class="avb ${p.avatar%6===a?'on':''}" data-a="pav" data-i="${i}" data-v="${a}" aria-label="avatar ${a+1}">${avatar(Object.assign({},p,{avatar:a}),30)}</button>`).join('')}</div></div>`).join('')}</div>
+ <div class="lab">Game mode</div><div class="seg"><button class="${S.mode==='practice'?'on':''}" data-a="mode" data-v="practice">Practice <small>hints &amp; examples</small></button><button class="${S.mode==='challenge'?'on':''}" data-a="mode" data-v="challenge">Challenge <small>no hints before you try</small></button></div>
+ <div class="acts"><button class="btn pri big" data-a="start">Start the game →</button>${saved?'<button class="btn big" data-a="resume">Continue saved game</button>':''}</div></div></div>`}
+function afterRender(){$$('textarea[data-draft]').forEach(t=>{const k=t.dataset.draft;if(UI.draft[k]!=null)t.value=UI.draft[k]})}
+/* ====================== CALENDAR ====================== */
+const H0=7,H1=23,RH=42;
+const evDur=e=>Math.max(15,(toMin(e.end)||toMin(e.start)+60)-toMin(e.start));
+function lanes(evs){const s=evs.slice().sort((a,b)=>toMin(a.start)-toMin(b.start)||evDur(b)-evDur(a)),out=[];let cl=[],end=-1;
+ const flush=()=>{const L=[];cl.forEach(e=>{let k=0;while(L[k]&&L[k]>toMin(e.start))k++;L[k]=toMin(e.start)+evDur(e);e._l=k});const n=L.length;cl.forEach(e=>{e._n=n;out.push(e)});cl=[]};
+ s.forEach(e=>{if(cl.length&&toMin(e.start)>=end)flush();cl.push(e);end=Math.max(end,toMin(e.start)+evDur(e))});if(cl.length)flush();return out}
+function overlaps(p){const r=[];p.events.forEach((a,i)=>p.events.slice(i+1).forEach(b=>{if(a.day===b.day&&toMin(a.start)<toMin(b.start)+evDur(b)&&toMin(b.start)<toMin(a.start)+evDur(a))r.push([a,b])}));return r}
+function colHTML(d,list){const lay=lanes(list.filter(e=>e.day===d).map(e=>Object.assign({},e)));
+ const lines=Array.from({length:H1-H0},(_,i)=>`<i class="hl" style="top:${i*RH}px"></i>`).join('');
+ return`<div class="col" data-day="${d}" style="height:${(H1-H0)*RH}px">${lines}${lay.map(e=>{const top=Math.max(0,(toMin(e.start)-H0*60)/60*RH),h=Math.max(24,evDur(e)/60*RH-2),w=100/e._n,st=STATUS[e.status]||STATUS.confirmed,own=e._owner;
+  return`<div class="ev ${e.status}" data-id="${e.id}" data-own="${own!=null?own:S.cur}" style="top:${top}px;height:${h}px;left:calc(${e._l*w}% + 2px);width:calc(${w}% - 4px);--sc:${st.c};--oc:${e._color||st.c}" tabindex="0" role="button" aria-label="${esc(e.title)}, ${DAYS[e.day]} ${e.start}"><b>${st.ic} ${esc(e.title)}</b><span>${e.start}–${e.end}${e.loc?' · '+esc(e.loc):''}</span>${e._name?`<em>${esc(e._name)}</em>`:''}</div>`}).join('')}</div>`}
+function calHTML(list){return`<div class="cal"><div class="cal-h"><div></div>${DAYS.map(d=>`<div>${d.slice(0,3)}</div>`).join('')}</div><div class="cal-b"><div class="hrs">${Array.from({length:H1-H0},(_,i)=>`<div style="height:${RH}px">${pad(H0+i)}:00</div>`).join('')}</div>${DAYS.map((_,d)=>colHTML(d,list)).join('')}</div></div>`}
+function allEvents(){return S.players.flatMap((p,i)=>p.events.map(e=>Object.assign({},e,{_owner:i,_color:p.color,_name:pname(p,i)})))}
+function weekHTML(){const p=P(),cmp=S.cmp&&S.players.length>1,list=cmp?allEvents():p.events.map(e=>Object.assign({},e,{_owner:S.cur}));const ov=overlaps(p);
+ const tt=p.events.filter(e=>e.status==='fixed').sort((a,b)=>a.day-b.day||toMin(a.start)-toMin(b.start));
+ return`<div class="wk"><aside class="side"><div class="card"><div class="lab" style="margin-top:0">Week name <small>(no real dates needed)</small></div><input class="inp" data-in="week" value="${esc(S.weekName)}" maxlength="30" aria-label="Week name">
+ <div class="acts"><button class="btn pri" data-a="evnew">＋ Add event</button></div>
+ <div class="lab">Quick templates</div><div class="chips">${TEMPLATES.map((t,i)=>`<button class="chip" data-a="evtpl" data-i="${i}">${esc(t.title)}</button>`).join('')}</div>
+ ${S.players.length>1?`<div class="lab">View</div><div class="seg"><button class="${!cmp?'on':''}" data-a="cmp" data-v="0">${esc(pname(p))}</button><button class="${cmp?'on':''}" data-a="cmp" data-v="1">Compare all</button></div>`:''}
+ <div class="lab">Status</div><div class="legend">${Object.entries(STATUS).map(([k,s])=>`<span class="lg ${k}" style="--sc:${s.c}"><b>${s.ic}</b>${s.l}</span>`).join('')}</div>
+ <div class="acts"><button class="btn sm" data-a="sample">Load sample week</button><button class="btn sm" data-a="clearweek">Clear my week</button></div></div>
+ <div class="card"><h3>Timetable</h3>${tt.length?tt.map(e=>`<div class="ttl"><b>${esc(cap(ttSubj(e)))} ${esc(ttVerb(e))} at ${e.start}.</b><span>${DAYS[e.day].slice(0,3)}</span></div>`).join(''):'<p class="sub">No fixed timetable events yet. Set an event to “Fixed timetable” to see it here.</p>'}</div>
+ ${ov.length?`<div class="card warn"><h3>Overlaps</h3>${ov.map(([a,b])=>`<div class="ttl"><b>${esc(a.title)} ↔ ${esc(b.title)}</b><span>${DAYS[a.day].slice(0,3)}</span></div>`).join('')}</div>`:''}</aside>
+ <section class="calwrap"><div class="calt"><h2>${esc(S.weekName)} — ${cmp?'all calendars':esc(pname(p))}</h2><span class="sub">Click an empty slot to add · click an event to edit · drag to move</span></div>${p.events.length||cmp&&list.length?'':'<div class="empty">Your week is empty. Add an event, use a template, or load a sample week.</div>'}${calHTML(list)}</section></div>`}
+function evForm(e,isNew){const tp=TYPES.map(t=>`<option ${e.type===t?'selected':''}>${t}</option>`).join(''),st=Object.entries(STATUS).map(([k,s])=>`<option value="${k}" ${e.status===k?'selected':''}>${s.ic} ${s.l}</option>`).join('');
+ return`<h2>${isNew?'New event':'Edit event'}</h2><div class="form"><label class="fw">Title<input class="inp" id="f-title" value="${esc(e.title)}" maxlength="60" placeholder="e.g. Meet Mia"></label>
+ <label>Day<select class="inp" id="f-day">${DAYS.map((d,i)=>`<option value="${i}" ${e.day===i?'selected':''}>${d}</option>`).join('')}</select></label><label>Start<input class="inp" type="time" id="f-start" value="${e.start}"></label><label>End<input class="inp" type="time" id="f-end" value="${e.end}"></label>
+ <label>Location<input class="inp" id="f-loc" value="${esc(e.loc)}" maxlength="40"></label><label>People<input class="inp" id="f-people" value="${esc(e.people)}" maxlength="40" placeholder="e.g. Mia, Leo"></label>
+ <label>Event type<select class="inp" id="f-type">${tp}</select></label><label>Status<select class="inp" id="f-status">${st}</select></label>
+ <div class="fw tt" id="f-tt" style="${e.status==='fixed'?'':'display:none'}"><span class="lab" style="margin:0">Timetable sentence</span><div class="row"><input class="inp" id="f-subj" value="${esc(e.subject)}" placeholder="the bus" maxlength="30"><select class="inp" id="f-verb">${VERB_OPTS.map(v=>`<option ${(e.verb||'starts')===v?'selected':''}>${v}</option>`).join('')}</select><span class="sub">at the start time</span></div></div>
+ <label class="fw">Note (optional)<input class="inp" id="f-note" value="${esc(e.note)}" maxlength="80"></label></div><div id="f-err" class="err" style="display:none"></div>
+ <div class="acts" style="justify-content:space-between"><div>${isNew?'':'<button class="btn" data-a="evdel">Delete</button> <button class="btn" data-a="evdup">Duplicate</button>'}</div><div><button class="btn" data-a="mx">Cancel</button> <button class="btn pri" data-a="evsave">Save</button></div></div>`}
+function modal(h,cls){$('#modal').innerHTML=`<div class="ovl" data-a="mbg"><div class="dlg ${cls||''}" role="dialog" aria-modal="true">${h}</div></div>`}
+function closeModal(){$('#modal').innerHTML='';UI.editId=null}
+function evDialog(id,def){const p=P();let e=id&&p.events.find(x=>x.id===id);UI.editId=id||null;UI.defEv=null;
+ if(!e)e=Object.assign({title:'',day:0,start:'16:00',end:'17:00',loc:'',people:'',type:'social',status:'confirmed',note:'',subject:'',verb:''},def||{});modal(evForm(e,!id))}
+function readEv(){const g=i=>$('#'+i).value.trim(),s=g('f-start'),en=g('f-end'),err=[];if(!g('f-title'))err.push('Please write a title.');if(toMin(s)==null)err.push('Choose a start time.');if(toMin(en)==null)err.push('Choose an end time.');else if(toMin(s)!=null&&toMin(en)<=toMin(s))err.push('The end time must be after the start time.');
+ return{err,ev:{title:g('f-title'),day:+$('#f-day').value,start:s,end:en,loc:g('f-loc'),people:g('f-people'),type:$('#f-type').value,status:$('#f-status').value,note:g('f-note'),subject:g('f-subj'),verb:$('#f-verb').value}}}
+function saveEv(){const{err,ev}=readEv();const box=$('#f-err');if(err.length){box.style.display='block';box.textContent=err.join(' ');return}
+ const p=P();if(UI.editId){const e=p.events.find(x=>x.id===UI.editId);Object.assign(e,ev)}else p.events.push(Object.assign({id:uid()},ev));closeModal();render()}
+/* drag to move */
+let DR=null;
+document.addEventListener('pointerdown',e=>{const ev=e.target.closest('.ev');if(!ev||S.view!=='week')return;const own=+ev.dataset.own;if(own!==S.cur)return;DR={id:ev.dataset.id,el:ev,x:e.clientX,y:e.clientY,moved:false,pid:e.pointerId}});
+document.addEventListener('pointermove',e=>{if(!DR)return;const dx=e.clientX-DR.x,dy=e.clientY-DR.y;if(!DR.moved&&Math.hypot(dx,dy)>6){DR.moved=true;DR.el.classList.add('drag');try{DR.el.setPointerCapture(DR.pid)}catch(_){}}if(DR.moved)DR.el.style.transform=`translate(${dx}px,${dy}px)`});
+document.addEventListener('pointerup',e=>{if(!DR)return;const d=DR;DR=null;if(!d.moved){return}d.el.classList.remove('drag');d.el.style.transform='';
+ const cols=$$('.col');let ci=-1;cols.forEach((c,i)=>{const r=c.getBoundingClientRect();if(e.clientX>=r.left&&e.clientX<=r.right)ci=i});if(ci<0)return render();
+ const r=cols[ci].getBoundingClientRect(),y=e.clientY-r.top-(d.el.getBoundingClientRect().height/2);let m=Math.round(((y/RH)*60+H0*60)/15)*15;
+ const p=P(),ev=p.events.find(x=>x.id===d.id);if(!ev)return;const dur=evDur(ev);m=Math.max(H0*60,Math.min(H1*60-dur,m));ev.day=ci;ev.start=hhmm(m);ev.end=hhmm(m+dur);UI.justDragged=true;setTimeout(()=>UI.justDragged=false,50);render();toast(`Moved to ${DAYS[ci]} ${ev.start}`)});
+/* ====================== FEEDBACK ====================== */
+const VERD={great:['Great!','ok'],alt:['Nice alternative!','ok'],meaning:['Almost perfect!','ok'],partial:['Good start!','tip'],fix:['Almost — let’s fix it','tip'],form:['Check the form','tip'],try:['Think again','tip'],unclear:['Not clear yet','tip'],empty:['Write something first','tip']};
+const isOK=v=>['great','alt','meaning'].includes(v);
+const EXPLV=Object.values(EXPL);
+const hintOK=tries=>S.hints&&(S.mode==='practice'||tries>0);
+function record(p,kind,res,title,text,key,extra){const ok=isOK(res.verdict);p.stats.sentences++;if(ok){p.stats.comm++;if(res.used&&p.stats.struct[res.used]!=null)p.stats.struct[res.used]++;if(UI.bad[key]){p.stats.fixes++}delete UI.bad[key]}else UI.bad[key]=1;
+ S.log.push(Object.assign({p:S.players.indexOf(p),kind,title,text,used:res.used,ok,t:Date.now()},extra||{}));if(S.log.length>400)S.log.shift();ok?okS():noS()}
+function fbHTML(res,text,o){o=o||{};const[v,c]=VERD[res.verdict]||VERD.try,ok=isOK(res.verdict);
+ return`<div class="fb ${ok?'ok':'tip'}" role="status"><div class="fbh">${ok?'✓':'✎'} ${v}</div><div class="yours">“${esc(text)}”</div>${res.lines.filter(l=>S.explain||!EXPLV.includes(l.s)).map(l=>`<div class="fl ${l.t}">${l.t==='ok'?'✓':l.t==='bad'?'✗':'→'} ${esc(l.s)}</div>`).join('')}${res.corrected?`<div class="corr"><span>More natural / corrected:</span> <b>${esc(res.corrected)}</b></div>`:''}${o.models&&(ok||o.showModels)&&res.models&&res.models.length?`<div class="corr alt"><span>Compare with another natural version:</span> <b>${esc(res.models[res.models.length>1&&res.used&&res.models[0].toLowerCase().replace(/\W/g,'')===norm(text).replace(/\W/g,'')?1:0])}</b></div>`:''}${o.btns||''}</div>`}
+const clock=()=>{S.clk=(S.clk||540)+1+Math.floor(Math.random()*2);return pad(Math.floor(S.clk/60)%24)+':'+pad(S.clk%60)};
+/* ====================== PRACTICE ====================== */
+const RN=['Present Simple','Present Continuous','Be going to','Will','MIX IT UP'];
+function practiceHTML(){const p=P(),pr=p.pr;if(!pr.tasks)pr.tasks=buildRound(p,pr.round);const tabs=`<div class="rtabs">${RN.map((n,i)=>`<button class="rt ${pr.round===i+1?'on':''} ${p.stats.rounds[i+1]?'done':''}" data-a="round" data-v="${i+1}"><b>${i+1}</b>${n}</button>`).join('')}</div>`;
+ const t=pr.tasks[pr.i];
+ if(!t){const n=pr.tasks.length;return`${tabs}<div class="card center"><h2>Round ${pr.round} complete!</h2><p>You worked through ${n} tasks. ${p.stats.sentences} sentences submitted so far.</p><div class="acts" style="justify-content:center"><button class="btn" data-a="round" data-v="${pr.round}">Repeat the round</button>${pr.round<5?`<button class="btn pri" data-a="round" data-v="${pr.round+1}">Next round →</button>`:'<button class="btn pri" data-a="view" data-v="final">Final Mission →</button>'}</div></div>`}
+ const fb=UI.fb&&UI.fb.key===t.id?UI.fb:null,ok=fb&&isOK(fb.res.verdict),done=pr.done[t.id];
+ const hintBtn=hintOK(pr.tries)?`<button class="btn sm" data-a="hint">💡 Hint</button>`:'',exBtn=(S.hints&&S.mode==='practice')?`<button class="btn sm" data-a="example">Show example</button>`:'';
+ return`${tabs}<div class="prac"><div class="card"><div class="tkh"><span class="pill">Round ${pr.round} · task ${pr.i+1}/${pr.tasks.length}</span><span class="pill ${t.sample?'mut':'mine'}">${t.sample?'Sample situation':'From your calendar'}</span>${t.e&&STATUS[t.e.status]?`<span class="pill st" style="--sc:${STATUS[t.e.status].c}">${STATUS[t.e.status].ic} ${STATUS[t.e.status].l}</span>`:''}</div>
+ <div class="ctx">${t.ctx}</div><h3 class="prompt">${t.prompt}</h3>${t.mix?'<p class="sub">Which structure fits the situation best?</p>':''}
+ <textarea id="ans" class="ta" rows="2" data-draft="pr" placeholder="Type your sentence here…" ${ok||done?'disabled':''} aria-label="Your answer"></textarea>
+ <div class="acts"><button class="btn pri" data-a="submit" ${ok||done?'disabled':''}>Check my sentence</button>${hintBtn}${exBtn}${pr.tries>=2&&!ok&&!done?'<button class="btn sm" data-a="giveup">Show answer &amp; continue</button>':''}</div>
+ ${UI.showHint?`<div class="hintb">💡 ${t.hint}</div>`:''}${UI.ex?`<div class="hintb">Example: <b>${esc(t.models[0])}</b></div>`:''}
+ ${fb?fbHTML(fb.res,fb.text,{models:true,showModels:pr.tries>=2,btns:`<div class="acts">${ok?'<button class="btn pri" data-a="next">Next →</button>':'<button class="btn" data-a="retry">Try again</button>'}<button class="btn sm" data-a="tacc">👍 Teacher accepts</button></div>`}):''}</div>
+ <aside class="card sidec"><h3>Why this structure?</h3>${S.explain?`<p class="sub">${EXPL.ps}</p><p class="sub">${EXPL.pc}</p><p class="sub">${EXPL.gt}</p><p class="sub">${EXPL.will}</p>`:'<p class="sub">Grammar explanations are hidden by the teacher.</p>'}</aside></div>`}
+function prSubmit(){const p=P(),pr=p.pr,t=pr.tasks[pr.i];if(!t)return;const text=($('#ans').value||'').trim();UI.draft.pr=text;if(!text){toast('Write your sentence first.');return}
+ const res=judgeTask(t,text);pr.tries++;record(p,'task',res,t.prompt.replace(/<[^>]+>/g,''),text,'t'+t.id+S.cur);if(isOK(res.verdict))pr.done[t.id]=1;UI.fb={key:t.id,res,text};UI.showHint=false;render()}
+function prNext(){const p=P(),pr=p.pr;pr.i++;pr.tries=0;UI.fb=null;UI.draft.pr='';UI.showHint=false;UI.ex=false;if(pr.i>=pr.tasks.length)p.stats.rounds[pr.round]=true;render()}
+/* ====================== CHAT ====================== */
+const wildFor=(w,i)=>w.vis==='group'||w.targets==='all'||(Array.isArray(w.targets)&&w.targets.includes(i));
+function scenFor(p,i){const k=i%SCEN.length,out=SCEN.slice(k).concat(SCEN.slice(0,k)).map(sc=>variantOf(sc,i));S.wild.filter(w=>wildFor(w,i)).forEach(w=>out.push({id:'w'+w.id,wild:w,title:w.title||'Wild Card',sender:w.sender||'Someone',role:'Teacher’s Wild Card',color:'#ffa94d',msg:w.text,cal:null,need:[],prim:w.focus&&w.focus!=='none'?[w.focus]:[],alt:[],hint:w.hint||'Read the message and decide how to respond.',follow:()=>w.follow||null}));return out}
+function chatCal(p,sc){if(sc.wild){const w=sc.wild,e=w.evId&&p.events.find(x=>x.id===w.evId);if(!e&&!w.time&&!w.loc)return'';return`<div class="calchip">📅 ${e?`${esc(e.title)} · ${DAYS[e.day]} ${e.start}`:''}${w.time?` ${esc(w.time)}`:''}${w.loc?` · ${esc(w.loc)}`:''}</div>`}
+ const c=scenCal(p,sc);return c?`<div class="calchip">📅 Your calendar: ${DAYS[c.day]} ${c.start} — ${esc(c.title)}${c.real?'':' <i>(sample)</i>'}</div>`:''}
+function bubble(m,sc,p){const me=m.from==='me';return`<div class="msg ${me?'me':'them'} ${m.bad?'bad':''}">${me?'':`<div class="mav" style="background:${sc.color}">${esc((sc.sender||'?')[0])}</div>`}<div class="bub"><div>${esc(m.text)}</div><small>${m.time}</small></div>${me?avatar(p,30):''}</div>`}
+function chatHTML(){const p=P(),list=scenFor(p,S.cur);if(!UI.scen||!list.some(s=>s.id===UI.scen))UI.scen=list[0].id;const sc=list.find(s=>s.id===UI.scen),cv=p.chat[sc.id];
+ const hintBtn=cv&&hintOK(cv.tries)&&(!sc.wild||sc.wild.hints!==false)?`<button class="btn sm" data-a="chint">💡 Hint</button>`:'',exBtn=(S.hints&&S.mode==='practice'&&sc.example&&(!sc.wild))?`<button class="btn sm" data-a="cex">Show example</button>`:'';
+ return`<div class="chat"><aside class="clist card">${list.map(s=>{const c=p.chat[s.id];return`<button class="cl ${s.id===UI.scen?'on':''}" data-a="scen" data-id="${s.id}"><div class="mav" style="background:${s.color}">${esc((s.sender||'?')[0])}</div><div><b>${esc(s.sender)}</b><span>${esc(s.title)}</span></div>${c&&c.done?'<i class="chk">✓</i>':(s.wild&&!(c&&c.opened)?'<i class="dot">new</i>':'')}</button>`}).join('')}</aside>
+ <section class="conv card"><div class="convh"><div class="mav" style="background:${sc.color}">${esc((sc.sender||'?')[0])}</div><div><b>${esc(sc.sender)}</b><span class="sub">${esc(sc.role)}</span></div></div>
+ ${cv&&cv.opened?chatCal(p,sc):''}<div class="msgs" id="msgs">${cv&&cv.opened?cv.msgs.map(m=>bubble(m,sc,p)).join(''):'<div class="empty">Open this chat to read the message.</div>'}${cv&&cv.typing?'<div class="typing"><i></i><i></i><i></i></div>':''}</div>
+ ${cv&&cv.opened&&!cv.typing?`<div class="reply"><textarea id="rep" class="ta" rows="2" data-draft="chat${sc.id}" placeholder="Write your reply…" aria-label="Your reply"></textarea><div class="acts"><button class="btn pri" data-a="send">Send ➤</button>${hintBtn}${exBtn}${cv.done?'<button class="btn sm" data-a="nextscen">Next chat →</button>':''}</div>${UI.chint===sc.id?`<div class="hintb">💡 ${esc(sc.hint)}</div>`:''}${UI.cex===sc.id?`<div class="hintb">Example: <b>${esc(sc.example)}</b></div>`:''}</div>`:''}
+ ${cv&&cv.fb?fbHTML(cv.fb.res,cv.fb.text,{models:false}):''}</section></div>`}
+function openScen(id){UI.scen=id;UI.chint=UI.cex=null;const p=P(),sc=scenFor(p,S.cur).find(s=>s.id===id);if(!sc)return;let cv=p.chat[id];if(!cv){cv=p.chat[id]={opened:true,msgs:[],done:false,tries:0,typing:true};render();setTimeout(()=>{cv.typing=false;cv.msgs.push({from:'them',text:sc.msg,time:clock()});ding();if(S.view==='chat')render();else save()},750);return}
+ cv.opened=true;render()}
+function sendChat(){const p=P(),sc=scenFor(p,S.cur).find(s=>s.id===UI.scen),cv=p.chat[sc.id];if(!cv||cv.typing)return;const text=($('#rep').value||'').trim();if(!text){toast('Write your reply first.');return}
+ let res;const c=scenCal(p,sc);const evw=c?c.title.toLowerCase().split(/\W+/).filter(w=>w.length>3):[];
+ if(sc.wild){const w=sc.wild,r=judgeFree(text,w.focus);res=r;if(r.verdict==='great'||r.verdict==='unclear'&&false){}res.I=intents(r.a)}else res=judgeScen(sc,text,evw);
+ cv.tries++;cv.msgs.push({from:'me',text,time:clock(),bad:!isOK(res.verdict)&&res.verdict!=='partial'});UI.draft['chat'+sc.id]='';
+ const good=isOK(res.verdict)||res.verdict==='partial'&&!sc.wild;const succ=isOK(res.verdict);cv.fb={res,text};record(p,sc.wild?'wild':'chat',res,sc.title,text,'c'+sc.id+S.cur,{id:sc.id});
+ if(succ&&!cv.done){cv.done=true;const f=sc.follow?sc.follow(text,res):null;if(f){cv.typing=true;setTimeout(()=>{cv.typing=false;cv.msgs.push({from:'them',text:f,time:clock()});ding();if(S.view==='chat')render();else save()},900)}}
+ render();const m=$('#msgs');if(m)m.scrollTop=m.scrollHeight}
+/* ====================== TWIST ====================== */
+function twistHTML(){const p=P();if(!UI.twist)UI.twist=TWISTS[0].id;const tw=TWISTS.find(t=>t.id===UI.twist),st=p.twist[tw.id]||{tries:0};
+ const evs=p.events.filter(e=>e.day===tw.day).sort((a,b)=>toMin(a.start)-toMin(b.start));
+ const hintBtn=hintOK(st.tries)?'<button class="btn sm" data-a="twhint">💡 Hint</button>':'';
+ return`<div class="twist"><div class="card"><div class="lab" style="margin-top:0">Situations</div><div class="chips">${TWISTS.map(t=>`<button class="chip ${t.id===tw.id?'on':''} ${p.twist[t.id]&&p.twist[t.id].done?'dn':''}" data-a="tw" data-id="${t.id}">${esc(t.title)}</button>`).join('')}<button class="chip rnd" data-a="twrand">🎲 Random</button></div></div>
+ <div class="card"><div class="alert">⚡ PLOT TWIST</div><h2>${esc(tw.title)}</h2><p class="big">${esc(tw.msg)}</p>
+ <div class="mini"><b>${DAYS[tw.day]}</b>${evs.length?evs.map(e=>`<span class="pill st" style="--sc:${STATUS[e.status].c}">${STATUS[e.status].ic} ${e.start} ${esc(e.title)}</span>`).join(''):`<span class="pill mut">No events in your calendar on ${DAYS[tw.day]} (sample time: ${tw.time})</span>`}</div>
+ <h3 class="prompt">What will you do?</h3><textarea id="twa" class="ta" rows="3" data-draft="tw${tw.id}" placeholder="Offer help, make a promise, or explain your new plan…" aria-label="Your answer"></textarea>
+ <div class="acts"><button class="btn pri" data-a="twsend">Send my answer</button>${hintBtn}</div>${UI.twh===tw.id?`<div class="hintb">💡 Say what you will do, offer help or make a promise, and suggest an alternative. Any suitable structure is fine: I’ll… / I’m going to… / I’m …ing.</div>`:''}
+ ${st.fb?fbHTML(st.fb.res,st.fb.text,{models:false,btns:`<div class="conseq">➡ ${esc(st.fb.res.found&&st.fb.res.found.length?tw.good:tw.other)}</div><div class="acts"><button class="btn pri" data-a="twnext">Next twist →</button><button class="btn sm" data-a="tacc">👍 Teacher accepts</button></div>`}):''}</div></div>`}
+function sendTwist(){const p=P(),tw=TWISTS.find(t=>t.id===UI.twist),text=($('#twa').value||'').trim();if(!text){toast('Write your answer first.');return}const res=judgeTwist(tw,text),st=p.twist[tw.id]=p.twist[tw.id]||{tries:0};st.tries++;st.fb={res,text};if(isOK(res.verdict)||res.verdict==='partial')st.done=true;record(p,'twist',res,tw.title,text,'w'+tw.id+S.cur,{id:tw.id});render()}
+/* ====================== GROUP ====================== */
+function busy(p,d){return p.events.filter(e=>e.day===d).map(e=>[toMin(e.start),toMin(e.start)+evDur(e),e.title])}
+function freeAll(d){const iv=[];S.players.forEach(p=>busy(p,d).forEach(b=>iv.push(b)));iv.sort((a,b)=>a[0]-b[0]);const out=[];let cur=H0*60;iv.forEach(([s,e])=>{if(s>cur)out.push([cur,s]);cur=Math.max(cur,e)});if(cur<H1*60)out.push([cur,H1*60]);return out.filter(x=>x[1]-x[0]>=60)}
+function conflicts(g){const s=toMin(g.start),e=toMin(g.end),out=[];if(s==null||e==null||e<=s)return null;S.players.forEach((p,i)=>busy(p,g.day).forEach(b=>{if(s<b[1]&&b[0]<e)out.push(`${pname(p,i)} is busy (${hhmm(b[0])}–${hhmm(b[1])}: ${b[2]})`)}));return out}
+const SPORTRE=/sport|swim|basket|dance|football|tennis|run|gym|pool|bike|cycl/i,COSTRE=/cinema|concert|shopping|shop|new city|museum|restaurant/i;
+const GCARDS=[
+ {t:'You love sport. You want an active activity (swimming, basketball, dance…).',ok:g=>SPORTRE.test(g.activity)},
+ {t:'You must be home by 18:00. The plan must finish by 18:00.',ok:g=>toMin(g.end)<=18*60},
+ {t:'You can’t get up early. You can’t meet before 11:00.',ok:g=>toMin(g.start)>=11*60},
+ {t:'You want to see a film or go to a concert.',ok:g=>/cinema|film|concert/i.test(g.activity)},
+ {t:'You have no money this week. You want a free activity.',ok:g=>!!g.activity&&!COSTRE.test(g.activity)},
+ {t:'You want an indoor activity (cinema, museum, concert, shopping, family dinner…).',ok:g=>/cinema|film|museum|concert|shop|dinner|project|study|sleepover/i.test(g.activity)}];
+const GSETS=[[0,1,2,4],[3,1,2,5]];
+function gcardOf(i){if(S.group.off==null)S.group.off=Math.floor(Math.random()*4);if(S.group.set==null)S.group.set=Math.floor(Math.random()*GSETS.length);const L=GSETS[S.group.set%GSETS.length];return GCARDS[L[(i+S.group.off)%4]]}
+function gunmet(){const g=S.group;if(!g.activity)return S.players.map((p,i)=>i);return S.players.map((p,i)=>i).filter(i=>!gcardOf(i).ok(g))}
+function groupHTML(){if(S.players.length<2)return`<div class="card center"><h2>Group mode needs 2–4 players</h2><p class="sub">Use the 🎓 Teacher panel to change the number of participants. Your calendars will then be compared here.</p></div>`;
+ const g=S.group,fa=freeAll(g.day),cf=conflicts(g),span=(H1-H0)*60;
+ const bar=(p,i)=>`<div class="gl"><span style="color:${p.color}"><b>${esc(pname(p,i))}</b></span><div class="gbar">${busy(p,g.day).map(([s,e,t])=>`<i style="left:${(s-H0*60)/span*100}%;width:${(e-s)/span*100}%;background:${p.color}" title="${esc(t)}">${esc(t)}</i>`).join('')}</div></div>`;
+ return`<div class="grp"><div class="card"><h2>Plan a ${DAYS[g.day]} together</h2><p class="sub">Everyone must be available. Choose one activity, agree on a time, and decide how to get there.</p>
+ <div class="row"><label>Day <select class="inp" data-in="gday">${DAYS.map((d,i)=>`<option value="${i}" ${g.day===i?'selected':''}>${d}</option>`).join('')}</select></label></div>
+ <div class="gt"><div class="gh">${Array.from({length:(H1-H0)/2},(_,i)=>`<span>${pad(H0+i*2)}</span>`).join('')}</div>${S.players.map(bar).join('')}<div class="gl"><span><b>All free</b></span><div class="gbar free">${fa.map(([s,e])=>`<i style="left:${(s-H0*60)/span*100}%;width:${(e-s)/span*100}%">${hhmm(s)}–${hhmm(e)}</i>`).join('')}</div></div></div>
+ <p class="sub">${fa.length?'Everyone is free: <b>'+fa.map(([s,e])=>hhmm(s)+'–'+hhmm(e)).join(', ')+'</b>':'There is no hour when everyone is free — you will have to negotiate or choose another day!'}</p></div>
+ <div class="card"><h3>Your secret cards</h3><p class="sub">Each player has a private card with a wish or a problem. Don’t show it — talk in English and find a plan that works for everyone!</p><div class="chips">${S.players.map((p,i)=>`<button class="chip ${UI.gcard===i?'on':''}" data-a="gcard" data-i="${i}" style="border-color:${p.color}">${UI.gcard===i?'Hide':'Show'} ${esc(pname(p,i))}’s card</button>`).join('')}</div>${UI.gcard!=null&&S.players[UI.gcard]?`<div class="decision" style="background:rgba(255,193,7,.16);border-color:rgba(255,193,7,.6)"><b>${esc(pname(S.players[UI.gcard],UI.gcard))}’s secret card</b><p>${esc(gcardOf(UI.gcard).t)}</p><span class="sub">Hide the card before the next player looks!</span></div>`:''}</div>
+ <div class="card"><h3>Our decision</h3><div class="form"><label class="fw">Activity<select class="inp" data-in="gact"><option value="">— choose —</option>${TEMPLATES.map(t=>`<option ${g.activity===t.title?'selected':''}>${esc(t.title)}</option>`).join('')}${g.activity&&!TEMPLATES.some(t=>t.title===g.activity)?`<option selected>${esc(g.activity)}</option>`:''}</select></label><label class="fw">…or your own<input class="inp" data-in="gcust" placeholder="Type an activity and press Enter" maxlength="50"></label>
+ <label>From<input class="inp" type="time" data-in="gstart" value="${g.start}"></label><label>To<input class="inp" type="time" data-in="gend" value="${g.end}"></label><label class="fw">How will you get there?<input class="inp" data-in="ghow" value="${esc(g.how)}" maxlength="60" placeholder="e.g. by bus at 15:30"></label></div>
+ ${cf===null?'<div class="err">Check the times.</div>':cf.length?`<div class="err">${cf.map(esc).join('<br>')}<br>Negotiate! Suggest another time in English.</div>`:'<div class="okb">✓ Everyone is free at this time.</div>'}
+ <div class="acts"><button class="btn pri" data-a="gconfirm" ${cf&&!cf.length&&g.activity&&!gunmet().length?'':'disabled'}>Confirm our plan</button></div>${g.activity&&cf&&!cf.length&&gunmet().length?`<div class="err">Not everyone is happy yet: ${gunmet().map(i=>esc(pname(S.players[i],i))).join(', ')}. Ask them in English: “What do you think?” / “Is that OK for you?”</div>`:''}${g.decision?`<div class="decision"><b>Our plan</b><p>${DAYS[g.decision.day]} · ${g.decision.start}–${g.decision.end} · ${esc(g.decision.activity)}${g.decision.how?' · '+esc(g.decision.how):''}</p><button class="btn sm" data-a="gadd" ${g.decision.added?'disabled':''}>${g.decision.added?'Added to everyone’s calendar ✓':'Add to everyone’s calendar'}</button></div>`:''}</div>
+ <div class="card"><h3>Talk to the group</h3><p class="sub">Each player writes one message: explain your plans, say when you’re free, suggest a time, or offer to book something.</p>${S.players.map((p,i)=>`<div class="gmsg" style="--c:${p.color}"><div class="gm-h">${avatar(p,28)}<b>${esc(pname(p,i))}</b></div><textarea class="ta" rows="2" data-draft="g${i}" placeholder="e.g. I'm visiting my grandparents in the morning. I'm free after three…" aria-label="Message from ${esc(pname(p,i))}"></textarea><div class="acts"><button class="btn sm pri" data-a="gsend" data-i="${i}">Check</button></div>${UI.gfb[i]?fbHTML(UI.gfb[i].res,UI.gfb[i].text,{}):''}</div>`).join('')}</div></div>`}
+/* ====================== SPEAK ====================== */
+function speakHTML(){const p=P(),firstDay=p.events.length?DAYS[p.events.slice().sort((a,b)=>a.day-b.day)[0].day]:'Friday';
+ return`<div class="speak"><div class="card"><h2>Conversation challenges</h2><p class="sub">Answer orally with a partner or type your answer. <b>Note:</b> this game does not record or assess audio — use the “I’m ready” button after you have spoken.</p></div>${SPEAK.map(s=>{const st=p.speak[s.id]||{};const hasE=s.id==='s1'&&p.events.filter(e=>e.day===p.events[0].day).length;
+ return`<div class="card sp ${st.done?'dn':''}"><div class="tkh"><span class="pill">${esc(s.title)}</span>${st.done?'<span class="pill st" style="--sc:#16a37f">✓ done</span>':''}</div><h3 class="prompt">${esc(s.q(firstDay))}</h3>
+ ${s.id==='s1'&&p.events.length?`<div class="mini">${p.events.slice().sort((a,b)=>a.day-b.day||toMin(a.start)-toMin(b.start)).slice(0,6).map(e=>`<span class="pill st" style="--sc:${STATUS[e.status].c}">${DAYS[e.day].slice(0,3)} ${e.start} ${esc(e.title)}</span>`).join('')}</div>`:''}
+ ${S.hints&&(S.mode==='practice')?`<p class="sub">Tip: ${esc(s.tip)}</p>`:''}<textarea class="ta" rows="2" data-draft="sp${s.id}" placeholder="Type your answer (optional)…" aria-label="${esc(s.title)}"></textarea><div class="acts"><button class="btn sm" data-a="spcheck" data-id="${s.id}">Check my written answer</button><button class="btn sm pri" data-a="spready" data-id="${s.id}">I’m ready — I said it aloud</button></div>${st.fb?fbHTML(st.fb.res,st.fb.text,{}):''}</div>`}).join('')}</div>`}
+/* ====================== FINAL MISSION ====================== */
+function missionReq(){const d=S.final.day,evs=allEvents().filter(e=>e.day===d),logs=S.log;
+ const unexp=logs.filter(l=>(l.kind==='twist'||l.kind==='wild'||(l.kind==='chat'&&['E','F'].includes(l.id)))).length>0;
+ const spont=logs.some(l=>l.ok&&l.used==='will');const ch=analyze(S.final.change||'');
+ const changed=!!S.final.change.trim()&&(ch.pc||ch.gt||ch.will||ch.ps)&&!ch.errors.length&&/\b(because|so|instead|changed|change|moved|move|but|now|new)\b/.test(ch.t);
+ return[[`At least 3 calendar events on ${DAYS[d]}`,evs.length>=3,`${evs.length} so far`],['At least 1 timetable-based activity',evs.some(e=>e.status==='fixed')],['At least 1 confirmed arrangement',evs.some(e=>e.status==='confirmed')],['At least 1 personal intention',evs.some(e=>e.status==='intention')],['At least 1 unexpected situation handled',unexp,'Chat Storm (E, F), Plot Twist or a Wild Card'],['A spontaneous offer, decision or promise with “will”',spont,'in any chat or twist'],['An explanation of a changed plan',changed,'write it below (use because / so / instead)']].map(x=>({s:x[0],ok:!!x[1],n:x[2]||''}))}
+function starters(){const d=S.final.day,out=[];S.players.forEach((p,i)=>p.events.filter(e=>e.day===d).sort((a,b)=>toMin(a.start)-toMin(b.start)).forEach(e=>{const ph=evPhrase(e),n=pname(p,i);let s;if(e.status==='fixed')s=`${cap(ttSubj(e))} ${ttVerb(e)} at ${spoken(e.start)}.`;else if(e.status==='confirmed')s=`${n} is ${ph.ing} at ${spoken(e.start)}.`;else s=`${n} is going to ${ph.base}.`;out.push(s)}));return out}
+function finalHTML(){const f=S.final,d=f.day,req=missionReq(),all=req.every(r=>r.ok),evs=allEvents().filter(e=>e.day===d),dec=S.group.decision;const dl=S.log.filter(l=>l.ok&&['chat','twist','wild'].includes(l.kind)).slice(-6);
+ return`<div class="fin"><div class="card"><h2>Final mission: make the perfect plan</h2><p class="sub">You and your friends have one free day. Organise the perfect day!</p><div class="row"><label>Mission day <select class="inp" data-in="fday">${DAYS.map((x,i)=>`<option value="${i}" ${d===i?'selected':''}>${x}</option>`).join('')}</select></label></div>
+ <div class="reqs">${req.map(r=>`<div class="rq ${r.ok?'ok':''}"><b>${r.ok?'✓':'○'}</b><span>${esc(r.s)}${!r.ok&&r.n?` <small>(${esc(r.n)})</small>`:''}</span></div>`).join('')}</div>${all?'<div class="okb">🎉 Mission complete! Present your plan below.</div>':''}
+ <h3>Explain a changed plan</h3><textarea class="ta" rows="2" data-draft="fch" data-in="fchange" placeholder="e.g. The bus was cancelled, so I'm going to take a taxi instead.">${esc(f.change)}</textarea>
+ <h3>Present your plan in English</h3><textarea class="ta" rows="5" data-draft="ftx" data-in="ftext" placeholder="Write or say your presentation. Use the starter sentences if you like.">${esc(f.text)}</textarea><div class="acts"><button class="btn sm" data-a="fstart">Add starter sentences from our events</button><button class="btn sm" data-a="print">🖨 Print / save as PDF</button></div></div>
+ <div class="card"><h2>Our ${DAYS[d]}</h2>${evs.length?`<div class="sumtl">${S.players.map((p,i)=>{const L=p.events.filter(e=>e.day===d).sort((a,b)=>toMin(a.start)-toMin(b.start));return`<div class="sumrow" style="--c:${p.color}"><div class="sh">${avatar(p,28)}<b>${esc(pname(p,i))}</b></div>${L.length?L.map(e=>`<div class="sev" style="--sc:${STATUS[e.status].c}"><b>${e.start}–${e.end}</b> ${STATUS[e.status].ic} ${esc(e.title)}${e.loc?' · '+esc(e.loc):''}</div>`).join(''):'<span class="sub">No events</span>'}</div>`}).join('')}</div>`:'<div class="empty">No events on this day yet. Add them in “My Week” or via the Group plan.</div>'}
+ ${dec?`<div class="decision"><b>Group decision</b><p>${DAYS[dec.day]} · ${dec.start}–${dec.end} · ${esc(dec.activity)}${dec.how?' · '+esc(dec.how):''}</p></div>`:''}
+ ${dl.length?`<h3>Situations we handled</h3>${dl.map(l=>`<div class="ttl"><b>${esc(S.players[l.p]?pname(S.players[l.p],l.p):'')}: “${esc(l.text)}”</b><span>${esc(l.title)}</span></div>`).join('')}`:''}
+ ${f.change.trim()?`<h3>Changed plan</h3><p>“${esc(f.change)}”</p>`:''}${f.text.trim()?`<h3>Presentation</h3><p>${esc(f.text).replace(/\n/g,'<br>')}</p>`:''}</div></div>`}
+/* ====================== PROGRESS ====================== */
+function progressHTML(){return`<div class="card"><h2>Progress</h2><p class="sub">Short feedback, no scores. This shows what each player has practised.</p><div class="pgrid">${S.players.map((p,i)=>{const s=p.stats,rounds=Object.keys(s.rounds).length,tw=Object.values(p.twist).filter(t=>t.done).length,ch=Object.values(p.chat).filter(c=>c.done).length;
+ return`<div class="pcard" style="--c:${p.color}"><div class="pc-top">${avatar(p,44)}<b class="nm">${esc(pname(p,i))}</b></div>
+ <div class="stat"><span>Completed rounds</span><b>${rounds}/5</b></div><div class="stat"><span>Sentences submitted</span><b>${s.sentences}</b></div><div class="stat"><span>Successful communication tasks</span><b>${s.comm}</b></div><div class="stat"><span>Corrections made</span><b>${s.fixes}</b></div><div class="stat"><span>Chats / twists done</span><b>${ch} / ${tw}</b></div><div class="stat"><span>Speaking challenges</span><b>${s.speak}</b></div>
+ <div class="lab">Structures practised</div><div class="sbars">${['ps','pc','gt','will'].map(k=>`<div class="sb"><span>${NAME[k]}</span><div><i style="width:${Math.min(100,s.struct[k]*20)}%;background:${p.color}"></i></div><b>${s.struct[k]}</b></div>`).join('')}</div></div>`}).join('')}</div></div>`}
+/* ====================== TEACHER PANEL (Ukrainian) ====================== */
+const WTPL={problem:{title:'A last-minute problem',sender:'Your friend',text:'I’m at the station, but I’ve lost my ticket. The train leaves in ten minutes!',focus:'will'},spont:{title:'Spontaneous decision',sender:'Mum',text:'We’ve run out of bread and I’m too busy to go to the shop.',focus:'will'},offer:{title:'Can you help?',sender:'Alex',text:'My bag is so heavy and I have to carry it up to the third floor…',focus:'will'},promise:{title:'A promise',sender:'Mia',text:'Please don’t forget to bring my book tomorrow!',focus:'will'},invite:{title:'New invitation',sender:'Leo',text:'We’re all going bowling on Friday evening. Are you in?',focus:'pc'},cancel:{title:'Cancelled plan',sender:'Sam',text:'Sorry, I can’t come on Saturday after all. Can we do something on Sunday instead?',focus:'none'},tt:{title:'Timetable change',sender:'Cinema',text:'The film now starts at 20:15 instead of 19:30.',focus:'ps'},own:{title:'',sender:'',text:'',focus:'none'}};
+function teacherHTML(){const p=P(),sel=(k,v)=>S[k]===v?'on':'';
+ return`<aside class="tpanel" role="complementary" aria-label="Teacher panel"><div class="tp-h"><h3>🎓 Панель вчителя</h3><button class="ib" data-a="teacher" aria-label="Close">✕</button></div>
+ <div class="lab">Кількість учасників</div><div class="seg">${[1,2,3,4].map(n=>`<button class="${S.players.length===n?'on':''}" data-a="setn" data-v="${n}">${n}</button>`).join('')}</div>
+ <div class="lab">Режим</div><div class="seg"><button class="${sel('mode','practice')}" data-a="mode2" data-v="practice">Practice</button><button class="${sel('mode','challenge')}" data-a="mode2" data-v="challenge">Challenge</button></div>
+ <div class="lab">Підказки та звук</div><div class="chips"><button class="chip ${S.hints?'on':''}" data-a="tg" data-k="hints">Підказки: ${S.hints?'увімк.':'вимк.'}</button><button class="chip ${S.explain?'on':''}" data-a="tg" data-k="explain">Пояснення граматики: ${S.explain?'увімк.':'вимк.'}</button><button class="chip ${S.sound?'on':''}" data-a="tg" data-k="sound">Звук: ${S.sound?'увімк.':'вимк.'}</button></div>
+ <div class="lab">Керування уроком</div><div class="acts"><button class="btn sm" data-a="tevent">＋ Подія в календар (${esc(pname(p))})</button><button class="btn sm" data-a="tskip">⏭ Пропустити сценарій</button><button class="btn sm" data-a="trepeat">↺ Повторити сценарій</button><button class="btn sm" data-a="treset">Скинути поточну активність</button><button class="btn sm" data-a="tnew">Нова сесія</button></div>
+ <div class="lab">Wild Card — власна ситуація</div><div class="chips">${[['problem','Несподівана проблема'],['spont','Спонтанне рішення'],['offer','Пропозиція допомоги'],['promise','Обіцянка'],['invite','Нове запрошення'],['cancel','Скасований план'],['tt','Зміна розкладу'],['own','Власний сценарій']].map(([k,l])=>`<button class="chip" data-a="wtpl" data-k="${k}">${l}</button>`).join('')}</div>
+ <div class="form wf"><label class="fw">Назва<input class="inp" id="w-title" maxlength="40"></label><label>Відправник<input class="inp" id="w-sender" maxlength="30" placeholder="Your friend"></label><label>Час / місце<input class="inp" id="w-time" maxlength="40" placeholder="e.g. 18:30 · station"></label>
+ <label class="fw">Текст повідомлення<textarea class="ta" id="w-text" rows="3" maxlength="300"></textarea></label>
+ <label>Пов’язана подія<select class="inp" id="w-ev"><option value="">—</option>${p.events.map(e=>`<option value="${e.id}">${esc(e.title)} (${DAYS[e.day].slice(0,3)} ${e.start})</option>`).join('')}</select></label>
+ <label>Граматичний фокус<select class="inp" id="w-focus"><option value="none">без фокусу</option><option value="ps">Present Simple</option><option value="pc">Present Continuous</option><option value="gt">be going to</option><option value="will">will</option></select></label>
+ <label class="fw">Подальше повідомлення (необов’язково)<input class="inp" id="w-follow" maxlength="150"></label>
+ <label>Кому<select class="inp" id="w-target"><option value="all">Всім</option>${S.players.map((q,i)=>`<option value="${i}">${esc(pname(q,i))}</option>`).join('')}</select></label>
+ <label>Видимість<select class="inp" id="w-vis"><option value="private">Приватно (лише адресат)</option><option value="group">Для всієї групи</option></select></label>
+ <label class="fw"><input type="checkbox" id="w-hints" checked> Підказки для цього повідомлення</label></div><div class="acts"><button class="btn pri" data-a="wsend">Надіслати</button></div>
+ ${S.wild.length?`<div class="lab">Надіслані Wild Card</div>${S.wild.map(w=>`<div class="ttl"><b>${esc(w.title||'Wild Card')}</b><button class="btn sm" data-a="wdel" data-id="${w.id}">✕</button></div>`).join('')}`:''}
+ <p class="sub" style="margin-top:12px">Підказка: гра перевіряє відповіді за правилами (форма, структура, ключові слова). Якщо відповідь учня змістовно доречна, а гра її відхилила — натисніть «👍 Teacher accepts» у картці відгуку.</p></aside>`}
+function setN(n){const old=S.players.length;if(n===old)return;const doIt=()=>{while(S.players.length<n)S.players.push(newPlayer(S.players.length));S.players.length=n;S.players.forEach((p,i)=>{p.color=p.color||COLORS[i]});S.n=n;if(S.cur>=n)S.cur=0;render()};
+ if(n<old){const lost=S.players.slice(n).filter(p=>p.events.length||p.stats.sentences);if(lost.length)return ask(`Видалити ${lost.map(p=>pname(p)).join(', ')} разом з їхніми подіями та прогресом?`,'Видалити',doIt)}doIt()}
+function ask(msg,yes,cb){UI.cb=cb;modal(`<h2>${msg}</h2><div class="acts" style="justify-content:flex-end"><button class="btn" data-a="mx">Cancel</button><button class="btn pri" data-a="my">${yes}</button></div>`)}
+/* ====================== EVENTS ====================== */
+document.addEventListener('click',e=>{const t=e.target.closest('[data-a],.ev,.col');if(!t)return;
+ if(t.classList.contains('ev')&&!t.dataset.a){if(UI.justDragged||t.classList.contains('drag'))return;const own=+t.dataset.own;if(own!==S.cur){toast('This event belongs to '+pname(S.players[own],own)+'.');return}evDialog(t.dataset.id);return}
+ if(t.classList.contains('col')&&!t.dataset.a){if(e.target!==t&&!e.target.classList.contains('hl'))return;const r=t.getBoundingClientRect(),m=Math.floor(((e.clientY-r.top)/RH*60+H0*60)/30)*30;evDialog(null,{day:+t.dataset.day,start:hhmm(m),end:hhmm(Math.min(m+60,23*60+59))});return}
+ const a=t.dataset.a,d=t.dataset,p=P();
+ switch(a){
+ case'mbg':if(e.target===t)closeModal();break;
+ case'mx':closeModal();break;
+ case'my':{const f=UI.cb;UI.cb=null;closeModal();f&&f();break}
+ case'n':{const n=+d.v;while(S.players.length<n)S.players.push(newPlayer(S.players.length));S.players.length=n;S.n=n;render();break}
+ case'pcolor':S.players[+d.i].color=d.v;render();break;
+ case'pav':S.players[+d.i].avatar=+d.v;render();break;
+ case'mode':S.mode=d.v;render();break;
+ case'start':S.started=true;S.screen='game';S.view='week';S.cur=0;render();break;
+ case'resume':{try{const o=JSON.parse(localStorage.getItem(KEY));if(o&&o.started){load();S.screen='game'}}catch(_){}render();break}
+ case'cur':S.cur=+d.i;UI.scen=null;UI.twist=TWISTS[(S.cur*3)%TWISTS.length].id;UI.fb=null;UI.showHint=false;UI.ex=false;render();break;
+ case'sound':S.sound=!S.sound;render();break;
+ case'theme':S.theme=S.theme==='dark'?'light':'dark';render();break;
+ case'teacher':S.tOpen=!S.tOpen;render();break;
+ case'view':S.view=d.v;UI.fb=null;render();break;
+ case'cmp':S.cmp=d.v==='1';render();break;
+ case'evnew':evDialog(null,{day:0});break;
+ case'evtpl':{const tp=TEMPLATES[+d.i];evDialog(null,{title:tp.title,type:tp.type,status:tp.status,loc:tp.loc,day:0,start:'16:00',end:hhmm(16*60+tp.dur>23*60+59?23*60+59:16*60+tp.dur)});break}
+ case'evsave':saveEv();break;
+ case'evdel':{const id=UI.editId;closeModal();p.events=p.events.filter(x=>x.id!==id);render();break}
+ case'evdup':{const e0=p.events.find(x=>x.id===UI.editId);if(e0){p.events.push(Object.assign({},e0,{id:uid(),title:e0.title+' (copy)'}));closeModal();render()}break}
+ case'sample':ask('Load a sample week? It will be added to your current events.','Load',()=>{p.events=p.events.concat(sampleWeek(S.cur));render()});break;
+ case'clearweek':ask('Delete all events in this calendar?','Delete all',()=>{p.events=[];p.pr.tasks=null;render()});break;
+ case'round':{p.pr={round:+d.v,tasks:null,i:0,tries:0,done:{}};UI.fb=null;UI.draft.pr='';UI.showHint=UI.ex=false;render();break}
+ case'submit':prSubmit();break;
+ case'hint':UI.showHint=!UI.showHint;render();break;
+ case'example':UI.ex=!UI.ex;render();break;
+ case'next':prNext();break;
+ case'retry':{UI.fb=null;render();const a2=$('#ans');a2&&a2.focus();break}
+ case'giveup':{const t0=p.pr.tasks[p.pr.i];UI.fb={key:t0.id,res:{verdict:'great',lines:[{t:'tip',s:'Here is a natural answer. Read it aloud and try a similar sentence next time.'}],models:t0.models,used:null},text:t0.models[0]};p.pr.done[t0.id]=1;render();break}
+ case'tacc':{const f=UI.fb;if(f&&f.res){f.res.verdict='great';f.res.lines.unshift({t:'ok',s:'Accepted by your teacher.'});p.stats.comm++;const t0=p.pr.tasks&&p.pr.tasks[p.pr.i];if(S.view==='practice'&&t0)p.pr.done[t0.id]=1}
+  if(S.view==='chat'){const cv=p.chat[UI.scen];if(cv&&cv.fb){cv.fb.res.verdict='great';cv.fb.res.lines.unshift({t:'ok',s:'Accepted by your teacher.'});cv.done=true}}
+  if(S.view==='twist'){const st=p.twist[UI.twist];if(st&&st.fb){st.fb.res.verdict='great';st.fb.res.lines.unshift({t:'ok',s:'Accepted by your teacher.'});st.done=true;st.fb.res.found=st.fb.res.found&&st.fb.res.found.length?st.fb.res.found:['plan']}}
+  okS();render();break}
+ case'scen':openScen(d.id);break;
+ case'send':sendChat();break;
+ case'chint':UI.chint=UI.chint===UI.scen?null:UI.scen;render();break;
+ case'cex':UI.cex=UI.cex===UI.scen?null:UI.scen;render();break;
+ case'nextscen':{const L=scenFor(p,S.cur),i=L.findIndex(s=>s.id===UI.scen);openScen(L[(i+1)%L.length].id);break}
+ case'tw':UI.twist=d.id;UI.twh=null;render();break;
+ case'twrand':UI.twist=TWISTS[Math.floor(Math.random()*TWISTS.length)].id;render();break;
+ case'twsend':sendTwist();break;
+ case'twhint':UI.twh=UI.twh===UI.twist?null:UI.twist;render();break;
+ case'twnext':{const i=TWISTS.findIndex(t=>t.id===UI.twist);UI.twist=TWISTS[(i+1)%TWISTS.length].id;render();break}
+ case'gcard':UI.gcard=UI.gcard===+d.i?null:+d.i;render();break;
+ case'gconfirm':{const g=S.group;g.decision={day:g.day,start:g.start,end:g.end,activity:g.activity,how:g.how,added:false};render();break}
+ case'gadd':{const g=S.group.decision;S.players.forEach((q,i)=>{q.events.push({id:uid(),title:g.activity,day:g.day,start:g.start,end:g.end,loc:'',people:S.players.filter((_,k)=>k!==i).map(pname).join(', '),type:'social',status:'confirmed',note:'Group plan'+(g.how?' · '+g.how:''),subject:'',verb:''})});g.added=true;render();toast('Added to everyone’s calendar');break}
+ case'gsend':{const i=+d.i,ta=$(`[data-draft="g${i}"]`),text=(ta.value||'').trim();UI.draft['g'+i]=text;if(!text){toast('Write a message first.');break}const res=judgeFree(text,'mix'),q=S.players[i];record(q,'group',res,'Group plan',text,'g'+i);UI.gfb[i]={res,text};render();break}
+ case'spcheck':{const ta=$(`[data-draft="sp${d.id}"]`),text=(ta.value||'').trim();UI.draft['sp'+d.id]=text;if(!text){toast('Write your answer first.');break}const s=SPEAK.find(x=>x.id===d.id),res=judgeFree(text,s.focus);record(p,'speak',res,s.title,text,'s'+d.id+S.cur);p.speak[d.id]=Object.assign(p.speak[d.id]||{},{fb:{res,text}});render();break}
+ case'spready':{const st=p.speak[d.id]=p.speak[d.id]||{};if(!st.done){st.done=true;p.stats.speak++}render();toast('Great — speaking task done!');break}
+ case'fstart':{const t=starters();if(!t.length){toast('Add events for this day first.');break}S.final.text=(S.final.text?S.final.text.trim()+'\n':'')+t.join(' ');UI.draft.ftx=S.final.text;render();break}
+ case'print':try{window.print()}catch(_){toast('Printing is not available here.')}break;
+ case'setn':setN(+d.v);break;
+ case'mode2':S.mode=d.v;render();break;
+ case'tg':S[d.k]=!S[d.k];render();break;
+ case'tevent':evDialog(null,{day:0});break;
+ case'tskip':{if(S.view==='practice'){const t0=p.pr.tasks&&p.pr.tasks[p.pr.i];if(t0){p.pr.done[t0.id]=1;prNext()}}else if(S.view==='chat'){const c=p.chat[UI.scen]=p.chat[UI.scen]||{opened:true,msgs:[],done:false,tries:0};c.done=true;c.opened=true;render()}else if(S.view==='twist'){const k=UI.twist||TWISTS[0].id;(p.twist[k]=p.twist[k]||{tries:0}).done=true;UI.twist=TWISTS[(TWISTS.findIndex(x=>x.id===k)+1)%TWISTS.length].id;render()}else toast('Нічого пропускати на цій вкладці.');break}
+ case'trepeat':{if(S.view==='practice'){p.pr.tries=0;UI.fb=null;UI.draft.pr='';delete p.pr.done[(p.pr.tasks[p.pr.i]||{}).id]}else if(S.view==='chat'){delete p.chat[UI.scen];UI.draft['chat'+UI.scen]=''}else if(S.view==='twist'){delete p.twist[UI.twist];UI.draft['tw'+UI.twist]=''}render();if(S.view==='chat')openScen(UI.scen);break}
+ case'treset':ask('Скинути прогрес поточної активності для цього учня?','Скинути',()=>{if(S.view==='practice'){p.pr={round:p.pr.round,tasks:null,i:0,tries:0,done:{}};UI.fb=null}else if(S.view==='chat'){p.chat={}}else if(S.view==='twist'){p.twist={}}else if(S.view==='speak'){p.speak={}}else if(S.view==='week'){p.events=[]}else if(S.view==='group'){S.group.decision=null;S.group.msgs={};UI.gfb={}}else if(S.view==='final'){S.final={day:5,text:'',change:''}}render()});break;
+ case'tnew':ask('Почати нову сесію? Усі дані (календарі, прогрес, Wild Card) буде видалено.','Нова сесія',()=>{const keep={sound:S.sound,theme:S.theme};S=Object.assign(fresh(),keep);UI.fb=null;UI.draft={};UI.bad={};UI.gfb={};try{localStorage.removeItem(KEY)}catch(_){}render()});break;
+ case'wtpl':{const w=WTPL[d.k];$('#w-title').value=w.title;$('#w-sender').value=w.sender;$('#w-text').value=w.text;$('#w-focus').value=w.focus;$('#w-text').focus();break}
+ case'wsend':{const g=i=>$('#'+i).value.trim(),text=g('w-text');if(!text){toast('Введіть текст повідомлення.');break}const tg=$('#w-target').value,id=uid();S.wild.push({id,title:g('w-title')||'Wild Card',sender:g('w-sender')||'Your friend',text,time:g('w-time'),loc:'',evId:$('#w-ev').value,focus:$('#w-focus').value,follow:g('w-follow'),targets:tg==='all'?'all':[+tg],vis:$('#w-vis').value,hints:$('#w-hints').checked});
+  S.view='chat';UI.scen='w'+id;S.tOpen=false;render();toast('Wild Card надіслано!');ding();if(wildFor(S.wild[S.wild.length-1],S.cur))openScen('w'+id);break}
+ case'wdel':S.wild=S.wild.filter(w=>w.id!==d.id);render();break;
+ }});
+document.addEventListener('input',e=>{const t=e.target,k=t.dataset&&t.dataset.in;
+ if(t.dataset&&t.dataset.draft){UI.draft[t.dataset.draft]=t.value;if(k==='ftext'){S.final.text=t.value;save()}if(k==='fchange'){S.final.change=t.value;save()}return}
+ if(k==='name'){S.players[+t.dataset.i].name=t.value;save();return}
+ if(k==='week'){S.weekName=t.value;save();return}});
+document.addEventListener('change',e=>{const t=e.target,k=t.dataset&&t.dataset.in;if(t.id==='f-status'){const x=$('#f-tt');if(x)x.style.display=t.value==='fixed'?'':'none'}if(!k)return;
+ if(k==='gday'){S.group.day=+t.value;render()}if(k==='gact'){S.group.activity=t.value;render()}if(k==='gstart'){S.group.start=t.value;render()}if(k==='gend'){S.group.end=t.value;render()}if(k==='ghow'){S.group.how=t.value;save()}
+ if(k==='gcust'&&t.value.trim()){S.group.activity=t.value.trim();render()}if(k==='fday'){S.final.day=+t.value;render()}
+ if(t.id==='f-status'){const x=$('#f-tt');if(x)x.style.display=t.value==='fixed'?'':'none'}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();
+ if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){const t=e.target;if(t.id==='ans')prSubmit();if(t.id==='rep')sendChat();if(t.id==='twa')sendTwist()}
+ if(e.key==='Enter'&&e.target.dataset&&e.target.dataset.in==='gcust'&&e.target.value.trim()){S.group.activity=e.target.value.trim();render()}});
+/* ====================== BOOT ====================== */
+if(load()&&S.started){S.screen='home'}render();
+
+</script>
+</body>
+</html>
