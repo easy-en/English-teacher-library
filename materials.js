@@ -1,5 +1,31 @@
 // Update GitHub Pages - Daily Calendar
 const materials = [
+  
+{
+  title: "The Future Glitch 2.0",
+  category: "grammar",
+  level: "A1–A2",
+  type: "Interactive Game",
+  description: "Practise future forms in an interactive adventure.",
+  link: "future-glitch-2.html"
+},
+{
+  title: "Present Simple Adventure",
+  category: "grammar",
+  level: "Pre-A1–A1",
+  type: "Interactive Game",
+  description: "Practise Present Simple with fun interactive challenges.",
+  link: "presentsimpleadventure.html"
+},
+{
+  title: "Lucky Block Adventure",
+  category: "grammar",
+  level: "Pre-A1–A1",
+  type: "Interactive Game",
+  description: "Break 20 lucky blocks and practise Present Simple affirmative, negative and question forms.",
+  link: "Present%20Simple%20-%20Lucky%20block%20.html"
+},
+
   {
     title: "My Lunch Box",
     category: "vocabulary",
