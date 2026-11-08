@@ -40,7 +40,40 @@ const materials = [
   { title: "My Lunch Box", category: "vocabulary", level: "Pre-A1–A1", type: "Interactive Game", description: "Practise food vocabulary and build your own lunch box.", link: "My%20Lunch%20Box%20(1)%20(1).html" },
   { title: "Magic Bedroom with Prepositions", category: "grammar", level: "A1", type: "Interactive Game", description: "Create a bedroom and practise prepositions of place.", link: "Magic%20Bedroom%20with%20prepositions%20html.html" },
   { title: "Magic Bedroom", category: "vocabulary", level: "Pre-A1–A1", type: "Interactive Activity", description: "Design your bedroom and practise furniture vocabulary and writing.", link: "Magic%20Bedroom%20%E2%9C%A8.html" },
-  { title: "Daily Calendar", category: "vocabulary", level: "Pre-A1–A1", type: "Interactive Game", description: "Practise days, months, dates, weather, seasons and feelings. Create your own daily calendar and build simple English sentences!", link: "Daily%20Calendar.html" }
+  { title: "Daily Calendar", category: "vocabulary", level: "Pre-A1–A1", type: "Interactive Game", description: "Practise days, months, dates, weather, seasons and feelings. Create your own daily calendar and build simple English sentences!", link: "Daily%20Calendar.html" },
+
+  {
+    title: "Alias",
+    category: "speaking",
+    level: "A2",
+    type: "Speaking Game",
+    description: "Describe words in English, guess the answers and practise speaking in a fun team challenge.",
+    link: "alien-describe-it.html"
+  },
+  {
+    title: "Reading Chess Battle",
+    category: "reading",
+    level: "Pre-A1",
+    type: "Reading Game",
+    description: "Practise basic English reading through a fun chess-themed challenge.",
+    link: "reading-chess-battle.html"
+  },
+  {
+    title: "Reading Checkers Battle",
+    category: "reading",
+    level: "Pre-A1",
+    type: "Reading Game",
+    description: "Read simple English sentences and complete a fun checkers-themed challenge.",
+    link: "reading-checkers-battle%20.html"
+  },
+  {
+    title: "The Floor Is Lava",
+    category: "grammar",
+    level: "Pre-A1–A1",
+    type: "Interactive Game",
+    description: "Practise Present Simple affirmative, negative and question forms in an exciting lava challenge.",
+    link: "the-floor-is-lava%20.html"
+  },
 ];
 
 function renderMaterials() {
