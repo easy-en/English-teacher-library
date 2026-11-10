@@ -1,6 +1,14 @@
 // English Teacher Library — game catalogue. Add new games to this list.
 const materials = [
  
+{
+  title: "The Secret City",
+  category: "Grammar",
+  level: "A1–A2",
+  description: "Explore 10 neon shops, practise comparatives and superlatives, solve 20 grammar challenges and unlock the Secret Tower!",
+  url: "the-secret-city.html"
+},
+
   {
     title: "HEY, ARE YOU OK?",
     category: "speaking",
