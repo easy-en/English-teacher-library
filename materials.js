@@ -3,6 +3,15 @@ const materials = [
  
 
 {
+  title: "Lost Messages",
+  category: "grammar",
+  level: "B1",
+  type: "Interactive Game",
+  description: "Explore five mysterious worlds, recover lost messages and practise Reported Speech through interactive challenges!",
+  link: "lost-messages.html"
+},
+
+{
   title: "The Secret City",
   category: "grammar",
   level: "A1–A2",
