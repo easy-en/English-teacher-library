@@ -1,6 +1,31 @@
 // English Teacher Library — game catalogue. Add new games to this list.
 const materials = [
  
+{
+  title: "New Day Hero Arena",
+  category: "grammar",
+  level: "Pre-A1",
+  type: "Interactive Game",
+  description: "Practise English through an exciting hero arena adventure!",
+  link: "new-day-hero-arena.html"
+},
+{
+  title: "New Day Block World",
+  category: "grammar",
+  level: "Pre-A1",
+  type: "Interactive Game",
+  description: "Explore a colourful block world and complete English challenges!",
+  link: "new-day-block-world.html"
+},
+{
+  title: "Phonics Kitchen",
+  category: "reading",
+  level: "Pre-A1",
+  type: "Interactive Game",
+  description: "Blend letters, practise phonics and make words in a fun interactive kitchen!",
+  link: "phonics-kitchen.html"
+},
+
 
 {
   title: "Lost Messages",
