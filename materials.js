@@ -14,7 +14,7 @@ const materials = [
   level: "B1",
   type: "Interactive Game",
   description: "Complete digital challenges and practise Reported Speech. Includes Teacher Mode and Teacher's Report.",
-  link: "hacker-mode.html"
+ link: "hacker-mode-teacher.html"
 },
 {
   title: "New Day Hero Arena",
