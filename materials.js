@@ -1,6 +1,14 @@
 // English Teacher Library — game catalogue. Add new games to this list.
 const materials = [
  {
+  title: "Enchanted Cauldron: Magical Reading",
+  category: "reading",
+  level: "Pre-A1–A1",
+  type: "Interactive Game",
+  description: "Discover the magic of reading! Practise phonics, vowel sounds, Magic E, words and sentences through an enchanted cauldron.",
+  link: "https://easy-en.github.io/English-teacher-library/enchanted_cauldron.html"
+},
+ {
   title: "My Future Job",
   category: "speaking",
   level: "A1–A2",
