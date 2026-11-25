@@ -116,8 +116,8 @@ function stepParticles(dt){const w=E.wind;
  for(let i=0;i<NL;i++){LP[i*3+1]-=.9*dt;LP[i*3]+=(Math.sin(TIME*1.3+i)*.9+1+w*4)*dt;if(LP[i*3+1]<0){LP[i*3+1]=9;LP[i*3]=rand(-16,16);LP[i*3+2]=rand(-12,6)}if(LP[i*3]>16)LP[i*3]-=32}
  BR=BR.filter(b=>(b.l-=dt)>0);BR.forEach(b=>{b.y+=.6*dt;b.x+=.3*dt});}
 /* ---------- state ---------- */
-const CLR=[['red','#e53935'],['blue','#2a6fd6'],['yellow','#fdd835'],['green','#43a047'],['purple','#8e24aa'],['white','#f4f4f4'],['black','#2a2a2a']];
-const H={av:0,shirt:'#e53935',pants:'#2a6fd6',shoes:'#f4f4f4',temp:'warm',mood:'calm',it:{coat:{p:0,v:0,t:0},scarf:{p:0,v:0,t:0},hat:{p:0,v:0,t:0},gloves:{p:0,v:0,t:0},shorts:{p:0,v:0,t:0}},jump:-9,wave:-9,turnT:-9};
+const CLR=[['red','#e53935'],['blue','#2a6fd6'],['yellow','#fdd835'],['orange','#f78c1f'],['green','#43a047'],['purple','#8e24aa'],['white','#f4f4f4'],['black','#2a2a2a']];
+const H={av:0,shirt:'#e53935',coat:'#f78c1f',pants:'#2a6fd6',shoes:'#f4f4f4',temp:'warm',mood:'calm',it:{coat:{p:0,v:0,t:0},scarf:{p:0,v:0,t:0},hat:{p:0,v:0,t:0},gloves:{p:0,v:0,t:0},shorts:{p:0,v:0,t:0}},jump:-9,wave:-9,turnT:-9};
 const MOOD={happy:{sm:.9,op:0,br:0,bo:.1,sp:3,sl:0,au:.15,ey:1},excited:{sm:1,op:1,br:-.15,bo:.3,sp:7,sl:0,au:1,ey:1.1},calm:{sm:.3,op:0,br:0,bo:.03,sp:1.4,sl:0,au:0,ey:.9},sad:{sm:-.9,op:0,br:.55,bo:.02,sp:1,sl:.32,au:-.05,ey:.9},tired:{sm:0,op:0,br:.2,bo:.03,sp:.9,sl:.22,au:-.05,ey:.35},angry:{sm:-.7,op:0,br:-.6,bo:.04,sp:2,sl:0,au:.3,ey:1}};
 const OUT={freezing:['coat','scarf','hat','gloves'],cold:['coat','scarf','hat'],cool:['coat'],warm:[],hot:['shorts']};
 function pose(t){const m=MOOD[H.mood]||MOOD.calm,bt=(t*m.sp);let jump=0,wave=0;const jt=t-H.jump;if(jt>=0&&jt<.8)jump=Math.sin(jt/.8*Math.PI)*1.4;const wt=t-H.wave;if(wt>=0&&wt<1.6)wave=1;
@@ -163,8 +163,8 @@ clothes:{q:'What are you wearing?',type:'clothes',icon:'👕',lab:'Clothes'}};
 const DEFORDER=Object.keys(TOP);
 function sentence(k,v,A){const t=v;switch(k){case'name':return'My name is '+v+'.';case'age':return"I'm "+v+' years old.';case'country':return"I'm from "+v+'.';case'day':return"It's "+v+'.';case'date':return"It's the "+ordW(+v)+'.';case'month':return"It's "+v+'.';case'year':return"It's "+v+'.';case'season':return"It's "+(v==='autumn'?'autumn':v)+'.';
  case'weather':return"It's "+v+'.';case'temp':return"It's "+v+'.';case'mood':return"I'm "+v+'.';
- case'clothes':{const n=c=>(CLR.find(x=>x[1]===c)||['grey'])[0],o=OUT[A.temp||'warm']||[],ex=[];if(o.includes('coat'))ex.push('a coat');if(o.includes('scarf'))ex.push('a scarf');if(o.includes('hat'))ex.push('a hat');if(o.includes('gloves'))ex.push('gloves');
-  const items=['a '+n(v.shirt)+' T-shirt',n(v.pants)+(o.includes('shorts')?' shorts':' trousers'),n(v.shoes)+' shoes'].concat(ex);return"I'm wearing "+items.slice(0,-1).join(', ')+' and '+items.slice(-1)+'.'}}}
+ case'clothes':{const n=c=>(CLR.find(x=>x[1]===c)||['grey'])[0],o=OUT[A.temp||'warm']||[],ex=[];if(o.includes('scarf'))ex.push('a scarf');if(o.includes('hat'))ex.push('a hat');if(o.includes('gloves'))ex.push('gloves');
+  const items=[o.includes('coat')?'a '+(v.coat==='#f78c1f'||!v.coat?'orange':n(v.coat))+' coat':'a '+n(v.shirt)+' T-shirt',n(v.pants)+(o.includes('shorts')?' shorts':' trousers'),n(v.shoes)+' shoes'].concat(ex);return"I'm wearing "+items.slice(0,-1).join(', ')+' and '+items.slice(-1)+'.'}}}
 /* ---------- persistence ---------- */
 const KEY='newday_'+(window.THEME_ID||'x')+'_v1';
 const DEF=()=>({topics:Object.fromEntries(DEFORDER.map(k=>[k,['name','age','country','day','season','weather','temp','mood','clothes'].includes(k)])),order:[...DEFORDER],audio:true,students:[{n:'Alex',a:0},{n:'Mia',a:1},{n:'Leo',a:2},{n:'Emma',a:3}],ans:[{},{},{},{}],cur:-1});
@@ -200,7 +200,7 @@ function frame(now){const rdt=Math.min(.5,(now-LAST)/1000),dt=Math.min(.05,rdt);
 let scr='pick',busy=false,qi=null,ret='pick';
 const show=id=>{['pick','setup','sum'].forEach(x=>$('#'+x).hidden=x!==id);$('#bar').hidden=id!=='play'&&id!=='pick'?true:false;scr=id};
 function setLook(){const s=stu();if(s)H.av=s.a}
-function applyAll(){const A=ans();H.temp=A.temp||'warm';H.mood=A.mood||'calm';const c=A.clothes||{};H.shirt=c.shirt||'#e53935';H.pants=c.pants||'#2a6fd6';H.shoes=c.shoes||'#f4f4f4';
+function applyAll(){const A=ans();H.temp=A.temp||'warm';H.mood=A.mood||'calm';const c=A.clothes||{};H.shirt=c.shirt||'#e53935';H.coat=c.coat||'#f78c1f';H.pants=c.pants||'#2a6fd6';H.shoes=c.shoes||'#f4f4f4';
  const o=OUT[H.temp];for(const k in H.it)H.it[k].t=o.includes(k)?1:0;envTargets();const s=A.season||'summer';if(s!==LASTSEASON){LASTSEASON=s;THEME.bake(s)}}
 function queue(){return ST.order.filter(k=>ST.topics[k]&&ans()[k]===undefined)}
 function enabled(){return ST.order.filter(k=>ST.topics[k])}
@@ -221,7 +221,7 @@ function ask(k){busy=false;const T=TOP[k],c=$('#card');c.hidden=false;$('#bub').
  else if(T.type==='name'){b.innerHTML=`<input id="nm" value="${esc(stu().n)}" maxlength="20" autocomplete="off"><button class="opt go" id="ok">OK ✔</button>`;const f=()=>{const v=$('#nm').value.trim();if(v){stu().n=v;$('#who').textContent=v;save();answer(k,v)}};$('#ok').onclick=f;$('#nm').onkeydown=e=>e.key==='Enter'&&f()}
  else if(T.type==='num'||T.type==='date'){const A=ans();let v=T.type==='date'?1:T.def,mx=31;if(T.type==='date'){const m=A.month!==undefined?MONTHS.indexOf(A.month):-1;mx=m>=0?dim(m,+(A.year||2026)):31}
   const r=()=>{b.innerHTML=`<div class="step"><button class="arr" id="mm">◀</button><span class="big">${T.type==='date'?ordN(v):v}</span><button class="arr" id="pl2">▶</button></div><button class="opt go" id="ok">OK ✔</button>`;$('#mm').onclick=()=>{v=v<=(T.min||1)?(T.max||mx):v-1;SFX.click();r()};$('#pl2').onclick=()=>{v=v>=(T.max||mx)?(T.min||1):v+1;SFX.click();r()};$('#ok').onclick=()=>answer(k,v)};r()}
- else if(T.type==='clothes'){const sel={shirt:'#e53935',pants:'#2a6fd6',shoes:'#f4f4f4'},rows=[['shirt','👕 Top'],['pants','👖 Trousers'],['shoes','👟 Shoes']];
+ else if(T.type==='clothes'){const sel={shirt:'#e53935',coat:'#f78c1f',pants:'#2a6fd6',shoes:'#f4f4f4',...ans().clothes},rows=[[OUT[H.temp].includes('coat')?'coat':'shirt',OUT[H.temp].includes('coat')?'🧥 Coat':'👕 T-shirt'],['pants','👖 Trousers'],['shoes','👟 Shoes']];
   const r=()=>{b.innerHTML=rows.map(x=>`<div class="crow"><span>${x[1]}</span>${CLR.map(c=>`<button class="sw${sel[x[0]]===c[1]?' on':''}" data-k="${x[0]}" data-c="${c[1]}" style="background:${c[1]}" aria-label="${c[0]}"></button>`).join('')}</div>`).join('')+'<button class="opt go" id="ok">OK ✔</button>';
    b.querySelectorAll('.sw').forEach(e=>e.onclick=()=>{sel[e.dataset.k]=e.dataset.c;ST.ans[ST.cur].clothes=Object.assign({},sel);applyAll();SFX.click();r()});$('#ok').onclick=()=>answer(k,Object.assign({},sel))};r()}}
 /* ---------- summary ---------- */
@@ -275,12 +275,12 @@ function world(t){draw(G,I4(),[1,1,1]);
  if(SEASON==='spring')for(let i=0;i<16;i++)sp(I4(),-10+i*1.3,.2,8.6,.2,.2,.2,[1,.5,.75]);if(SEASON==='autumn')for(let i=0;i<5;i++)sp(I4(),-8+i*4.2,.35,7.6,.5,.38,.5,[1,.5,.1]);
  const dk=E.dark,cc=[.95-dk*.5,.95-dk*.5,1-dk*.45];for(let i=0;i<Math.round(E.cloud);i++){const x=((i*7.3+t*(.5+(i%3)*.15))%46)-23,yy=9+(i%4)*1.5,z=-11-(i%5)*2;sp(I4(),x,yy,z,2.4+i%2,1,1.4,cc);sp(I4(),x+1.6,yy+.4,z,1.6,.9,1.2,cc);sp(I4(),x-1.4,yy+.2,z+.3,1.4,.7,1.1,cc)}
  if(E.wet>.02)draw(CUBE,chain(Tm(0,.01,-1),Sm(26,.05,20)),[.12,.2,.5],E.wet*.28);if(E.cover>.02)draw(CUBE,chain(Tm(0,.05,-1),Sm(26,.05,20)),[.97,.99,1],E.cover*.9)}
-function hero(t,P,dt){const ap=AVP[H.av%4],m=P.m,sk=ap.skin,hr=ap.hair,I=H.it,sh=hex(H.shirt),pa=hex(H.pants),so=hex(H.shoes),cs=I.coat.p,OR=[.97,.55,.12];
+function hero(t,P,dt){const ap=AVP[H.av%4],m=P.m,sk=ap.skin,hr=ap.hair,I=H.it,sh=hex(H.shirt),pa=hex(H.pants),so=hex(H.shoes),cs=I.coat.p,OR=hex(H.coat);
  const sq=(t-H.turnT)/.9,spin=sq>=0&&sq<1?sq*Math.PI*2:0;
  sp(I4(),0,.05,0,1.5,.03,1.3,[0,0,0],.3);
  const sy=1+Math.sin(t*m.sp*2)*m.bo*.12+Math.min(1,P.jump)*.1,sx=1/Math.sqrt(sy),R0=chain(Tm(P.sh,P.bob+P.jump,0),RYm(spin),RZm(P.lean),Sm(sx,sy,sx)),shorts=I.shorts.p>.5;
  for(const s of[-1,1]){sp(R0,s*.32,.62,0,.3,.62,.32,pa);if(shorts)sp(R0,s*.32,.3,0,.27,.32,.29,sk);sp(R0,s*.34,.2,.14,.36,.2,.5,so)}
- const U=chain(R0,Tm(0,1.1,0),RXm(P.sl));sp(U,0,.55,0,.72,.82,.5,sh);sp(U,0,.1,0,.74,.15,.52,[.35,.2,.1]);sp(U,0,.1,.5,.12,.12,.06,[1,.82,.15]);sp(U,0,1.1,.22,.5,.26,.34,OR);
+ const U=chain(R0,Tm(0,1.1,0),RXm(P.sl));sp(U,0,.55,0,.72,.82,.5,sh);sp(U,0,.1,0,.74,.15,.52,[.35,.2,.1]);sp(U,0,.1,.5,.12,.12,.06,[1,.82,.15]);sp(U,0,1.1,.22,.5,.26,.34,cs>.5?OR:[.97,.55,.12]);
  if(cs>.02){sp(U,0,.52,0,.84*cs,.92*cs,.6*cs,OR);sp(U,0,-.02,0,.86*cs,.14*cs,.62*cs,[.98,.95,.9])}
  for(const s of[-1,1]){let a=s*(.14+Math.max(0,m.au)*2.2);if(m.au<0)a=s*.07;if(s===1&&P.wave)a=2.5+Math.sin(t*14)*.4;if(P.cold)a=s*.06;const A=chain(U,Tm(s*.84,1.05,0),RZm(a));sp(A,0,-.45,0,.26,.5,.26,cs>.5?OR:sh);sp(A,0,-.8,0,.29,.16,.29,[.35,.25,.6]);sp(A,0,-.98,0,.3,.3,.3,I.gloves.p>.5?[.9,.95,1]:sk)}
  const Hd=chain(U,Tm(0,1.65,0),RXm(P.sl*.6),Tm(0,.95,0));sp(Hd,0,0,0,1.06,.98,.98,sk);for(const s of[-1,1])sp(Hd,s*1.0,-.05,0,.17,.22,.12,sk);

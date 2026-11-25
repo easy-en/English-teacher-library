@@ -114,7 +114,7 @@ function stepParticles(dt){const w=E.wind;
  BR=BR.filter(b=>(b.l-=dt)>0);BR.forEach(b=>{b.y+=.6*dt;b.x+=.3*dt});}
 /* ---------- state ---------- */
 const CLR=[['red','#e53935'],['blue','#2a6fd6'],['yellow','#fdd835'],['green','#43a047'],['purple','#8e24aa'],['white','#f4f4f4'],['black','#2a2a2a']];
-const H={av:0,shirt:'#e53935',pants:'#2a6fd6',shoes:'#f4f4f4',temp:'warm',mood:'calm',it:{coat:{p:0,v:0,t:0},scarf:{p:0,v:0,t:0},hat:{p:0,v:0,t:0},gloves:{p:0,v:0,t:0},shorts:{p:0,v:0,t:0}},jump:-9,wave:-9,turnT:-9};
+const H={av:0,shirt:'#e53935',coat:'#fdd835',pants:'#2a6fd6',shoes:'#f4f4f4',temp:'warm',mood:'calm',it:{coat:{p:0,v:0,t:0},scarf:{p:0,v:0,t:0},hat:{p:0,v:0,t:0},gloves:{p:0,v:0,t:0},shorts:{p:0,v:0,t:0}},jump:-9,wave:-9,turnT:-9};
 const MOOD={happy:{sm:.9,op:0,br:0,bo:.1,sp:3,sl:0,au:.15,ey:1},excited:{sm:1,op:1,br:-.15,bo:.3,sp:7,sl:0,au:1,ey:1.1},calm:{sm:.3,op:0,br:0,bo:.03,sp:1.4,sl:0,au:0,ey:.9},sad:{sm:-.9,op:0,br:.55,bo:.02,sp:1,sl:.32,au:-.05,ey:.9},tired:{sm:0,op:0,br:.2,bo:.03,sp:.9,sl:.22,au:-.05,ey:.35},angry:{sm:-.7,op:0,br:-.6,bo:.04,sp:2,sl:0,au:.3,ey:1}};
 const OUT={freezing:['coat','scarf','hat','gloves'],cold:['coat','scarf','hat'],cool:['coat'],warm:[],hot:['shorts']};
 function pose(t){const m=MOOD[H.mood]||MOOD.calm,bt=(t*m.sp);let jump=0,wave=0;const jt=t-H.jump;if(jt>=0&&jt<.8)jump=Math.sin(jt/.8*Math.PI)*1.4;const wt=t-H.wave;if(wt>=0&&wt<1.6)wave=1;
@@ -160,8 +160,8 @@ clothes:{q:'What are you wearing?',type:'clothes',icon:'👕',lab:'Clothes'}};
 const DEFORDER=Object.keys(TOP);
 function sentence(k,v,A){const t=v;switch(k){case'name':return'My name is '+v+'.';case'age':return"I'm "+v+' years old.';case'country':return"I'm from "+v+'.';case'day':return"It's "+v+'.';case'date':return"It's the "+ordW(+v)+'.';case'month':return"It's "+v+'.';case'year':return"It's "+v+'.';case'season':return"It's "+(v==='autumn'?'autumn':v)+'.';
  case'weather':return"It's "+v+'.';case'temp':return"It's "+v+'.';case'mood':return"I'm "+v+'.';
- case'clothes':{const n=c=>(CLR.find(x=>x[1]===c)||['grey'])[0],o=OUT[A.temp||'warm']||[],ex=[];if(o.includes('coat'))ex.push('a coat');if(o.includes('scarf'))ex.push('a scarf');if(o.includes('hat'))ex.push('a hat');if(o.includes('gloves'))ex.push('gloves');
-  const items=['a '+n(v.shirt)+' T-shirt',n(v.pants)+(o.includes('shorts')?' shorts':' trousers'),n(v.shoes)+' shoes'].concat(ex);return"I'm wearing "+items.slice(0,-1).join(', ')+' and '+items.slice(-1)+'.'}}}
+ case'clothes':{const n=c=>(CLR.find(x=>x[1]===c)||['grey'])[0],o=OUT[A.temp||'warm']||[],ex=[];if(o.includes('scarf'))ex.push('a scarf');if(o.includes('hat'))ex.push('a hat');if(o.includes('gloves'))ex.push('gloves');
+  const items=[o.includes('coat')?'a '+(v.coat==='#fdd835'||!v.coat?'yellow':n(v.coat))+' coat':'a '+n(v.shirt)+' T-shirt',n(v.pants)+(o.includes('shorts')?' shorts':' trousers'),n(v.shoes)+' shoes'].concat(ex);return"I'm wearing "+items.slice(0,-1).join(', ')+' and '+items.slice(-1)+'.'}}}
 /* ---------- persistence ---------- */
 const KEY='newday_'+(window.THEME_ID||'x')+'_v1';
 const DEF=()=>({topics:Object.fromEntries(DEFORDER.map(k=>[k,['name','age','country','day','season','weather','temp','mood','clothes'].includes(k)])),order:[...DEFORDER],audio:true,students:[{n:'Alex',a:0},{n:'Mia',a:1},{n:'Leo',a:2},{n:'Emma',a:3}],ans:[{},{},{},{}],cur:-1});
@@ -197,7 +197,7 @@ function frame(now){const rdt=Math.min(.5,(now-LAST)/1000),dt=Math.min(.05,rdt);
 let scr='pick',busy=false,qi=null,ret='pick';
 const show=id=>{['pick','setup','sum'].forEach(x=>$('#'+x).hidden=x!==id);$('#bar').hidden=id!=='play'&&id!=='pick'?true:false;scr=id};
 function setLook(){const s=stu();if(s)H.av=s.a}
-function applyAll(){const A=ans();H.temp=A.temp||'warm';H.mood=A.mood||'calm';const c=A.clothes||{};H.shirt=c.shirt||'#e53935';H.pants=c.pants||'#2a6fd6';H.shoes=c.shoes||'#f4f4f4';
+function applyAll(){const A=ans();H.temp=A.temp||'warm';H.mood=A.mood||'calm';const c=A.clothes||{};H.shirt=c.shirt||'#e53935';H.coat=c.coat||'#fdd835';H.pants=c.pants||'#2a6fd6';H.shoes=c.shoes||'#f4f4f4';
  const o=OUT[H.temp];for(const k in H.it)H.it[k].t=o.includes(k)?1:0;envTargets();const s=A.season||'summer';if(s!==LASTSEASON){LASTSEASON=s;THEME.bake(s)}}
 function queue(){return ST.order.filter(k=>ST.topics[k]&&ans()[k]===undefined)}
 function enabled(){return ST.order.filter(k=>ST.topics[k])}
@@ -218,7 +218,7 @@ function ask(k){busy=false;const T=TOP[k],c=$('#card');c.hidden=false;$('#bub').
  else if(T.type==='name'){b.innerHTML=`<input id="nm" value="${esc(stu().n)}" maxlength="20" autocomplete="off"><button class="opt go" id="ok">OK ✔</button>`;const f=()=>{const v=$('#nm').value.trim();if(v){stu().n=v;$('#who').textContent=v;save();answer(k,v)}};$('#ok').onclick=f;$('#nm').onkeydown=e=>e.key==='Enter'&&f()}
  else if(T.type==='num'||T.type==='date'){const A=ans();let v=T.type==='date'?1:T.def,mx=31;if(T.type==='date'){const m=A.month!==undefined?MONTHS.indexOf(A.month):-1;mx=m>=0?dim(m,+(A.year||2026)):31}
   const r=()=>{b.innerHTML=`<div class="step"><button class="arr" id="mm">◀</button><span class="big">${T.type==='date'?ordN(v):v}</span><button class="arr" id="pl2">▶</button></div><button class="opt go" id="ok">OK ✔</button>`;$('#mm').onclick=()=>{v=v<=(T.min||1)?(T.max||mx):v-1;SFX.click();r()};$('#pl2').onclick=()=>{v=v>=(T.max||mx)?(T.min||1):v+1;SFX.click();r()};$('#ok').onclick=()=>answer(k,v)};r()}
- else if(T.type==='clothes'){const sel={shirt:'#e53935',pants:'#2a6fd6',shoes:'#f4f4f4'},rows=[['shirt','👕 Top'],['pants','👖 Trousers'],['shoes','👟 Shoes']];
+ else if(T.type==='clothes'){const sel={shirt:'#e53935',coat:'#fdd835',pants:'#2a6fd6',shoes:'#f4f4f4',...ans().clothes},rows=[[OUT[H.temp].includes('coat')?'coat':'shirt',OUT[H.temp].includes('coat')?'🧥 Coat':'👕 T-shirt'],['pants','👖 Trousers'],['shoes','👟 Shoes']];
   const r=()=>{b.innerHTML=rows.map(x=>`<div class="crow"><span>${x[1]}</span>${CLR.map(c=>`<button class="sw${sel[x[0]]===c[1]?' on':''}" data-k="${x[0]}" data-c="${c[1]}" style="background:${c[1]}" aria-label="${c[0]}"></button>`).join('')}</div>`).join('')+'<button class="opt go" id="ok">OK ✔</button>';
    b.querySelectorAll('.sw').forEach(e=>e.onclick=()=>{sel[e.dataset.k]=e.dataset.c;ST.ans[ST.cur].clothes=Object.assign({},sel);applyAll();SFX.click();r()});$('#ok').onclick=()=>answer(k,Object.assign({},sel))};r()}}
 /* ---------- summary ---------- */
@@ -273,7 +273,7 @@ function world(t){draw(G,I4(),[1,1,1]);draw(TR,I4(),[1,1,1],1,true);
  const sa=clamp(1-dk*1.6,0,1);if(sa>.02)cb(I4(),14,14,-20,3,3,.5,[1,.92,.4],sa);
  if(E.wet>.02)draw(CUBE,chain(Tm(0,.035,-1.5),Sm(31,.05,22)),[.08,.15,.32],E.wet*.3);
  if(E.cover>.02)draw(CUBE,chain(Tm(0,.06,-1.5),Sm(31,.05,22)),[.97,.99,1],E.cover*.92)}
-function hero(t,P,dt){const ap=AVP[H.av%4],m=P.m,sk=ap.skin,hr=ap.hair,I=H.it,sh=hex(H.shirt),pa=hex(H.pants),so=hex(H.shoes),cs=I.coat.p,CC=[.96,.78,.12];
+function hero(t,P,dt){const ap=AVP[H.av%4],m=P.m,sk=ap.skin,hr=ap.hair,I=H.it,sh=hex(H.shirt),pa=hex(H.pants),so=hex(H.shoes),cs=I.coat.p,CC=hex(H.coat);
  const sq=(t-H.turnT)/.9,spin=sq>=0&&sq<1?sq*Math.PI*2:0;
  cb(I4(),0,.07,0,1.7,.02,1.7,[0,0,0],.3);const R0=chain(Tm(P.sh,P.bob+P.jump,0),RYm(spin),RZm(P.lean)),shorts=I.shorts.p>.5;
  for(const s of[-1,1]){if(shorts){cb(R0,s*.26,.75,0,.5,.5,.5,pa);cb(R0,s*.26,.25,0,.44,.5,.44,sk)}else cb(R0,s*.26,.5,0,.48,1,.48,pa);cb(R0,s*.26,.13,.07,.52,.26,.64,so)}
