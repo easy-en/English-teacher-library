@@ -1,6 +1,21 @@
 // English Teacher Library — game catalogue. Add new games to this list.
 const materials = [
- 
+ {
+  title: "My Future Job",
+  category: "speaking",
+  level: "A1–A2",
+  type: "Interactive Game",
+  description: "Explore professions, compare jobs and discuss your future career. Practise comparatives and superlatives.",
+  link: "my-future-job.html"
+},
+{
+  title: "Hacker Mode: The Lost Code",
+  category: "grammar",
+  level: "B1",
+  type: "Interactive Game",
+  description: "Complete digital challenges and practise Reported Speech. Includes Teacher Mode and Teacher's Report.",
+  link: "hacker-mode.html"
+},
 {
   title: "New Day Hero Arena",
   category: "grammar",
