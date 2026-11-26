@@ -156,7 +156,7 @@ const materials = [
     level: "Pre-A1",
     type: "Reading Game",
     description: "Read simple English sentences and complete a fun checkers-themed challenge.",
-    link: "https://easy-en.github.io/English-teacher-library/reading-checkers-battle.html"
+    link: "https://easy-en.github.io/English-teacher-library/reading-checkers-battle%20..html"
   },
   {
     title: "The Floor Is Lava",
